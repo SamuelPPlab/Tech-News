@@ -50,7 +50,7 @@ def scrape_noticia(html_content):
         new['comments_count'] = 0
 
     new['summary'] = "".join(selector.css(
-        ".tec--article__body p:first-child *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall())
     new['sources'] = list(map(str.strip, selector.css(
         ".z--mb-16 div a.tec--badge::text"
