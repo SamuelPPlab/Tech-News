@@ -88,4 +88,3 @@ def get_tech_news(amount):
         get_url = scrape_next_page_link(get_url)
         get_links = scrape_novidades(get_url)
     return news[:amount]
-    """Seu código deve vir aqui"""
