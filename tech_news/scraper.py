@@ -1,5 +1,7 @@
-import requests, time
+import requests
+import time
 from parsel import Selector
+
 
 # Requisito 1
 def fetch(url):
@@ -35,7 +37,7 @@ def scrape_noticia(html_content):
         selector.css("#js-comments-btn::attr(data-count)").get()
     )
     news["summary"] = "".join(
-        selector.css(".tec--article__body p:first-child *::text").getall()
+        selector.css(".tec--article__body > p:first-child *::text").getall()
     )
     news["sources"] = list(
         map(
@@ -62,10 +64,3 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-
-
-noticia_html = fetch(
-    "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-)
-
-print(scrape_noticia(noticia_html))
