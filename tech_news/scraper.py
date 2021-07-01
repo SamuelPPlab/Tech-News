@@ -1,11 +1,24 @@
+import requests
+import time
+from parsel import Selector
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        time.sleep(1)
+        res = requests.get(url, timeout=3)
+        res.raise_for_status()
+    except requests.exceptions.RequestException as error:
+        print(error)
+        return None
+    else:
+        return res.text
+
+
 
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    
 
 
 # Requisito 3
