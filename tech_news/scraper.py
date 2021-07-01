@@ -72,39 +72,20 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    # news = []
-    # url = "https://www.tecmundo.com.br/novidades"
+    news = []
+    url = "https://www.tecmundo.com.br/novidades"
 
-    # get_url = fetch(url)
-    # get_links = scrape_novidades(get_url)
+    get_url = fetch(url)
+    get_links = scrape_novidades(get_url)
 
-    # while len(get_links) > 0:
-    #     for i in range(amount):
-    #         link = get_links[i]
-    #         search_news = fetch(link)
-    #         if i > amount:
-    #             news_details = scrape_noticia(search_news)
-    #             news.append(news_details)
-    #     get_url = scrape_next_page_link(get_url)
-    #     get_links = scrape_novidades(get_url)
-
-    # create_news(news)[amount:]
-    # return news
-    # def loop_get_news_details(links):
-    #     for link in links:
-    #         search_news = fetch(link)
-    #         news_details = scrape_noticia(search_news)
-    #         news.append(news_details)
-    #         return news
-
-    # while len(news) < amount:
-    #     get_url = fetch(url)
-    #     get_links = scrape_novidades(get_url)
-
-    #     loop_get_news_details(get_links)
-    #     if len(news) == amount:
-    #         create_news(news)
-    #         return news
-    #     url = scrape_next_page_link(get_url)
-    #     return news
+    while len(get_links) > 0:
+        for i in range(amount):
+            link = get_links[i]
+            search_news = fetch(link)
+            if i > amount:
+                news_details = scrape_noticia(search_news)
+                news.append(news_details)
+        get_url = scrape_next_page_link(get_url)
+        get_links = scrape_novidades(get_url)
+    return news[:amount]
     """Seu código deve vir aqui"""
