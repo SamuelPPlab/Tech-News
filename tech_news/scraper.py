@@ -1,6 +1,6 @@
 import requests
 import time
-# import pprint
+import pprint
 from parsel import Selector
 
 
@@ -24,9 +24,6 @@ def scrape_noticia(html_content):
     data['url'] = selector.css(
         'head > meta[property="og:url"]::attr(content)'
     ).get()
-    # data['url'] = selector.css(
-    #     'head link[href*="tecmundo.com.br/"]::attr(href)'
-    #     ).get()
     data['title'] = selector.css('#js-article-title ::text').get()
     data['timestamp'] = selector.css(
         '#js-article-date ::attr(datetime)'
@@ -56,7 +53,8 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    return Selector(html_content).css(
+        '.tec--card__title__link ::attr(href)').getall()
 
 
 # Requisito 4
@@ -69,8 +67,10 @@ def get_tech_news(amount):
     """Seu código deve vir aqui"""
 
 
-# pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter(indent=4)
 # fetched_data = fetch(
-# 'https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')
+#     'https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')
 
-# pp.pprint(scrape_noticia(fetched_data))
+fetched_data = fetch('https://www.tecmundo.com.br/novidades')
+
+pp.pprint(scrape_novidades(fetched_data))
