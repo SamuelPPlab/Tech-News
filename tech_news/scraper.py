@@ -73,6 +73,12 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    response = selector.css(
+        ".tec--btn::attr(href)"
+    ).get()
+
+    return response
 
 
 # Requisito 5
@@ -82,5 +88,5 @@ def get_tech_news(amount):
 
 pp = pprint.PrettyPrinter(indent=4)
 fetched_data = fetch("https://www.tecmundo.com.br/novidades")
-# pp.pprint(scrape_next_page_link(fetched_data))
-pp.pprint(scrape_novidades(fetched_data))
+pp.pprint(scrape_next_page_link(fetched_data))
+# pp.pprint(scrape_novidades(fetched_data))
