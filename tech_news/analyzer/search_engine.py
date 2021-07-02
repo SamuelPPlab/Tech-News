@@ -15,6 +15,15 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    try:
+        news = find_news()
+        result = []
+        for new in news:
+            if new["timestamp"][0:10] == date:
+                result.append(tuple([new["title"], new["url"]]))
+        return result or []
+    except ValueError:
+        print("Data inválida")
 
 
 # Requisito 8
