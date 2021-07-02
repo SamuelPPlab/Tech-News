@@ -56,7 +56,7 @@ def analyzer_menu():
         user_entry = int(input())
         if 0 > user_entry or user_entry > 7:
             raise ValueError()
-        elif -1 < user_entry < 8:
+        elif -1 < user_entry < 7:
             execute_command(user_entry)
         else:
             print("Encerrando script")
