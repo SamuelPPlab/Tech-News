@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+import pprint
 
 
 # Requisito 1
@@ -28,9 +29,9 @@ def scrape_noticia(html_content):
     news_letter["timestamp"] = selector.css(
         "#js-article-date::attr(datetime)"
     ).get()
-    news_letter["writer"] = selector.css(
-        ".tec--author__info__link::text"
-    ).get().strip()
+    news_letter["writer"] = (
+        selector.css(".tec--author__info__link::text").get().strip()
+    )
     news_letter["shares_count"] = int(
         selector.css(".tec--toolbar__item::text")
         .get()[: -len("Compartilharam")]
@@ -61,6 +62,12 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    response = selector.css(
+        "h3 > .tec--card__title__link::attr(href)"
+    ).getall()
+
+    return response
 
 
 # Requisito 4
@@ -71,3 +78,9 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+
+
+pp = pprint.PrettyPrinter(indent=4)
+fetched_data = fetch("https://www.tecmundo.com.br/novidades")
+# pp.pprint(scrape_next_page_link(fetched_data))
+pp.pprint(scrape_novidades(fetched_data))
