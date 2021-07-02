@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -10,6 +11,7 @@ def fetch(url):
         response = requests.get(url, timeout=3)
         if response.status_code == 200:
             return response.text
+        return None
     except requests.Timeout:
         return None
 
@@ -17,6 +19,43 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    news_letter = {}
+    news_letter["url"] = selector.css(
+        "head > meta[property='og:url']::attr(content)"
+    ).get()
+    news_letter["title"] = selector.css("#js-article-title::text").get()
+    news_letter["timestamp"] = selector.css(
+        "#js-article-date::attr(datetime)"
+    ).get()
+    news_letter["writer"] = selector.css(
+        ".tec--author__info__link::text"
+    ).get().strip()
+    news_letter["shares_count"] = int(
+        selector.css(".tec--toolbar__item::text")
+        .get()[: -len("Compartilharam")]
+        .strip()
+    )
+    news_letter["comments_count"] = int(
+        selector.css("#js-comments-btn::attr(data-count)").get()
+    )
+    news_letter["summary"] = "".join(
+        selector.css(".tec--article__body > p:first-child *::text").getall()
+    )
+    news_letter["sources"] = list(
+        map(
+            str.strip,
+            selector.css(".z--mb-16 div a.tec--badge::text").getall(),
+        )
+    )
+    news_letter["categories"] = list(
+        map(
+            str.strip,
+            selector.css("#js-categories a.tec--badge::text").getall(),
+        )
+    )
+
+    return news_letter
 
 
 # Requisito 3
@@ -32,4 +71,3 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-
