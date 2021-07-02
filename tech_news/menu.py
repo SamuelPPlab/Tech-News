@@ -12,9 +12,15 @@ from tech_news.analyzer.ratings import top_5_news, top_5_categories
 # Requisito 12
 def analyzer_menu():
     """Seu código deve vir aqui"""
-    print(
-        "Selecione uma das opções a seguir:\n 0 - Popular o banco com notícias;\n 1 - Buscar notícias por título;\n 2 - Buscar notícias por data;\n 3 - Buscar notícias por fonte;\n 4 - Buscar notícias por categoria;\n 5 - Listar top 5 notícias;\n 6 - Listar top 5 categorias;\n 7 - Sair."
-    )
+    print("Selecione uma das opções a seguir:")
+    print(" 0 - Popular o banco com notícias;")
+    print(" 1 - Buscar notícias por título;")
+    print(" 2 - Buscar notícias por data;")
+    print(" 3 - Buscar notícias por fonte;")
+    print(" 4 - Buscar notícias por categoria;")
+    print(" 5 - Listar top 5 notícias;")
+    print(" 6 - Listar top 5 categorias;")
+    print(" 7 - Sair.")
     try:
         user_entry = int(input())
         if 0 > user_entry or user_entry > 7:
