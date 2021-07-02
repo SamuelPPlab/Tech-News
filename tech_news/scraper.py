@@ -49,20 +49,22 @@ def scrape_noticia(html_content):
         selector.css("#js-comments-btn::attr(data-count)").get()
     )
     news["summary"] = "".join(
-        selector.css(".tec--article__body p:first-child *::text").getall()
+        selector.css(".tec--article__body > p:first-child *::text").getall()
     )
-    news["sources"] = list(
-        map(
-            str.strip,
-            selector.css(".z--mb-16.z--px-16 .tec--badge::text").getall(),
-        )
-    )
-    news["categories"] = list(
-        map(
-            str.strip,
-            selector.css("#js-categories .tec--badge::text").getall(),
-        )
-    )
+    news["sources"] = [
+        source.strip()
+        for source in selector.css(
+            ".z--mb-16.z--px-16 .tec--badge::text"
+        ).getall()
+    ]
+
+    news["categories"] = [
+        category.strip()
+        for category in selector.css(
+            "#js-categories .tec--badge::text"
+        ).getall()
+    ]
+
     return news
 
 
