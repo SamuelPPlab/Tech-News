@@ -1,6 +1,12 @@
-from sys import stderr
+import sys
 from tech_news.scraper import get_tech_news
-from tech_news.analyzer import search_engine as search, ratings
+from tech_news.analyzer.search_engine import (
+    search_by_title,
+    search_by_date,
+    search_by_source,
+    search_by_category,
+)
+from tech_news.analyzer.ratings import top_5_news, top_5_categories
 
 
 # Requisito 12
@@ -18,20 +24,18 @@ def analyzer_menu():
                 int(input("Digite quantas notícias serão buscadas: "))
             )
         elif user_entry == 1:
-            search.search_by_title(str(input("Digite o título: ")))
+            search_by_title(str(input("Digite o título: ")))
         elif user_entry == 2:
-            search.search_by_date(
-                str(input("Digite a data no formato aaaa-mm-dd: "))
-            )
+            search_by_date(str(input("Digite a data no formato aaaa-mm-dd: ")))
         elif user_entry == 3:
-            search.search_by_source(str(input("Digite a fonte: ")))
+            search_by_source(str(input("Digite a fonte: ")))
         elif user_entry == 4:
-            search.search_by_category(str(input("Digite a categoria: ")))
+            search_by_category(str(input("Digite a categoria: ")))
         elif user_entry == 5:
-            ratings.top_5_news()
+            top_5_news()
         elif user_entry == 6:
-            ratings.top_5_categories()
+            top_5_categories()
         else:
             print("Encerrando script")
     except ValueError:
-        stderr.write("Opção inválida")
+        sys.stderr.write("Opção inválida\n")
