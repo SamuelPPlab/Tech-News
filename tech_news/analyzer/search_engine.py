@@ -3,13 +3,11 @@ import datetime
 
 
 def format_result(list):
-    # return [tuple(news.values()) for news in list]
     return [(news["title"], news["url"]) for news in list]
 
 
 def run_search_news_with_fields(key, value):
     query = {key: {"$regex": f"{value}", "$options": "i"}}
-    # fields = {"_id": 0, "title": "$title", "url": "$url"}
     return format_result(search_news(query))
 
 

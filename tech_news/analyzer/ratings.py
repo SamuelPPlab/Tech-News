@@ -1,8 +1,34 @@
+from tech_news.database import find_news
+from tech_news.analyzer.search_engine import format_result
+
+
 # Requisito 10
 def top_5_news():
-    """Seu código deve vir aqui"""
+    return format_result(
+        sorted(
+            find_news(),
+            key=lambda field: (
+                -(field["shares_count"] + field["comments_count"]),
+                field["title"],
+            ),
+        )[:5]
+    )
 
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    categories_frequency = {}
+    for news in find_news():
+        for category in news["categories"]:
+            if category in categories_frequency:
+                categories_frequency[category] += 1
+            else:
+                categories_frequency[category] = 1
+    categories_sorted_by_ranking = [
+        item[0]
+        for item in sorted(
+            categories_frequency.items(), key=lambda k: k[1], reverse=True
+        )
+    ]
+
+    return sorted(categories_sorted_by_ranking[:5])
