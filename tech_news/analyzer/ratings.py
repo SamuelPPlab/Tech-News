@@ -27,8 +27,8 @@ def top_5_categories():
     categories_sorted_by_ranking = [
         item[0]
         for item in sorted(
-            categories_frequency.items(), key=lambda k: k[1], reverse=True
+            categories_frequency.items(), key=lambda k: (-k[1], k[0])
         )
     ]
-
-    return sorted(categories_sorted_by_ranking[:5])
+    top_five_categories = categories_sorted_by_ranking[:5]
+    return sorted(top_five_categories)
