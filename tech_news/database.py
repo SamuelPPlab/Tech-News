@@ -10,9 +10,7 @@ import copy
 DB_HOST = config("DB_HOST", default="localhost")
 DB_PORT = config("DB_PORT", default="27017")
 
-client = MongoClient(
-    host=DB_HOST, port=int(DB_PORT), username="admin", password="admin"
-)
+client = MongoClient(host=DB_HOST, port=int(DB_PORT))
 db = client.tech_news
 
 
@@ -35,10 +33,6 @@ def find_news():
 
 def search_news(query):
     return list(db.news.find(query))
-
-
-""" def search_news_with_fields(query, fields):
-    return list(db.news.find(query, fields)) """
 
 
 def get_collection():
