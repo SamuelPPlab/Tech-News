@@ -10,13 +10,12 @@ def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         time.sleep(1)
-    except requests.ReadTimeout:
-        return None
-    finally:
         if response.status_code == 200:
             return response.text
         else:
             return None
+    except requests.ReadTimeout:
+        return None
 
 
 # Requisito 2
@@ -65,6 +64,10 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    all_links = selector.css(
+        ".tec--list__item h3 > a::attr(href)").getall() or []
+    return all_links
 
 
 # Requisito 4
