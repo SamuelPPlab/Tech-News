@@ -2,6 +2,7 @@ import requests
 import time
 import pprint
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -103,6 +104,7 @@ def get_tech_news(amount):
         url = scrape_next_page_link(page_fetched)
     for link in n_list[:amount]:
         scraped_data.append(scrape_noticia(fetch(link)))
+    create_news(scraped_data)
     return scraped_data
 
 
