@@ -56,10 +56,9 @@ def scrape_noticia(html_content):
         filter(lambda x: x != " ", selector.css(
             '.z--mb-16 .tec--badge ::text').getall())
     )]
-    data['categories'] = list([filter(
-        lambda x: x.strip(' ') != " ", selector.css('.z--px\
-            -16 #js-categories ::text').getall())
-        ])
+    data['categories'] = [i.strip('\
+         ') for i in selector.css('.z--px-16 \
+            #js-categories a.tec--badge ::text').getall()]
     return(data)
 
 
@@ -98,9 +97,8 @@ def get_tech_news(amount):
         else:
             # print(urls)
             print(len(n_list))
-            for address in urls:
-                n_list.append(address)
-            pp.pprint(n_list)
+            n_list.extend(urls)
+            # pp.pprint(n_list)
             print(len(n_list))
         url = scrape_next_page_link(page_fetched)
     for link in n_list[:amount]:
@@ -114,8 +112,9 @@ def get_tech_news(amount):
 
 # fetched_data = fetch('https://www.tecmundo.com.br/novidades')
 # print(scrape_noticia(fetched_news_data))
+# pp.pprint(scrape_noticia(fetched_news_data))
 # pp.pprint(scrape_next_page_link(fetched_data))
 # pp.pprint(scrape_novidades(fetched_data))
-got_tec = get_tech_news(5)
+# got_tec = get_tech_news(5)
 # pp.pprint(got_tec)
-pp.pprint(len(got_tec))
+# pp.pprint(len(got_tec))
