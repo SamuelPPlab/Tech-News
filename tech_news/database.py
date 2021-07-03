@@ -37,8 +37,8 @@ def search_news(query):
     return list(db.news.find(query))
 
 
-def search_news_with_fields(query, fields):
-    return list(db.news.find(query, fields))
+""" def search_news_with_fields(query, fields):
+    return list(db.news.find(query, fields)) """
 
 
 def get_collection():
