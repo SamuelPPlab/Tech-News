@@ -1,6 +1,8 @@
+from math import ceil
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 import re
 
 
@@ -23,14 +25,25 @@ def fetch(url):
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    url = selector.css("head link::attr(href)").getall()[20]
+    try:
+        url = selector.css("head link::attr(href)").getall()[20]
+    except IndexError:
+        url = "Undefined"
     title = selector.css(".tec--article__header__title::text").get()
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
-    writer = selector.css(".tec--author__info__link::text").get().strip()
+    try:
+        writer = selector.css(".tec--author__info__link::text").get().strip()
+    except AttributeError:
+        writer = None
     shares_count_text = selector.css(".tec--toolbar__item::text").get()
-    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+    try:
+        comments_count = int(selector.css(
+            "#js-comments-btn::attr(data-count)"
+        ).get())
+    except TypeError:
+        comments_count = 0
     summary_tags = selector.css(".tec--article__body p").get()
     sources_text = selector.css(".z--mb-16 div a::text").getall()
     categories_text = selector.css("#js-categories a::text").getall()
@@ -45,6 +58,7 @@ def scrape_noticia(html_content):
 
     clean = re.compile("<.*?>")
     summary = re.sub(clean, "", summary_tags)
+    summary = summary.replace('&amp;', '&')
 
     sources = []
     for source in sources_text:
@@ -60,7 +74,7 @@ def scrape_noticia(html_content):
         "timestamp": timestamp,
         "writer": writer,
         "shares_count": int(shares_count),
-        "comments_count": int(comments_count),
+        "comments_count": comments_count,
         "summary": summary,
         "sources": sources,
         "categories": categories,
@@ -92,3 +106,19 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    pages = ceil(amount / 20)
+
+    url = "https://www.tecmundo.com.br/novidades"
+    news_links = []
+    for _ in range(pages):
+        response = fetch(url=url)
+        news_links = news_links + scrape_novidades(response)
+        url = scrape_next_page_link(response)
+
+    data_news_details = []
+    for i in range(amount):
+        response = fetch(url=news_links[i])
+        data_news_details.append(scrape_noticia(response))
+
+    create_news(data_news_details)
+    return data_news_details
