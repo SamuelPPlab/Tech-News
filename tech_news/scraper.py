@@ -22,13 +22,57 @@ def fetch(url):
 
 
 # Requisito 2
-def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
-    selector = Selector(text=html_content)
+def get_url(selector):
     try:
         url = selector.css("head link::attr(href)").getall()[20]
     except IndexError:
         url = "Undefined"
+
+    return url
+
+
+def handle_share_counts(shares_count_text):
+    if not shares_count_text:
+        shares_count = 0
+    else:
+        shares_count = ""
+        for i in shares_count_text:
+            if i.isdigit():
+                shares_count += i
+
+    return shares_count
+
+
+def clean_summary(summary_tags):
+    clean = re.compile("<.*?>")
+    summary = re.sub(clean, "", summary_tags)
+    summary = summary.replace('&amp;', '&')
+
+    return summary
+
+
+def strip_sources(sources_text):
+    sources = []
+    for source in sources_text:
+        sources.append(source.strip())
+
+    return sources
+
+
+def strip_categories(categories_text):
+    categories = []
+    for categorie in categories_text:
+        categories.append(categorie.strip())
+
+    return categories
+
+
+def scrape_noticia(html_content):
+    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+
+    url = get_url(selector)
+
     title = selector.css(".tec--article__header__title::text").get()
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
@@ -48,25 +92,13 @@ def scrape_noticia(html_content):
     sources_text = selector.css(".z--mb-16 div a::text").getall()
     categories_text = selector.css("#js-categories a::text").getall()
 
-    if not shares_count_text:
-        shares_count = 0
-    else:
-        shares_count = ""
-        for i in shares_count_text:
-            if i.isdigit():
-                shares_count += i
+    shares_count = handle_share_counts(shares_count_text)
 
-    clean = re.compile("<.*?>")
-    summary = re.sub(clean, "", summary_tags)
-    summary = summary.replace('&amp;', '&')
+    summary = clean_summary(summary_tags)
 
-    sources = []
-    for source in sources_text:
-        sources.append(source.strip())
+    sources = strip_sources(sources_text)
 
-    categories = []
-    for categorie in categories_text:
-        categories.append(categorie.strip())
+    categories = strip_categories(categories_text)
 
     data = {
         "url": url,
