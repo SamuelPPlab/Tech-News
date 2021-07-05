@@ -1,6 +1,22 @@
+import requests
+import time
+# from parsel import Selector
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        response = requests.get(url, timeout=3)
+    except requests.ReadTimeout:
+        return None
+    # response = requests.get(url)
+    # selector = Selector(text=response.text)
+    time.sleep(1)
+
+    if response.status_code != 200:
+        return None
+
+    return response.text
 
 
 # Requisito 2
