@@ -4,15 +4,16 @@ from time import sleep
 
 from tech_news.database import create_news
 
+
 # Requisito 1
 def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         sleep(1)
         if (response.status_code != 200):
-            raise Exception('Error during request')
+            return None
         return response.text
-    except:
+    except requests.ReadTimeout:
         return None
 
 
@@ -26,7 +27,9 @@ def scrape_noticia(html_content):
     writer = selector.css('.tec--author__info__link::text').get()
     shares_count = selector.css('.tec--toolbar__item::text').get()
     comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
-    summary = selector.css('.tec--article__body > p:first-child *::text').getall()
+    summary = selector.css(
+        '.tec--article__body > p:first-child *::text'
+    ).getall()
     sources = selector.css('.z--mb-16 .tec--badge::text').getall()
     categories = selector.css('#js-categories .tec--badge::text').getall()
 
@@ -35,8 +38,12 @@ def scrape_noticia(html_content):
         'title': title,
         'timestamp': timestamp,
         'writer': writer.strip() if writer is not None else None,
-        'shares_count': int(shares_count.strip().split(' ')[0]) if shares_count is not None else 0,
-        'comments_count': int(comments_count) if comments_count is not None else 0,
+        'shares_count':
+            int(shares_count.strip().split(' ')[0])
+            if shares_count is not None else 0,
+        'comments_count':
+            int(comments_count)
+            if comments_count is not None else 0,
         'summary': ''.join(summary),
         'sources': [source.strip() for source in sources],
         'categories': [category.strip() for category in categories],
@@ -46,7 +53,9 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     selector = Selector(html_content)
-    return selector.css('.tec--list__item .tec--card__title__link::attr(href)').getall()
+    return selector.css(
+        '.tec--list__item .tec--card__title__link::attr(href)'
+    ).getall()
 
 
 # Requisito 4
