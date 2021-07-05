@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -22,7 +23,12 @@ def scrape_noticia(html_content):
     result = {}
     selector = Selector(text=html_content)
     result["url"] = selector.css("link[rel=canonical]::attr(href)").get()
-    result["title"] = selector.css("h1#js-article-title::text").get().strip()
+    if selector.css("h1#js-article-title::text"):
+        result["title"] = selector.css(
+            "h1#js-article-title::text"
+        ).get().strip()
+    else:
+        result["title"] = None
     result["timestamp"] = selector.css(
         "time#js-article-date::attr(datetime)"
     ).get()
@@ -80,4 +86,14 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    news = []
+    page = "https://www.tecmundo.com.br/novidades"
+    response = fetch(page)
+    newsArray = scrape_novidades(response)
+    while len(news) < amount:
+        for link in newsArray:
+            news.append(scrape_noticia(response))
+        page = scrape_next_page_link(response)
+        response = fetch(page)
+    create_news(news)
+    return news
