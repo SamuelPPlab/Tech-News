@@ -28,7 +28,7 @@ def scrape_noticia(html_content):
     data = {}
     selector = Selector(html_content)
     data['url'] = selector.css(
-        'head > meta[property="og:url"]::attr(content)'
+        'head > meta[property="og:url"] ::attr(content)'
     ).get()
     data['title'] = selector.css('#js-article-title ::text').get()
     data['timestamp'] = selector.css(
@@ -66,7 +66,7 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     if not html_content:
-        return ['fake_url.com']
+        return []
     return Selector(html_content).css(
         'h3 > .tec--card__title__link ::attr(href)').getall()
 
@@ -112,10 +112,10 @@ def get_tech_news(amount):
 #     'https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')
 
 
-# fetched_data = fetch('https://www.tecmundo.com.br/novidades')
+fetched_data = fetch('https://www.tecmundo.com.br/novidades')
 # print(scrape_noticia(fetched_news_data))
 # pp.pprint(scrape_noticia(fetched_news_data))
-# pp.pprint(scrape_next_page_link(fetched_data))
+pp.pprint(scrape_next_page_link(fetched_data))
 # pp.pprint(scrape_novidades(fetched_data))
 # got_tec = get_tech_news(5)
 # pp.pprint(got_tec)
