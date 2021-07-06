@@ -1,7 +1,8 @@
 import requests
 import time
+from math import ceil
 from parsel import Selector
-
+from tech_news.database import create_news
 
 # Requisito 1
 def fetch(url):
@@ -20,10 +21,12 @@ def scrape_noticia(html_content):
     html = Selector(html_content)
     res = {}
     res["url"] = html.css('meta[property="og:url"]::attr(content)').get()
-    res["title"] = html.css(
-        'meta[property="og:title"]::attr(content)').get().strip()
+    res["title"] = html.css(".tec--article__header__title::text").get().strip()
     res["timestamp"] = html.css('time::attr(datetime)').get().strip()
-    res["writer"] = html.css(".tec--author__info__link::text").get().strip()
+    res["writer"] = (
+        html.css(".tec--author__info__link::text").get().strip()
+        if html.css(".tec--author__info__link::text")
+        else None)
     res["shares_count"] = (
         int(html.css(".tec--toolbar__item::text").get().strip()[:2])
         if html.css(".tec--toolbar__item::text")
@@ -38,7 +41,6 @@ def scrape_noticia(html_content):
     res["categories"] = [
         cat.strip()[9:]
         for cat in html.css(".tec--badge--primary::attr(title)").getall()]
-    print(res)
     return res
 
 
@@ -58,6 +60,17 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    novidades = scrape_novidades(
-        fetch("https://www.tecmundo.com.br/novidades"))
-    print(novidades)
+    page = "https://www.tecmundo.com.br/novidades"
+    links = []
+    for x in range(ceil(amount/20)):
+        pageLinks = scrape_novidades(fetch(page))
+        if page != []:
+            links.extend(pageLinks)
+            page = scrape_next_page_link(fetch(page))
+        else:
+            print('empty page error')
+    rawhtml = list(map(fetch, links[: -(len(links)-amount) or None]))
+    content = list(map(scrape_noticia, rawhtml))
+    create_news(content)
+    return content
+
