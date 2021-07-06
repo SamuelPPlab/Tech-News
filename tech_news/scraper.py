@@ -5,13 +5,9 @@ from parsel import Selector
 
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
     try:
-        sleep(2)
-        url_search = (
-            url if url is not None else "https://www.tecmundo.com.br/novidades"
-        )
-        response = requests.get(url_search, timeout=3)
+        sleep(1)
+        response = requests.get(url, timeout=3)
         return response.text if response.status_code == 200 else None
     except requests.exceptions.Timeout:
         return None
@@ -19,10 +15,55 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
-    # noticia_info = {}
+    noticia_info = {}
+
     selector = Selector(html_content)
-    print(selector)
+    noticia_info["url"] = selector.xpath(
+        "//html//head//meta[5]//@content"
+    ).get()
+    noticia_info["title"] = selector.css("#js-article-title::text").get()
+    noticia_info["timestamp"] = selector.css(
+        "#js-article-date::attr(datetime)"
+    ).get()
+    write_info = (
+        selector.css(
+            "#js-author-bar > div > p.z--m-none.z--truncate.z--font-bold > a::text"
+        )
+        .get()
+        .strip()
+    )
+    noticia_info["writer"] = write_info if write_info is not None else None
+    shares_count = int(
+        selector.css("#js-author-bar > nav > div:nth-child(1)::text").get()[
+            1:-15
+        ]
+    )
+    noticia_info["shares_count"] = (
+        shares_count if shares_count is not None else 0
+    )
+    coments_count = int(
+        selector.css("#js-comments-btn::attr(data-count)").get()
+    )
+    noticia_info["comments_count"] = (
+        coments_count if coments_count is not None else 0
+    )
+    # Loucuras do Python \/ Nunca vi Join assim...
+    noticia_info["summary"] = "".join(
+        selector.css(".tec--article__body > p:first-child *::text").getall()
+    )
+    # HOF de map, str = string
+    noticia_info["sources"] = list(
+        map(
+            str.strip,
+            selector.css(
+                "#js-main > div.z--container > article > div.tec--article__body-grid > div.z--mb-16.z--px-16 > div > a::text"
+            ).getall(),
+        )
+    )
+    noticia_info["categories"] = list(
+        map(str.strip, selector.css("#js-categories > a::text").getall())
+    )
+    return noticia_info
 
 
 # Requisito 3
