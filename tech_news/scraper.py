@@ -60,7 +60,14 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    if html_content == '':
+        return []
+
+    bs = BeautifulSoup(html_content, "html.parser")
+
+    AllItemsDiv = bs.find_all("div", class_="tec--list_item")
+
+    return [div.find("a")["href"] for div in AllItemsDiv]
 
 
 # Requisito 4
