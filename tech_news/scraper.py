@@ -4,8 +4,6 @@ import requests
 from parsel import Selector
 from tech_news.database import create_news
 
-# import time
-
 
 def fetch(url):
     try:
