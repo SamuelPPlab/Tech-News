@@ -63,7 +63,6 @@ def scrape_novidades(html_content):
     linkList = selector.css(
         "h3.tec--card__title .tec--card__title__link::attr(href)").getall()
 
-    print(linkList)
     if (linkList):
         return linkList
     return []
@@ -71,11 +70,15 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = parsel.Selector(html_content)
+
+    nextPageLink = selector.css(
+        "a:contains(' Mostrar mais notícias ')::attr(href)"
+    ).get()
+
+    return nextPageLink if nextPageLink else None
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-
-# print(fetch('https://www.tecmundo.com.br/novidades'))
