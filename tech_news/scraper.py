@@ -16,28 +16,32 @@ def fetch(url):
         return response.text
 
 
+def stripper(word):
+    return word.strip()
+
 # Requisito 2
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    news = {
-        "url": selector.css("head > link:nth-child(25)::attr(href)").get(),
+    return{
+        "url": selector.css("head > [rel=canonical]::attr(href)").get(),
         "title": selector.css("h1.tec--article__header__title::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
         "writer": selector.css("a.tec--author__info__link::text")
         .get().strip(),
         "shares_count": int(selector.css("div.tec--toolbar__item::text").get()
         .split()[0]),
-        "comments_count": selector.css("button.tec--btn::attr(data-count)")
-        .get(),
+        "comments_count": int(selector.css("button.tec--btn::attr(data-count)")
+        .get()),
         "summary": "".join(
             selector.css(".tec--article__body p:first-child *::text").getall()
             ),
-        "sources": selector.css("a.tec--badge::text").getall(),
-        "categories": selector.css("a.tec--badge--primary::text")
-        .getall(),
+        "sources":
+        list(map(stripper, selector.css("div.z--mb-16 a.tec--badge::text")
+        .getall())),
+        "categories": list(map(stripper, selector.css("a.tec--badge--primary::text")
+        .getall())),
     }
-    return news
 
 
 print(scrape_noticia(fetch('https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')))
