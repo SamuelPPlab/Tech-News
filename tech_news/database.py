@@ -55,3 +55,20 @@ def aggregate_most_engage():
             ]
         )
     )
+
+
+def top_5_categories():
+    return list(
+        db.news.aggregate(
+            [
+                {
+                    "$project": {
+                        "categories": 1,
+                    }
+                },
+                {"$unwind": "$categories"},
+                {"$sort": {"categories": 1}},
+                {"$limit": 5},
+            ]
+        )
+    )

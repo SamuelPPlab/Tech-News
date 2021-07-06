@@ -22,17 +22,19 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
 
     selectors = {
-        "title": "#js-article-title::text",
-        "timestamp": "time#js-article-date::attr(datetime)",
+        "url": "meta[property='og:url']::attr(content)",
+        "title": ".tec--article__header__title::text",
+        "timestamp": ".tec--timestamp--lg time::attr(datetime)",
         "writer": "a.tec--author__info__link::text",
         "shares_count": ".tec--toolbar__item::text",
         "comments_count": "button#js-comments-btn::attr(data-count)",
-        "summary": "div.tec--article__body p:first-of-type *::text",
-        "sources": ".z--mb-16 a::text",
-        "categories": "#js-categories a::text",
+        "summary": ".tec--article__body > p:first-child *::text",
+        "sources": ".z--mb-16 .tec--badge::text",
+        "categories": "#js-categories .tec--badge::text",
     }
 
     return {
+        "url": selector.css(selectors["url"]).get(),
         "title": selector.css(selectors["title"]).get(),
         "timestamp": selector.css(selectors["timestamp"]).get(),
         "writer": selector.css(selectors["writer"]).get()
