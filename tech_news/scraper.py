@@ -9,8 +9,8 @@ def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         sleep(1)
-        if response.status_code != 200:
-            raise Exception("Error during request")
+        if (response.status_code != 200):
+            return None
         return response.text
     except requests.ReadTimeout:
         return None
