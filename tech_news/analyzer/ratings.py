@@ -37,5 +37,42 @@ def top_5_news():
 
 
 # Requisito 11
+def create_count_categories_dict(results):
+    count_categories_dict = {}
+    for result in results:
+        categories_list = result["categories"]
+        for category in categories_list:
+            if category in count_categories_dict:
+                count_categories_dict[category] = (
+                    count_categories_dict[category] + 1
+                )
+            else:
+                count_categories_dict[category] = 1
+    return count_categories_dict
+
+
 def top_5_categories():
     """Seu código deve vir aqui"""
+    results = search_news({})
+
+    count_categories_dict = create_count_categories_dict(results)
+
+    count_categories_sorted_by_key = dict(
+        sorted(count_categories_dict.items(), key=lambda x: x[0].lower())
+    )
+    count_categories_sorted_by_value = sorted(
+        count_categories_sorted_by_key.items(),
+        key=lambda x: x[1],
+        reverse=True,
+    )
+
+    top_categories = []
+    if len(count_categories_sorted_by_value) <= 5:
+        for tupla in count_categories_sorted_by_value:
+            top_categories.append(tupla[0])
+        return top_categories
+
+    for index in range(5):
+        top_categories.append(count_categories_sorted_by_value[index][0])
+
+    return top_categories
