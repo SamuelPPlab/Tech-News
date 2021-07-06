@@ -9,7 +9,7 @@ def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         sleep(1)
-        if (response.status_code != 200):
+        if response.status_code != 200:
             return None
         return response.text
     except requests.ReadTimeout:
@@ -37,7 +37,9 @@ def scrape_noticia(html_content):
         "url": selector.css(selectors["url"]).get(),
         "title": selector.css(selectors["title"]).get(),
         "timestamp": selector.css(selectors["timestamp"]).get(),
-        "writer": selector.css(selectors["writer"]).get(),
+        "writer": selector.css(selectors["writer"]).get()
+        if selector.css(selectors["writer"]).get() is not None
+        else None,
         "shares_count": [
             int(s)
             for s in selector.css(selectors["shares_count"]).get().split(" ")
