@@ -19,6 +19,7 @@ def fetch(url):
 def stripper(word):
     return word.strip()
 
+
 # Requisito 2
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
@@ -29,22 +30,22 @@ def scrape_noticia(html_content):
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
         "writer": selector.css("a.tec--author__info__link::text")
         .get().strip(),
-        "shares_count": int(selector.css("div.tec--toolbar__item::text").get()
-        .split()[0]),
-        "comments_count": int(selector.css("button.tec--btn::attr(data-count)")
-        .get()),
+        "shares_count": int(
+            selector.css("div.tec--toolbar__item::text").get().split()[0]),
+        "comments_count": int(
+            selector.css("button.tec--btn::attr(data-count)").get()),
         "summary": "".join(
             selector.css(".tec--article__body p:first-child *::text").getall()
             ),
         "sources":
-        list(map(stripper, selector.css("div.z--mb-16 a.tec--badge::text")
-        .getall())),
-        "categories": list(map(stripper, selector.css("a.tec--badge--primary::text")
-        .getall())),
+        list(map(
+            stripper,
+            selector.css("div.z--mb-16 a.tec--badge::text").getall())),
+        "categories": list(
+            map(
+                stripper,
+                selector.css("a.tec--badge--primary::text").getall())),
     }
-
-
-print(scrape_noticia(fetch('https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')))
 
 
 # Requisito 3
