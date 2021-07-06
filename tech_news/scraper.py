@@ -7,7 +7,6 @@ from tech_news.database import create_news
 
 
 def fetch(url):
-    """Seu código deve vir aqui"""
     try:
         sleep(1)
         response = requests.get(url, timeout=3)
@@ -18,8 +17,45 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
-    
+    bs = BeautifulSoup(html_content, "html.parser")
+    url = bs.find("meta", property="og:url")
+    title = bs.find("h1", id="js-article-title").get_text()
+    timestamp = bs.find("time", id="js-article-date")
+    writer = bs.find("a", class_="tec--author_info_link") or None
+    shares_count = (
+        bs.find("div", class_="tec--toolbar__item")
+        .get_text()
+        .strip()
+    )
+    comments_count = bs.find("button", id="js-comments-btn").get_text().strip()
+    summary = (
+        bs.find("div", class_="tec-article__body")
+        .find("p")
+        .get_text()
+        .strip()
+    )
+    sources = bs.find("div", class_="z--mb-16")
+    categories = (
+        bs.find("div", class_="js-categories")
+        .find_all("a", class_="tec--badge")
+    )
+
+    return {
+        "url": url["content"],
+        "title": title,
+        "timestamp": timestamp["datetime"],
+        "writer": None if writer is None else writer.get_text().strip(),
+        "shares_count": int(
+            "".join(s for s in shares_count[:3] if s.isdigit())
+            ) if "Compartilharam" in shares_count else 0,
+        "comments_count": int(
+            "".join(s for s in comments_count if s.isdigit())
+            ),
+        "summary": summary,
+        "sources": [t.get_text().strip() for t in sources.find_all("a")]
+        if sources else [],
+        "categories": [t.get_text().strip() for t in categories],
+    }
 
 
 # Requisito 3
