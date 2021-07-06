@@ -72,7 +72,14 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    if html_content == '':
+        return None
+
+    bs = BeautifulSoup(html_content, "html.parser")
+
+    anchorElement = bs.find("a", class_="tec--btn--lg")
+
+    return anchorElement["href"]
 
 
 # Requisito 5
