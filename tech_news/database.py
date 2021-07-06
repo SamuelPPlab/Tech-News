@@ -37,3 +37,21 @@ def search_news(query):
 
 def get_collection():
     return db.news
+
+
+def aggregate_most_engage():
+    return list(
+        db.news.aggregate(
+            [
+                {
+                    "$project": {
+                        "title": 1,
+                        "url": 1,
+                        "sum": {"$sum": ["$shares_count", "$comments_count"]},
+                    }
+                },
+                {"$sort": {"sum": -1, "title": 1}},
+                {"$limit": 5},
+            ]
+        )
+    )

@@ -22,7 +22,6 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
 
     selectors = {
-        "url": "meta[property='og:url']::attr(content)",
         "title": "#js-article-title::text",
         "timestamp": "time#js-article-date::attr(datetime)",
         "writer": "a.tec--author__info__link::text",
@@ -34,7 +33,6 @@ def scrape_noticia(html_content):
     }
 
     return {
-        "url": selector.css(selectors["url"]).get(),
         "title": selector.css(selectors["title"]).get(),
         "timestamp": selector.css(selectors["timestamp"]).get(),
         "writer": selector.css(selectors["writer"]).get()
