@@ -4,12 +4,14 @@ import time
 
 # Requisito 1
 def fetch(url):
-    time.sleep(1)
-    response = requests.get(url)
-    if(response.status_code == 200):
-        print(response.text)
-        return response.content["Content-Type"]
-    else:
+    try:
+        time.sleep(1)
+        response = requests.get(url, timeout=3)
+        if(response.status_code == 200):
+            return response.text
+        else:
+            return None
+    except requests.ReadTimeout:
         return None
 
 
@@ -31,3 +33,7 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+
+
+# print("Resultado do fetch:\n")
+# print(fetch("https://www.tecmundo.com.br/novidades"))
