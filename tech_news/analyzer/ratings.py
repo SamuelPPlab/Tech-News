@@ -14,9 +14,6 @@ def top_5_news():
     results = search_news({})
 
     results = put_popularity(results)
-    # for result in results:
-    #     popularity = result["shares_count"] + result["comments_count"]
-    #     result["popularity"] = popularity
 
     results.sort(key=lambda x: x["title"])
 
