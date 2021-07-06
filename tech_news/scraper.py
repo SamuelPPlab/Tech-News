@@ -7,7 +7,7 @@ from tech_news.database import create_news
 
 # Requisito 1
 def fetch(url):
-    print(f'LINE 9:   {url}')
+    # print(f'LINE 9:   {url}')
     if not url:
         raise('deu_ruim')
     else:
@@ -57,13 +57,13 @@ def scrape_noticia(html_content):
         filter(lambda x: x != " ", selector.css(
             '.z--mb-16 .tec--badge ::text').getall())
     )]
-    data['categories'] = [i.strip('\
-         ') for i in selector.css('.z--px-16 \
-            #js-categories a.tec--badge ::text').getall()]
+    data['categories'] = [i.strip() for i in selector.css(
+        '#js-categories a.tec--badge ::text'
+    ).getall()]
     return(data)
 
 
-# Requisito 3
+# Requisito 3 i.strip(' ')
 def scrape_novidades(html_content):
     if not html_content:
         return []
@@ -87,8 +87,10 @@ def get_tech_news(amount):
     # content = fetch(url)
     while len(n_list) < amount:
         page_fetched = fetch(url)
+        # print(page_fetched)
         urls = scrape_novidades(page_fetched)
-        print(f'LINE 90:  {len(urls)}')
+        # pp.pprint(f'LINE 91: {urls}')
+        # print(f'LINE 92:  {len(urls)}')
         # print(f'LINE 82: {n_list}')
         # n_list = urls if (
         #     len(n_list) == 0) else n_list.append(
@@ -97,10 +99,10 @@ def get_tech_news(amount):
             n_list = urls
         else:
             # print(urls)
-            print(len(n_list))
+            # print(len(n_list))
             n_list.extend(urls)
             # pp.pprint(n_list)
-            print(len(n_list))
+            # print(len(n_list))
         url = scrape_next_page_link(page_fetched)
     for link in n_list[:amount]:
         scraped_data.append(scrape_noticia(fetch(link)))
@@ -112,10 +114,10 @@ def get_tech_news(amount):
 #     'https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm')
 
 
-fetched_data = fetch('https://www.tecmundo.com.br/novidades')
+# fetched_data = fetch('https://www.tecmundo.com.br/novidades')
 # print(scrape_noticia(fetched_news_data))
 # pp.pprint(scrape_noticia(fetched_news_data))
-pp.pprint(scrape_next_page_link(fetched_data))
+# pp.pprint(scrape_next_page_link(fetched_data))
 # pp.pprint(scrape_novidades(fetched_data))
 # got_tec = get_tech_news(5)
 # pp.pprint(got_tec)
