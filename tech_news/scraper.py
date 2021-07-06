@@ -1,3 +1,6 @@
+import time
+import requests
+
 # Requisito 1
 def fetch(url):
     try:
