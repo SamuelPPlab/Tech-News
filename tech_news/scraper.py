@@ -27,7 +27,8 @@ def scrape_noticia(html_content):
     ).get()
     write_info = (
         selector.css(
-            "#js-author-bar > div > p.z--m-none.z--truncate.z--font-bold > a::text"
+            "#js-author-bar > div > \
+            p.z--m-none.z--truncate.z--font-bold > a::text"
         )
         .get()
         .strip()
@@ -56,7 +57,9 @@ def scrape_noticia(html_content):
         map(
             str.strip,
             selector.css(
-                "#js-main > div.z--container > article > div.tec--article__body-grid > div.z--mb-16.z--px-16 > div > a::text"
+                "#js-main > div.z--container > \
+                article > div.tec--article__body-grid > \
+                div.z--mb-16.z--px-16 > div > a::text"
             ).getall(),
         )
     )
@@ -68,12 +71,24 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    novidade_list = selector.css(
+        "#js-main > div > div > \
+        div.z--col.z--w-2-3 > \
+        div.tec--list.tec--list--lg > div > article > div > h3 > a::attr(href)"
+    ).getall()
+
+    return novidade_list
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    url = selector.css(
+        "#js-main > div > div > div.z--col.z--w-2-3 > \
+         div.tec--list.tec--list--lg > a::attr(href)"
+    ).get()
+    return url
 
 
 # Requisito 5
