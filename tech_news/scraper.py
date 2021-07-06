@@ -9,7 +9,6 @@ def fetch(url):
         response = requests.get(url, timeout=3)
         if (response.status_code != 200):
             return None
-        
         return response.text
     except requests.Timeout:
         return None
@@ -17,7 +16,7 @@ def fetch(url):
         time.sleep(1)
 
 
-#print(fetch('https://app.betrybe.com/'))
+# print(fetch('https://app.betrybe.com/'))
 
 
 # Requisito 2
