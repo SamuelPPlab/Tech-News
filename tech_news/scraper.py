@@ -50,6 +50,8 @@ print(scrape_noticia(fetch('https://www.tecmundo.com.br/mobilidade-urbana-smart-
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    return selector.css(".tec--list__item h3 > a::attr(href)").getall() or []
 
 
 # Requisito 4
