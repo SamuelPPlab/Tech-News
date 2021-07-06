@@ -70,3 +70,24 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    all_article_info = []
+    for page in range(amount):
+        url_all_news = f"https://www.tecmundo.com.br/novidades?page={page+1}"
+        if page + 1 == 1:
+            url_all_news = "https://www.tecmundo.com.br/novidades"
+
+        news = fetch(url_all_news)
+        front_page = Selector(text=news)
+        url_news = front_page.css(
+            ".tec--list__item a.tec--card__title__link::attr(href)"
+        ).getall()
+        # print(url_news)
+        for url in url_news:
+            article_html = fetch(url)
+            article_page = Selector(text=article_html)
+            # print(article_page.css("#js-article-title::text").get())
+            elements = scrape_noticia(article_page)
+            elements["url"] = url
+            all_article_info.append(elements)
+            # print(elements)
+    return all_article_info
