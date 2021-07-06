@@ -1,7 +1,7 @@
 # Requisito 1
 import requests
 from time import sleep
-from bs4 import BeautifulSoup
+from base64 import BeautifulSoup
 from requests.exceptions import ReadTimeout
 from tech_news.database import create_news
 
