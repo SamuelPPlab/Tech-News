@@ -4,6 +4,7 @@ from math import ceil
 from parsel import Selector
 from tech_news.database import create_news
 
+
 # Requisito 1
 def fetch(url):
     try:
