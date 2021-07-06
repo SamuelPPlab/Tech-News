@@ -72,3 +72,12 @@ def top_5_categories():
             ]
         )
     )
+
+
+def find_news_by_title(title):
+    return list(
+        db.news.find(
+            {"title": {"$regex": title, "$options": "i"}},
+            {"_id": 0, "title": 1, "url": 1},
+        )
+    )
