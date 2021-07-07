@@ -62,14 +62,17 @@ def scrape_noticia(html_content):
     data["categories"] = [category.strip() for category in selector.css(
         "#js-categories a.tec--badge::text").getall()]
     return data
-   
+
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
-
-
+    selector = Selector(text=html_content)
+    data = selector.css(
+        ".tec--list__item .tec--card__thumb__link::attr(href)").getall()
+    return data
 # Requisito 4
+
+
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
 
@@ -79,9 +82,9 @@ def get_tech_news(amount):
     """Seu código deve vir aqui"""
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     html_content = fetch(
-#         'https://www.tecmundo.com.br/minha-serie/215330-8-series-parecidas-the-crown-fas-realeza.htm'
-#     )
-#     print(scrape_noticia(html_content))
+    html_content = fetch(
+        'https://www.tecmundo.com.br/novidades'
+    )
+    print(scrape_novidades(html_content))
