@@ -7,12 +7,13 @@ from tech_news.database import create_news
 
 # Requisito 1
 def fetch(url):
-    # print(f'LINE 9:   {url}')
     if not url:
-        raise('deu_ruim')
+        print(f'Scapped site might be blocking request,\
+             url being fetched:  {url}')
+        return False
     else:
         try:
-            time.sleep(1)
+            time.sleep(3)
             res = requests.get(url, timeout=3)
             res.raise_for_status()
         except requests.exceptions.RequestException as error:
@@ -80,6 +81,15 @@ def scrape_next_page_link(html_content):
 pp = pprint.PrettyPrinter(indent=4)
 
 
+def handle_scrape_quantity(page_fetched, n_list):
+    urls = scrape_novidades(page_fetched)
+    if len(n_list) == 0:
+        n_list = urls
+    else:
+        n_list.extend(urls)
+    return n_list
+
+
 def get_tech_news(amount):
     n_list = []
     scraped_data = []
@@ -88,25 +98,13 @@ def get_tech_news(amount):
     while len(n_list) < amount:
         page_fetched = fetch(url)
         # print(page_fetched)
-        urls = scrape_novidades(page_fetched)
-        # pp.pprint(f'LINE 91: {urls}')
-        # print(f'LINE 92:  {len(urls)}')
-        # print(f'LINE 82: {n_list}')
-        # n_list = urls if (
-        #     len(n_list) == 0) else n_list.append(
-        #         urls)
-        if len(n_list) == 0:
-            n_list = urls
-        else:
-            # print(urls)
-            # print(len(n_list))
-            n_list.extend(urls)
-            # pp.pprint(n_list)
-            # print(len(n_list))
-        url = scrape_next_page_link(page_fetched)
-    for link in n_list[:amount]:
-        scraped_data.append(scrape_noticia(fetch(link)))
-    create_news(scraped_data)
+        if page_fetched:
+            n_list = handle_scrape_quantity(page_fetched, n_list)
+            url = scrape_next_page_link(page_fetched)
+    if len(n_list) > 0:
+        for link in n_list[:amount]:
+            scraped_data.append(scrape_noticia(fetch(link)))
+        create_news(scraped_data)
     return scraped_data
 
 
