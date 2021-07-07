@@ -2,10 +2,11 @@ import requests
 import time
 from parsel import Selector
 
+
 # Requisito 1
 def fetch(url):
     try:
-        response = requests.get(url, timeout=3, headers={"Accept": "application/json"})
+        response = requests.get(url, timeout=3)
         if (response.status_code != 200):
             return None
         return response.text
@@ -13,6 +14,7 @@ def fetch(url):
         return None
     finally:
         time.sleep(1)
+
 
 # Requisito 2
 def scrape_noticia(html_content):
@@ -28,7 +30,6 @@ def scrape_noticia(html_content):
 
     title = selector.css('#js-article-title::text').get()
     timestamp = selector.css('#js-article-date::attr(datetime)').get()
-    
     writer = selector.css('.tec--author__info__link::text').get()
     if writer is not None:
         writer = writer.strip()
@@ -40,8 +41,10 @@ def scrape_noticia(html_content):
     else:
         shares_count = 0
 
-    comments_count = int(selector.css('#js-comments-btn::attr(data-count)').get())
-    summary = ''.join(selector.css('.tec--article__body p:first-child *::text').getall())
+    prop_comments = '#js-comments-btn::attr(data-count)'
+    comments_count = int(selector.css(prop_comments).get())
+    prop_summary = '.tec--article__body p:first-child *::text'
+    summary = ''.join(selector.css(prop_summary).getall())
     sources = selector.css('.z--mb-16 div a::text').getall()
     sources = [word.strip() for word in sources]
 
@@ -59,8 +62,7 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories,
     }
-""" html_content = fetch('https://www.tecmundo.com.br/dispositivos-moveis/215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm')
-print(scrape_noticia(html_content)) """
+
 
 # Requisito 3
 def scrape_novidades(html_content):
