@@ -44,7 +44,17 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    news_found = search_news({"sources": {"$regex": source, "$options": "i"}})
+
+    news_list = []
+
+    for news in news_found:
+        title = news.get("title")
+        url = news.get("url")
+
+        news_list.append((title, url))
+
+    return news_list
 
 
 # Requisito 9
@@ -53,4 +63,4 @@ def search_by_category(category):
 
 
 if __name__ == "__main__":
-    print(search_by_date("11-2020-23"))
+    print(search_by_source("ResetEra"))
