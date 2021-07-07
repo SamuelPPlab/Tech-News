@@ -1,4 +1,3 @@
-from typing import Collection
 from tech_news.database import get_collection
 
 

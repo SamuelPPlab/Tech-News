@@ -80,3 +80,5 @@ def get_tech_news(amount):
         pageCount += 1
     print(len(newsCollection))
     create_news(newsCollection)
+
+print (get_tech_news(20))
