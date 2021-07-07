@@ -1,12 +1,11 @@
 import requests
 import time
-
+from parsel import Selector
 
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
     try:
-        response = requests.get(url, timeout=3)
+        response = requests.get(url, timeout=3, headers={"Accept": "application/json"})
         if (response.status_code != 200):
             return None
         return response.text
@@ -15,14 +14,53 @@ def fetch(url):
     finally:
         time.sleep(1)
 
-
-# print(fetch('https://app.betrybe.com/'))
-
-
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
 
+    links = selector.css('link').getall()
+
+    for link in links:
+        if ('canonical' in link):
+            url = link
+    index = url.index('href="')
+    url = url[index+6:len(url)-2]
+
+    title = selector.css('#js-article-title::text').get()
+    timestamp = selector.css('#js-article-date::attr(datetime)').get()
+    
+    writer = selector.css('.tec--author__info__link::text').get()
+    if writer is not None:
+        writer = writer.strip()
+
+    shares = (selector.css('.tec--toolbar__item::text').get())
+    if shares is not None:
+        shares.lstrip()
+        shares_count = int(shares[0:shares.index('C')-1])
+    else:
+        shares_count = 0
+
+    comments_count = int(selector.css('#js-comments-btn::attr(data-count)').get())
+    summary = ''.join(selector.css('.tec--article__body p:first-child *::text').getall())
+    sources = selector.css('.z--mb-16 div a::text').getall()
+    sources = [word.strip() for word in sources]
+
+    categories = selector.css('#js-categories a::text').getall()
+    categories = [word.strip() for word in categories]
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories,
+    }
+""" html_content = fetch('https://www.tecmundo.com.br/dispositivos-moveis/215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm')
+print(scrape_noticia(html_content)) """
 
 # Requisito 3
 def scrape_novidades(html_content):
