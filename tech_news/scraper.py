@@ -62,15 +62,4 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    URL_BASE = "https://www.tecmundo.com.br/novidades"
-    noticias = fetch(URL_BASE)
-    # next_page_url = "f"?page={i}
-
-    for i in range(1, 3):
-        noticias = fetch(f"{URL_BASE}?page={i}")
-        cada_pagina = scrape_next_page_link(noticias)
-        conteudo_total = fetch(cada_pagina)
-        novidades_da_pagina = scrape_novidades(conteudo_total)
-        print(novidades_da_pagina)
-    for url in novidades_da_pagina:
-        novidade = fetch(url)
+    " "
