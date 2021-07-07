@@ -17,7 +17,7 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    selector = Selector(text=html_content)
+    selector = Selector(html_content)
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css().get("#js-article-title::text"),
@@ -62,4 +62,17 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    " "
+    URL_BASE = "https://www.tecmundo.com.br/novidades"
+    noticias = fetch(URL_BASE)
+    # next_page_url = "f"?page={i}
+    for i in range(1, amount):
+        noticias = fetch(f"{URL_BASE}?page={i}")
+        cada_pagina = scrape_next_page_link(noticias)
+        conteudo_total = fetch(cada_pagina)
+        novidades_da_pagina = scrape_novidades(conteudo_total)
+        print(novidades_da_pagina)
+    for url in novidades_da_pagina:
+        novidade = fetch(url)
+        return novidade
+
+
