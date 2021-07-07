@@ -27,15 +27,23 @@ def scrape_noticia(html_content):
         "writer": selector.css(".tec--author__info__link::text").get().strip(),
         "shares_count": int(shares_count),
         "comments_count": int(comments_count),
-        "summary": "".join(selector.css(
-         ".tec--article__body > p:first-child *::text"
-        ).getall()),
-        "sources": list(map(
-            str.strip, selector.css("div.z--mb-16 .tec--badge::text")
-            .getall())),
-        "categories": list(map(
-            str.strip, selector.css("div#js-categories a.tec--badge::text")
-            .getall())),
+        "summary": "".join(
+            selector.css(
+                ".tec--article__body > p:first-child *::text"
+            ).getall()
+        ),
+        "sources": list(
+            map(
+                str.strip,
+                selector.css("div.z--mb-16 .tec--badge::text").getall(),
+            )
+        ),
+        "categories": list(
+            map(
+                str.strip,
+                selector.css("div#js-categories a.tec--badge::text").getall(),
+            )
+        ),
     }
     return data
 
@@ -51,7 +59,13 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css(
+        "a.tec--btn::attr(href)"
+    ).get()
+
+
+# print(scrape_next_page_link(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 5
