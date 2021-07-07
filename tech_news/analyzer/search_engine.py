@@ -27,6 +27,7 @@ def search_by_date(date):
     #     raise ValueError('Data inválida')
     date_in_list = date.split('-')
     try:
+        # https://stackoverflow.com/questions/9987818/in-python-how-to-check-if-a-date-is-valid
         wtv = datetime.datetime(
             int(date_in_list[0]), int(date_in_list[1]), int(date_in_list[2]))
         print(wtv)
