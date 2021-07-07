@@ -1,10 +1,13 @@
 from tech_news.database import find_news
 
+
 def order_news_popularity(new):
     return new['shares_count'] + new['comments_count']
 
+
 def filter_columns(ind, new):
     return (f'noticia_{ind + 1}',  new['url'])
+
 
 # Requisito 10
 def top_5_news():

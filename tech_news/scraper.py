@@ -4,6 +4,7 @@ from math import ceil
 from parsel import Selector
 from tech_news.database import create_news
 
+
 # Requisito 1
 def fetch(url):
     try:
@@ -15,6 +16,7 @@ def fetch(url):
         return None
     except requests.ReadTimeout:
         return None
+
 
 # Requisito 2
 def scrape_noticia(html_content):
@@ -59,6 +61,7 @@ def scrape_noticia(html_content):
 
     return new
 
+
 # Requisito 3
 def scrape_novidades(html_content):
     selector = Selector(text=html_content)
@@ -66,12 +69,14 @@ def scrape_novidades(html_content):
       "h3.tec--card__title a.tec--card__title__link::attr(href)"
     ).getall()
 
+
 # Requisito 4
 def scrape_next_page_link(html_content):
     selector = Selector(text=html_content)
     return selector.css(
       "div.tec--list a.tec--btn::attr(href)"
     ).get()
+
 
 # Requisito 5
 def get_tech_news(amount):
