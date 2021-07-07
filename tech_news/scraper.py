@@ -1,6 +1,7 @@
 import requests
 from time import sleep
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -25,44 +26,37 @@ def scrape_noticia(html_content):
     noticia_info["timestamp"] = selector.css(
         "#js-article-date::attr(datetime)"
     ).get()
-    write_info = (
-        selector.css(
-            "#js-author-bar > div > \
+    write_info = selector.css(
+        "#js-author-bar > div > \
             p.z--m-none.z--truncate.z--font-bold > a::text"
-        )
-        .get()
-        .strip()
+    ).get()
+    noticia_info["writer"] = (
+        write_info.strip() if write_info is not None else None
     )
-    noticia_info["writer"] = write_info if write_info is not None else None
-    shares_count = int(
-        selector.css("#js-author-bar > nav > div:nth-child(1)::text").get()[
-            1:-15
-        ]
-    )
+    shares_count = selector.css(
+        "#js-author-bar > nav > div:nth-child(1)::text"
+    ).get()
     noticia_info["shares_count"] = (
-        shares_count if shares_count is not None else 0
+        int(shares_count[1:-15]) if shares_count is not None else 0
     )
-    coments_count = int(
-        selector.css("#js-comments-btn::attr(data-count)").get()
-    )
+    coments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+
     noticia_info["comments_count"] = (
-        coments_count if coments_count is not None else 0
+        int(coments_count) if coments_count is not None else 0
     )
     # Loucuras do Python \/ Nunca vi Join assim...
     noticia_info["summary"] = "".join(
         selector.css(".tec--article__body > p:first-child *::text").getall()
     )
     # HOF de map, str = string
-    noticia_info["sources"] = list(
-        map(
-            str.strip,
-            selector.css(
-                "#js-main > div.z--container > \
-                article > div.tec--article__body-grid > \
-                div.z--mb-16.z--px-16 > div > a::text"
-            ).getall(),
-        )
+    sources = selector.css(
+        "#js-main > div.z--container > article > div.tec--article__body-grid > div.z--mb-16.z--px-16 > div > a::text"
+    ).getall()
+
+    noticia_info["sources"] = (
+        list(map(str.strip, sources)) if sources is not None else []
     )
+
     noticia_info["categories"] = list(
         map(str.strip, selector.css("#js-categories > a::text").getall())
     )
@@ -93,4 +87,18 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
+    news_url_tech_list = []
+    url = "https://www.tecmundo.com.br/novidades"
+    while len(news_url_tech_list) < amount:
+        content = fetch(url)
+        url_list = scrape_novidades(content)
+        news_url_tech_list = news_url_tech_list + url_list
+        del news_url_tech_list[amount::]
+        url = scrape_next_page_link(content)
+    # print(len(news_url_tech_list))
+    tech_news_content_list = list(map(fetch, news_url_tech_list))
+    tech_news_list = list(map(scrape_noticia, tech_news_content_list))
+    create_news(tech_news_list)
+    return tech_news_list
+    # while news_url_tech_list
     """Seu código deve vir aqui"""

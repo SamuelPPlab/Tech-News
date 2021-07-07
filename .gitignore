@@ -141,4 +141,7 @@ dmypy.json
 # profiling data
 .prof
 
+# Manual Querys of MongoDB
+querys.mongodb
+
 # End of https://www.toptal.com/developers/gitignore/api/python
