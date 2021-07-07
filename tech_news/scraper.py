@@ -2,7 +2,6 @@ import parsel
 import pymongo
 import requests
 import time
-import re
 from tech_news.database import create_news
 
 
@@ -52,11 +51,8 @@ def scrape_noticia(html_content):
     else:
         comments_count = 0
 
-    summary = selector.css(".tec--article__body p:first-child").get()
-    if summary:
-        summary = re.sub(r"<[^>]*>", "", summary)
-    else:
-        summary = ""
+    summary = selector.css(".tec--article__body > p:nth-child(1) *::text").getall()
+    summary = "".join(summary)
 
     sources = selector.css("div > .tec--badge[target=_blank]::text").getall()
     sources = [source.strip() for source in sources]
@@ -99,7 +95,7 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     selector = parsel.Selector(html_content)
-    next_link = selector.css("div.tec--list a.tec--btn::attr(href)").get()
+    next_link = selector.css("div.tec--list > a:last-child::attr(href)").get()
 
     if not next_link:
         return None
@@ -110,17 +106,18 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     news_page_url = "https://www.tecmundo.com.br/novidades"
     news_counter = 0
-    news_list_length = 0
     news_list = []
+    news_list_length = 0
 
     while news_counter < amount:
         if news_list_length == 0 and len(news_list) > 0:
-            news_page_url = scrape_next_page_link(news_page_url)
+            html = fetch(news_page_url)
+            news_page_url = scrape_next_page_link(html)
 
         html = fetch(news_page_url)
 
         news_url_list = scrape_novidades(html)
-        news_list_length = len(news_list)
+        news_list_length = len(news_url_list)
 
         for news_url in news_url_list:
             html = fetch(news_url)
