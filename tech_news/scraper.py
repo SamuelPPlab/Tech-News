@@ -20,11 +20,16 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(html_content)
+    new_dict = {}
+    new_dict['writer'] = selector.css(
+        ".tec--author__info__link::text"
+    ).get()
+    if new_dict['writer'] is not None:
+        new_dict['writer'] = new_dict['writer'].strip()
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("#js-article-title::text").get(),
         "timestamp": selector.css("time::attr(datetime)").get(),
-        "writer": selector.css(".tec--author__info__link::text").get().strip(),
         "shares_count": int(
             selector.css(".tec--toolbar__item::text").re_first(r"\d")
         ),
