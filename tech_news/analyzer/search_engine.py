@@ -1,4 +1,4 @@
-from tech_news.database import get_collection, search_news
+from tech_news.database import get_collection
 import re
 
 
@@ -25,31 +25,23 @@ def search_by_date(date):
     else:
         # found = list(get_collection().find({"timestamp": date}))
         found = get_collection().find(
-            {"timestamp": {"$regex": date, "$options": "-i"}})
-        print('found', found)
-        output = []
-        for item in found:
-            print('entrou')
-            output.append((item["title"], item["url"]))
-        # print("output", output)
-        return output
+            {"timestamp": {"$regex": date}})
+        return [((item["title"], item["url"]))for item in found]
 
 
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
-    found = search_news({source: source})
-    output = []
-    for item in found:
-        output.append((item.title, item.url))
-    return output or []
+    found = list(get_collection().find({
+        "sources": {'$elemMatch': {'$regex': source, '$options': 'i'}}}))
+    print('found', found)
+    return [((item["title"], item["url"]))for item in found]
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
-    found = search_news({category: category})
-    output = []
-    for item in found:
-        output.append((item.title, item.url))
-    return output or []
+    found = list(get_collection().find({
+        "categories": {'$elemMatch': {'$regex': category, '$options': 'i'}}}))
+    print('found', found)
+    return [((item["title"], item["url"]))for item in found]
