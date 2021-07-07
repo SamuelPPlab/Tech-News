@@ -12,7 +12,7 @@ def search_by_title(title):
     return output or []
 
 
-search_by_title('elon')
+# search_by_title('elon')
 
 
 # Requisito 7
