@@ -70,6 +70,7 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 5
+# Requisito realizado em pair programing com o Luciano Berchon
 def get_tech_news(amount):
     noticias = []
     url_list = []
