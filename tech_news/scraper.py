@@ -1,6 +1,15 @@
+import requests
+from time import sleep
 # Requisito 1
 def fetch(url):
-    ""
+    try:
+        resposta = requests.get(url, timeout=3)
+        sleep(1)
+        if (resposta.status_code != 200):
+            raise Exception('Deu ruim')
+        return resposta.text
+    except:
+        return None
 
 
 # Requisito 2
