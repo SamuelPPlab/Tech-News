@@ -49,7 +49,11 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    novidades_url = []
+    for urls in selector.css(".tec--list.tec--list--lg .tec--list__item"):
+        novidades_url.append(urls.css("a::attr(href)").get())
+    return novidades_url
 
 
 # Requisito 4
@@ -62,8 +66,4 @@ def get_tech_news(amount):
     """Seu código deve vir aqui"""
 
 
-# scrape_noticia(
-#     fetch(
-#         "https://www.tecmundo.com.br/dispositivos-moveis/215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm"
-#     )
-# )
+scrape_novidades(fetch("https://www.tecmundo.com.br/novidades"))
