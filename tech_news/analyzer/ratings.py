@@ -8,8 +8,12 @@ def popularity(x):
 # Requisito 10
 def top_5_news():
     """Seu código deve vir aqui"""
-    collection = get_collection().sort(key=popularity)[:5]
-    return collection
+    collection = sorted(list(
+        get_collection().find()),
+        key=lambda elem: (popularity, 'name'), reverse=True)
+    if len(collection) > 5:
+        collection = collection[:5]
+    return [((item["title"], item["url"]))for item in collection]
 
 
 # Requisito 11
