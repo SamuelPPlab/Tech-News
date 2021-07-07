@@ -69,10 +69,13 @@ def scrape_novidades(html_content):
     selector = Selector(text=html_content)
     data = selector.css(
         ".tec--list__item .tec--card__thumb__link::attr(href)").getall()
-    return data
+    if len(data) == 0:
+        return []
+    else:
+        return data
+
+
 # Requisito 4
-
-
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
 
