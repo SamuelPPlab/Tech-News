@@ -49,12 +49,13 @@ def scrape_noticia(html_content):
         selector.css(".tec--article__body > p:first-child *::text").getall()
     )
     # HOF de map, str = string
-    sources = selector.css(
-        "#js-main > div.z--container > article > div.tec--article__body-grid > div.z--mb-16.z--px-16 > div > a::text"
-    ).getall()
+    # sources = selector.css('a[rel="noopener nofollow"]::text').getall()
 
-    noticia_info["sources"] = (
-        list(map(str.strip, sources)) if sources is not None else []
+    noticia_info["sources"] = list(
+        map(
+            str.strip,
+            selector.css('a[class=tec--badge]::text').getall(),
+        )
     )
 
     noticia_info["categories"] = list(
