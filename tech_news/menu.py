@@ -9,7 +9,7 @@ from tech_news.analyzer.search_engine import (
 )
 
 
-# Requisito 12:
+# Requisito 12
 def print_menu():
     print("Selecione uma das opções a seguir:")
     print(" 0 - Popular o banco com notícias;")
