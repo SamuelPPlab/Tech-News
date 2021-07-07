@@ -1,4 +1,4 @@
-from tech_news.database import search_news, find_news, get_collection
+from tech_news.database import search_news, find_news
 import datetime
 
 
@@ -12,17 +12,19 @@ def search_by_title(title):
     return tuple
 
 
-""" REF: https://stackoverflow.com/questions/4709652/python-regex-to-match-dates """
+""" REF:
+https://stackoverflow.com/questions/4709652/python-regex-to-match-dates 
+"""
 
 
 # Requisito 7
 def search_by_date(date):
     try:
-        datetime.datetime.strptime(date, '%Y-%m-%d')
+        datetime.datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise ValueError("Data inválida")
 
-    allNews = search_news({'timestamp': {"$regex": f"{date}"}})
+    allNews = search_news({"timestamp": {"$regex": f"{date}"}})
     tuple = []
     for news in allNews:
         tuple.append((news["title"], news["url"]))
@@ -31,14 +33,21 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    allNews = find_news()
+    tuple = []
+    for news in allNews:
+        for s in news["sources"]:
+            if s.lower() == source.lower():
+                tuple.append((news["title"], news["url"]))
+    return tuple
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
-
-
-search_by_title(
-    "Android se beneficia do recurso de rastreamento de apps da Apple"
-)
+    allNews = find_news()
+    tuple = []
+    for news in allNews:
+        for cat in news["categories"]:
+            if cat.lower() == category.lower():
+                tuple.append((news["title"], news["url"]))
+    return tuple
