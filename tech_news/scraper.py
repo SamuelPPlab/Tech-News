@@ -70,7 +70,9 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    ""
+    selector = Selector(text=html_content)
+    next_page_link = selector.css("head link[rel=next]::attr(href)").get()
+    return next_page_link
 
 
 # Requisito 5
