@@ -66,7 +66,9 @@ def test_scrape_noticia():
 
     expected = all_news[15]
 
-    assert scrape_noticia(html_content) == expected
+    actual = scrape_noticia(html_content)
+
+    assert actual == expected
 
 
 # Req.3
