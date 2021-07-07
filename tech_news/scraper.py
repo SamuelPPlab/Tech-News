@@ -18,26 +18,25 @@ def fetch(url):
         return response
 
 
+def query_strip(selectorCSS, query):
+    if selectorCSS.css(query):
+        return selectorCSS.css(
+            query
+        ).get().strip()
+    else:
+        return None
+
+
 # Requisito 2
 def scrape_noticia(html_content):
     result = {}
     selector = Selector(text=html_content)
     result["url"] = selector.css("link[rel=canonical]::attr(href)").get()
-    if selector.css("h1#js-article-title::text"):
-        result["title"] = selector.css(
-            "h1#js-article-title::text"
-        ).get().strip()
-    else:
-        result["title"] = None
+    result["title"] = query_strip(selector, "h1#js-article-title::text")
     result["timestamp"] = selector.css(
         "time#js-article-date::attr(datetime)"
     ).get()
-    if selector.css("a.tec--author__info__link::text"):
-        result["writer"] = selector.css(
-            "a.tec--author__info__link::text"
-        ).get().strip()
-    else:
-        result["writer"] = None
+    result["writer"] = query_strip(selector, "a.tec--author__info__link::text")
     if selector.css("div.tec--toolbar__item::text"):
         result["shares_count"] = int(selector.css(
             "div.tec--toolbar__item::text"
