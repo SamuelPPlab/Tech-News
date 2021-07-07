@@ -9,7 +9,7 @@ def top_5_news():
         key=lambda x: x["shares_count"] + x["comments_count"],
         reverse=True,
     )
-    return ([(news["title"], news["url"]) for news in popularity_list[:5]],)
+    return ([(news["title"], news["url"]) for news in popularity_list[:5]])
 
 
 # Requisito 11
