@@ -25,27 +25,40 @@ def scrape_noticia(html_content):
     ).get()
     noticia["title"] = selector.css(".tec--article__header__title::text").get()
     noticia["timestamp"] = selector.css("time::attr(datetime)").get()
-    writer = selector.css(".tec--author__info__link::text").get()
-    if writer is not None:
-        noticia["writer"] = writer.strip()
+    writer = selector.css(
+        "#js-author-bar > div > p.z--m-none.z--truncate.z--font-bold > a::text"
+    ).get()
+
+    noticia["writer"] = (
+        writer.strip()
+        if writer is not None
+        else None
+    )
+
     shares = selector.css(".tec--toolbar__item::text").get()
-    if shares is not None:
-        noticia["shares_count"] = int(shares[1:2])
-    else:
-        noticia["shares_count"] = 0
+    noticia["shares_count"] = (
+        int(shares[1:2])
+        if shares is not None
+        else 0
+    )
+
     comments_count = selector.css(".tec--btn::attr(data-count)").get()
-    if comments_count is not None:
-        noticia["comments_count"] = int(comments_count)
-    else:
-        noticia["comments_count"] = 0
+    noticia["comments_count"] = (
+        int(comments_count)
+        if comments_count is not None
+        else 0
+    )
+
     summary = selector.css(
         ".tec--article__body > p:first-child *::text"
     ).getall()
     noticia["summary"] = "".join(summary)
+
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
     for i in range(len(sources)):
         sources[i] = sources[i].strip()
     noticia["sources"] = sources
+
     categories = selector.css("#js-categories > a::text").getall()
     for i in range(len(categories)):
         categories[i] = categories[i].strip()
@@ -83,6 +96,3 @@ def get_tech_news(amount):
         novidades_url.pop(0)
     create_news(all_news)
     return all_news
-
-
-# get_tech_news(25)
