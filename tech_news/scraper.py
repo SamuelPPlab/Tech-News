@@ -20,22 +20,19 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(html_content)
-    new_dict = {}
-    new_dict['writer'] = selector.css(
-        ".tec--author__info__link::text"
-    ).get()
-    if new_dict['writer'] is not None:
-        new_dict['writer'] = new_dict['writer'].strip()
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+    writer = selector.css(".tec--author__info__link::text").get()
+
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("#js-article-title::text").get(),
         "timestamp": selector.css("time::attr(datetime)").get(),
-        "shares_count": int(
-            selector.css(".tec--toolbar__item::text").re_first(r"\d")
-        ),
-        "comments_count": int(
-            selector.css("#js-comments-btn::attr(data-count)").get()
-        ),
+        "writer": writer.strip() if writer else writer,
+        "shares_count": int(shares_count) if shares_count else 0,
+        "comments_count": int(comments_count)
+        if comments_count
+        else comments_count,
         "summary": "".join(
             selector.css(".tec--article__body p:first-child *::text").getall()
         ),
@@ -80,7 +77,7 @@ def get_tech_news(amount):
         for url_item in url_novidades:
             url_list.append(url_item)
         url = scrape_next_page_link(data) 
-        # aqui vira pages 2
+        # aqui vira pages
     for index in range(amount):
         # amount é a quantidade de noticias
         noticia = scrape_noticia(fetch(url_list[index]))
