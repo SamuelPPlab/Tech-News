@@ -4,14 +4,16 @@ from time import sleep
 
 # Requisito 1
 def fetch(url):
+    sleep(1)
     try:
         resposta = requests.get(url, timeout=3)
-        sleep(1)
-        if (resposta.status_code != 200):
-            raise Exception('Deu ruim')
-        return resposta.text
-    except:
+    except requests.ReadTimeout:
         return None
+
+    if resposta.status_code != 200:
+        return None
+
+    return resposta.text
 
 
 # Requisito 2
