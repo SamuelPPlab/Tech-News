@@ -84,13 +84,12 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    next_page_url = "https://www.tecmundo.com.br/novidades?page=1"
+    next_page_url = "https://www.tecmundo.com.br/novidades"
     allNews = []
     counter = 0
 
-    while next_page_url and counter <= amount:
+    while next_page_url and counter < amount:
         response = fetch(next_page_url)
-        selector = Selector(text=response)
         allLinks = scrape_novidades(response)
         for link in allLinks:
             counter += 1
@@ -98,7 +97,6 @@ def get_tech_news(amount):
                 item = fetch(link)
                 scrape_item = scrape_noticia(item)
                 allNews.append(scrape_item)
-
-        next_page_url = selector.css(".tec--btn::attr(href)").get()
+        next_page_url = scrape_next_page_link(response)
     create_news(allNews)
     return allNews
