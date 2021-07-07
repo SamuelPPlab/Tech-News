@@ -33,35 +33,48 @@ def analize_option(option):
     return switcher.get(option)
 
 
-def analize_info(option, info):
+def handle_options_0_to_1(option, info):
     try:
         if option == "0":
-            result = get_tech_news(int(info))
+            return get_tech_news(int(info))
     except ValueError:
-        result = get_tech_news(0)
+        return get_tech_news(0)
 
     if option == "1":
-        result = search_by_title(info)
+        return search_by_title(info)
 
+
+def handle_options_2_to_5(option, info):
     if option == "2":
-        result = search_by_date(info)
+        return search_by_date(info)
 
     if option == "3":
-        result = search_by_source(info)
+        return search_by_source(info)
 
     if option == "4":
-        result = search_by_category(info)
+        return search_by_category(info)
 
     if option == "5":
-        result = top_5_news()
+        return top_5_news()
 
+
+def handle_options_6_to_7(option):
     if option == "6":
-        result = top_5_categories()
+        return top_5_categories()
 
     if option == "7":
-        result = "Encerrando script"
+        return "Encerrando script"
 
-    return result
+
+def analize_info(option, info):
+    if option in ["0", "1"]:
+        return handle_options_0_to_1(option, info)
+
+    if option in ["2", "3", "4", "5"]:
+        return handle_options_2_to_5(option, info)
+
+    if option in ["6", "7"]:
+        return handle_options_6_to_7(option)
 
 
 def analyzer_menu():
