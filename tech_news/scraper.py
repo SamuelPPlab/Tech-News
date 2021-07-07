@@ -51,7 +51,8 @@ def scrape_noticia(html_content):
     else:
         comments_count = 0
 
-    summary = selector.css(".tec--article__body > p:nth-child(1) *::text").getall()
+    summary_css = ".tec--article__body > p:nth-child(1) *::text"
+    summary = selector.css(summary_css).getall()
     summary = "".join(summary)
 
     sources = selector.css("div > .tec--badge[target=_blank]::text").getall()
@@ -103,37 +104,39 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 5
-def get_tech_news(amount):
+def get_news_url_list(amount):
     news_page_url = "https://www.tecmundo.com.br/novidades"
-    news_counter = 0
-    news_list = []
-    news_list_length = 0
+    news_url_list = []
 
-    while news_counter < amount:
-        if news_list_length == 0 and len(news_list) > 0:
-            html = fetch(news_page_url)
-            news_page_url = scrape_next_page_link(html)
-
+    while len(news_url_list) < amount:
         html = fetch(news_page_url)
+        url_list = scrape_novidades(html)
+        news_url_list.extend(url_list)
+        news_page_url = scrape_next_page_link(html)
 
-        news_url_list = scrape_novidades(html)
-        news_list_length = len(news_url_list)
+    return news_url_list
 
-        for news_url in news_url_list:
-            html = fetch(news_url)
-            news = scrape_noticia(html)
 
-            news_list.append(news)
-
-            news_counter += 1
-            news_list_length -= 1
-
-            if news_counter == amount:
-                break
-
+def save_news_in_database(news):
     try:
-        create_news(news_list)
+        create_news(news)
     except pymongo.errors.ServerSelectionTimeoutError:
         print("Error ao cadastrar os dados!")
-    finally:
-        return news_list
+
+
+def get_tech_news(amount):
+    news_url_list = get_news_url_list(amount)
+    news_list = []
+
+    for news_url in news_url_list:
+        html = fetch(news_url)
+        news = scrape_noticia(html)
+
+        news_list.append(news)
+
+        if len(news_list) == amount:
+            break
+
+    save_news_in_database(news_list)
+
+    return news_list
