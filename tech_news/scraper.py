@@ -18,10 +18,11 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     bs = BeautifulSoup(html_content, "html.parser")
+
     url = bs.find("meta", property="og:url")
     title = bs.find("h1", id="js-article-title").get_text()
     timestamp = bs.find("time", id="js-article-date")
-    writer = bs.find("a", class_="tec--author_info_link") or None
+    writer = bs.find("a", class_="tec--author__info__link") or None
     shares_count = (
         bs.find("div", class_="tec--toolbar__item")
         .get_text()
@@ -29,14 +30,14 @@ def scrape_noticia(html_content):
     )
     comments_count = bs.find("button", id="js-comments-btn").get_text().strip()
     summary = (
-        bs.find("div", class_="tec-article__body")
+        bs.find("div", class_="tec--article__body")
         .find("p")
         .get_text()
         .strip()
     )
     sources = bs.find("div", class_="z--mb-16")
     categories = (
-        bs.find("div", class_="js-categories")
+        bs.find("div", id="js-categories")
         .find_all("a", class_="tec--badge")
     )
 
