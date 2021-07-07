@@ -1,6 +1,20 @@
+import requests
+import time
+
+# src=https://docs.python-requests.org/en/master/user/quickstart/
+
 # Requisito 1
+
+
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        response = requests.get(url, timeout=3)
+        time.sleep(1)
+        response.raise_for_status()
+    except Exception:
+        return None
+    else:
+        return response.text
 
 
 # Requisito 2
