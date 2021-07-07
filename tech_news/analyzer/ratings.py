@@ -33,4 +33,26 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    found_news = find_news()
+
+    categories_count = {}
+    for news in found_news:
+        categories = news.get("categories")
+        for category in categories:
+            if category not in categories_count:
+                categories_count[category] = 0
+            categories_count[category] += 1
+
+    categories_count = list(categories_count.items())
+    categories_count.sort(key=lambda category: category[0])
+
+    category_list = [category[0] for category in categories_count]
+
+    filtered_list = []
+    counter = 0
+    while counter < 5 and counter < len(category_list):
+        category = category_list[counter]
+        filtered_list.append(category)
+        counter += 1
+
+    return filtered_list
