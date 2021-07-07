@@ -17,12 +17,36 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+    data = {
+        "url": selector.css("meta[property='og:url']::attr(content)").get(),
+        "title": selector.css(".tec--article__header__title::text").get(),
+        "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
+        "writer": selector.css(".tec--author__info__link::text").get().strip(),
+        "shares_count": int(shares_count),
+        "comments_count": int(comments_count),
+        "summary": "".join(selector.css(
+         ".tec--article__body > p:first-child *::text"
+        ).getall()),
+        "sources": list(map(
+            str.strip, selector.css("div.z--mb-16 .tec--badge::text")
+            .getall())),
+        "categories": list(map(
+            str.strip, selector.css("div#js-categories a.tec--badge::text")
+            .getall())),
+    }
+    return data
 
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css("h3 > a.tec--card__title__link::attr(href)").getall()
+
+
+# print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
 
 
 # Requisito 4
