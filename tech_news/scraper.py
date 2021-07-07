@@ -49,12 +49,11 @@ def scrape_noticia(html_content):
         selector.css(".tec--article__body > p:first-child *::text").getall()
     )
     # HOF de map, str = string
-    # sources = selector.css('a[rel="noopener nofollow"]::text').getall()
 
     noticia_info["sources"] = list(
         map(
             str.strip,
-            selector.css('a[class=tec--badge]::text').getall(),
+            selector.css("a[class=tec--badge]::text").getall(),
         )
     )
 
@@ -101,5 +100,3 @@ def get_tech_news(amount):
     tech_news_list = list(map(scrape_noticia, tech_news_content_list))
     create_news(tech_news_list)
     return tech_news_list
-    # while news_url_tech_list
-    """Seu código deve vir aqui"""
