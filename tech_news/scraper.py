@@ -80,12 +80,12 @@ def scrape_noticia(html_content):
 
     return newsList
 
-    # js-article-date
-
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    list = selector.css("h3 > a::attr(href)").getall()
+    return list
 
 
 # Requisito 4
@@ -96,3 +96,4 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+
