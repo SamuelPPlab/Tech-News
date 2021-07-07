@@ -3,6 +3,7 @@ import time
 import math
 from parsel import Selector
 from tech_news.database import create_news
+# import pprint
 
 
 # Requisito 1
@@ -26,27 +27,36 @@ def stripper(word):
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    return{
+    return {
         "url": selector.css("head > [rel=canonical]::attr(href)").get(),
         "title": selector.css("h1.tec--article__header__title::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": selector.css("a.tec--author__info__link::text")
-        .get().strip(),
+        "writer": selector.css("a.tec--author__info__link::text").get().strip()
+        if selector.css(".tec--author__info__link::text")
+        else None,
         "shares_count": int(
-            selector.css("div.tec--toolbar__item::text").get().split()[0]),
+            selector.css("div.tec--toolbar__item::text").get().split()[0]
+        )
+        if selector.css("div.tec--toolbar__item::text")
+        else 0,
         "comments_count": int(
-            selector.css("button.tec--btn::attr(data-count)").get()),
+            selector.css("button.tec--btn::attr(data-count)").get()
+        )
+        if selector.css("button.tec--btn::attr(data-count)")
+        else 0,
         "summary": "".join(
-            selector.css(".tec--article__body p:first-child *::text").getall()
-            ),
-        "sources":
-        list(map(
-            stripper,
-            selector.css("div.z--mb-16 a.tec--badge::text").getall())),
-        "categories": list(
+            selector.css(".tec--article__body > p:first-child *::text")
+            .getall()
+        ),
+        "sources": list(
             map(
                 stripper,
-                selector.css("a.tec--badge--primary::text").getall())),
+                selector.css("div.z--mb-16 a.tec--badge::text").getall(),
+            )
+        ),
+        "categories": list(
+            map(stripper, selector.css("a.tec--badge--primary::text").getall())
+        ),
     }
 
 
@@ -68,17 +78,19 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
     pages = math.ceil(amount / 20)
-    html_content = fetch('https://www.tecmundo.com.br/novidades')
+    url = "https://www.tecmundo.com.br/novidades"
     pageCount = 0
     newsCollection = []
-    while (pageCount < pages):
+    while pageCount < pages:
+        html_content = fetch(url)
         list = scrape_novidades(html_content)
         for one_News in list:
             if len(newsCollection) < amount:
-                newsCollection.append(scrape_noticia(one_News))
-        html_content = fetch(scrape_next_page_link(html_content))
+                newsCollection.append(scrape_noticia(fetch(one_News)))
         pageCount += 1
-    print(len(newsCollection))
+        url = scrape_next_page_link(html_content)
     create_news(newsCollection)
+    return newsCollection
 
-print (get_tech_news(20))
+
+# print(get_tech_news(20))
