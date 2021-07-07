@@ -37,14 +37,20 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
-    # source_list = list(db.news.find({}))
+    source_list = list(
+        db.news.find({"sources": {"$regex": source, "$options": "-i"}})
+    )
+    return [(item["title"], item["url"]) for item in source_list]
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
-    # category_list = list(db.news.find({}))
-
+    category_list = list(
+        db.news.find({"categories": {"$regex": category, "$options": "-i"}})
+    )
+    return [(item["title"], item["url"]) for item in category_list]
 
 # search_by_title('Vamo')
-search_by_date("2020-11-23")
+# search_by_date("2020-11-23")
+# search_by_source(["ResetEra"])
