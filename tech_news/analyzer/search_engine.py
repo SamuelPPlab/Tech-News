@@ -4,7 +4,8 @@ import datetime
 
 # Requisito 6
 def search_by_title(title):
-    news_found = search_news({"title": {"$regex": title, "$options": "i"}})
+    query = {"title": {"$regex": title, "$options": "i"}}
+    news_found = search_news(query)
 
     news_list = []
 
@@ -29,10 +30,10 @@ def search_by_date(date):
     except ValueError:
         raise ValueError("Data inválida")
 
-    news_found = search_news({"timestamp": {"$regex": date}})
+    query = {"timestamp": {"$regex": date}}
+    news_found = search_news(query)
 
     news_list = []
-
     for news in news_found:
         title = news.get("title")
         url = news.get("url")
@@ -44,10 +45,10 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    news_found = search_news({"sources": {"$regex": source, "$options": "i"}})
+    query = {"sources": {"$regex": source, "$options": "i"}}
+    news_found = search_news(query)
 
     news_list = []
-
     for news in news_found:
         title = news.get("title")
         url = news.get("url")
@@ -59,8 +60,14 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {"categories": {"$regex": category, "$options": "i"}}
+    news_found = search_news(query)
 
+    news_list = []
+    for news in news_found:
+        title = news.get("title")
+        url = news.get("url")
 
-if __name__ == "__main__":
-    print(search_by_source("ResetEra"))
+        news_list.append((title, url))
+
+    return news_list
