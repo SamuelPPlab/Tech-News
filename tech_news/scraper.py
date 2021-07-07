@@ -20,7 +20,7 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
-        "title": selector.css().get("#js-article-title::text"),
+        "title": selector.css("#js-article-title::text").get(),
         "timestamp": selector.css("time::attr(datetime)").get(),
         "writer": selector.css(".tec--author__info__link::text").get().strip(),
         "shares_count": int(
