@@ -12,7 +12,7 @@ def fetch(url):
         response = requests.get(url, timeout=3)
         response.raise_for_status()
     except Exception as error:
-        print ("Error: ", error)
+        print("Error: ", error)
         return None
     else:
         return response.text
@@ -51,7 +51,7 @@ def scrape_noticia(html_content):
     newsList["sources"] = list(
         map(
             str.strip,
-            selector.css('a[class=tec--badge]::text').getall(),
+            selector.css("a[class=tec--badge]::text").getall(),
         )
     )
     newsList["categories"] = list(
@@ -92,4 +92,4 @@ def get_tech_news(amount):
 
 
 novidades = fetch("https://www.tecmundo.com.br/novidades")
-print (len(scrape_novidades(novidades)))
+print(len(scrape_novidades(novidades)))
