@@ -1,5 +1,8 @@
 import time
 import requests
+from math import ceil
+from parsel import Selector
+from tech_news.database import create_news
 
 # Requisito 1
 def fetch(url):
@@ -12,7 +15,6 @@ def fetch(url):
         return None
     except requests.ReadTimeout:
         return None
-
 
 # Requisito 2
 def scrape_noticia(html_content):
@@ -57,17 +59,40 @@ def scrape_noticia(html_content):
 
     return new
 
-
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
-
+    selector = Selector(text=html_content)
+    return selector.css(
+      "h3.tec--card__title a.tec--card__title__link::attr(href)"
+    ).getall()
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
-
+    selector = Selector(text=html_content)
+    return selector.css(
+      "div.tec--list a.tec--btn::attr(href)"
+    ).get()
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    scraped_news = []
+    page = fetch("https://www.tecmundo.com.br/novidades")
+    links_news = scrape_novidades(page)
+
+    total_pages = ceil(amount / 20)
+    print(total_pages)
+
+    if total_pages > 1:
+        for _ in range(1, total_pages):
+            page = scrape_next_page_link(page)
+            next_page_content = fetch(page)
+            next_page_news = scrape_novidades(next_page_content)
+            links_news = links_news + next_page_news
+
+    for link in links_news:
+        news = fetch(link)
+        scraped_news.append(scrape_noticia(news))
+        if len(scraped_news) == amount:
+            break
+    create_news(scraped_news)
+    return scraped_news
