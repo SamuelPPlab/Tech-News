@@ -78,7 +78,7 @@ def scrape_next_page_link(html_content):
 
     bs = BeautifulSoup(html_content, "html.parser")
 
-    anchorElement = bs.find("a", class_="tec--btn--lg")
+    anchorElement = bs.find("a", class_="tec--btn")
 
     return anchorElement["href"]
 
