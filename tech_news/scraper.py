@@ -1,6 +1,25 @@
+import requests
+
+
+LINK = "https://www.tecmundo.com.br/novidades"
+
+
 # Requisito 1
 def fetch(url):
-    """Seu código deve vir aqui"""
+    REQUEST = requests.get(url)
+    print(REQUEST.raise_for_status())
+    # print(type(REQUEST.status_code))
+    # print(REQUEST.headers["Content-Type"])
+    if REQUEST.status_code == 200:
+        try:
+            HTML = REQUEST.text
+            # print(HTML)
+            return HTML
+        except ValueError:
+            print("Deu algum Erro")
+
+
+fetch(LINK)
 
 
 # Requisito 2
