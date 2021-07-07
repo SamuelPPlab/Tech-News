@@ -1,6 +1,7 @@
 import time
 import requests
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -18,6 +19,7 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(html_content)
+
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("#js-article-title::text").get(),
@@ -64,15 +66,17 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     URL_BASE = "https://www.tecmundo.com.br/novidades"
     noticias = fetch(URL_BASE)
-    # next_page_url = "f"?page={i}
-    for i in range(1, amount):
+    lista_noticias = []
+    for i in range(1, (amount / 20)):
         noticias = fetch(f"{URL_BASE}?page={i}")
         cada_pagina = scrape_next_page_link(noticias)
         conteudo_total = fetch(cada_pagina)
         novidades_da_pagina = scrape_novidades(conteudo_total)
-        print(novidades_da_pagina)
     for url in novidades_da_pagina:
         novidade = fetch(url)
-        return novidade
+        ordenado = scrape_noticia(novidade)
+        lista_noticias.append(ordenado)
+        create_news(lista_noticias)
+        return lista_noticias
 
 
