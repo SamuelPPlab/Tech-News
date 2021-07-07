@@ -1,3 +1,4 @@
+from tech_news.database import create_news
 import requests
 import time
 from parsel import Selector
@@ -6,12 +7,12 @@ from parsel import Selector
 # Requisito 1
 def fetch(url):
     """Seu código deve vir aqui"""
+    time.sleep(1)
     try:
-        time.sleep(1)
         response = requests.get(url, timeout=3)
         response.raise_for_status()
     except Exception as error:
-        print("Error: ", error)
+        print ("Error: ", error)
         return None
     else:
         return response.text
@@ -50,7 +51,7 @@ def scrape_noticia(html_content):
     newsList["sources"] = list(
         map(
             str.strip,
-            selector.css('a[rel="noopener nofollow"]::text').getall(),
+            selector.css('a[class=tec--badge]::text').getall(),
         )
     )
     newsList["categories"] = list(
@@ -61,18 +62,18 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    selector = (
+    news_titles = (
         Selector(html_content)
         .css("h3 > a[class='tec--card__title__link']::attr(href)")
         .getall()
     )
-    return selector
+    return news_titles
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    selector = Selector(html_content).css(".tec--btn::attr(href)").get()
-    return selector
+    next_page = Selector(html_content).css(".tec--btn::attr(href)").get()
+    return next_page
 
 
 # Requisito 5
@@ -81,13 +82,14 @@ def get_tech_news(amount):
     news_titles = []
     titles = []
     while len(news_titles) < amount:
-        html_content = fetch(url)
-        news_titles = news_titles + scrape_novidades(html_content)
-        url = scrape_next_page_link(html_content)
+        news_titles = news_titles + scrape_novidades(fetch(url))
+        url = scrape_next_page_link(fetch(url))
     for link in news_titles[:amount]:
-        titles.append(scrape_noticia(fetch(link)))
+        link_content = fetch(link)
+        titles.append(scrape_noticia(link_content))
+    create_news(titles)
     return titles
 
 
 novidades = fetch("https://www.tecmundo.com.br/novidades")
-print(len(scrape_novidades(novidades)))
+print (len(scrape_novidades(novidades)))
