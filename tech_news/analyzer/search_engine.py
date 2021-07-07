@@ -1,15 +1,17 @@
-from tech_news.database import search_news
+from tech_news.database import get_collection, search_news
 
 
 # Requisito 6
 def search_by_title(title):
     """Seu código deve vir aqui"""
-    low_title = title.lower()
-    found = search_news({title: low_title})
-    output = []
+    found = get_collection().find(
+        {"title": {"$regex": title, "$options": "-i"}}
+    )
+    found = list(found)
+    result = []
     for item in found:
-        output.append((item.title, item.url))
-    return output or []
+        result.append((item["title"], item["url"]))
+    return result
 
 
 # search_by_title('elon')
@@ -18,11 +20,13 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
-    found = search_news({date: date})
+    found = get_collection().find({"datetime": date})
     output = []
-    for item in found:
+    for item in list(found):
+        print('entrou')
         output.append((item.title, item.url))
-    return output or []
+    print("output", output)
+    return output
 
 
 # Requisito 8
