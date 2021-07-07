@@ -1,10 +1,10 @@
-# Requisito 6
 from datetime import datetime
 from tech_news.database import search_news
 
 
+# Requisito 6
 def format_title_url(news_list):
-    return [(news(["title"], news["url"])) for news in news_list]
+    return [(news["title"], news["url"]) for news in news_list]
 
 
 def search_by_title(title):
