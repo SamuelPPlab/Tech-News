@@ -21,7 +21,7 @@ def search_by_date(date):
         news_date = search_news(query)
         return format_title_url(news_date)
     except ValueError:
-        raise ValueError("Data Inválida")
+        raise ValueError("Data inválida")
 
 
 # Requisito 8
