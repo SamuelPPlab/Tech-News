@@ -1,6 +1,26 @@
+from tech_news.database import find_news
+from operator import itemgetter
+
+""" REF: https://docs.python.org/pt-br/dev/howto/sorting.html """
+
+
 # Requisito 10
 def top_5_news():
-    """Seu código deve vir aqui"""
+    allNews = find_news()
+
+    orderAllNewsByName = sorted(allNews, key=itemgetter('title'))
+
+    sortedAllNews = sorted(
+        orderAllNewsByName,
+        key=lambda news: news['shares_count'] + news['comments_count'],
+        reverse=True
+    )
+
+    tuple = []
+
+    for news in sortedAllNews:
+        tuple.append((news["title"], news["url"]))
+    return tuple[:5]
 
 
 # Requisito 11
