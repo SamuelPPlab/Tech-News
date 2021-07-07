@@ -66,7 +66,7 @@ def scrape_novidades(html_content):
 
     bs = BeautifulSoup(html_content, "html.parser")
 
-    AllItemsDiv = bs.find_all("div", class_="tec--list_item")
+    AllItemsDiv = bs.find_all("div", class_="tec--list__item")
 
     return [div.find("a")["href"] for div in AllItemsDiv]
 
