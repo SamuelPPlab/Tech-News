@@ -1,5 +1,3 @@
-from typing import ValuesView
-from typing_extensions import final
 from pymongo import MongoClient
 from decouple import config
 from datetime import datetime
@@ -39,11 +37,13 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     """Seu código deve vir aqui"""
+    # source_list = list(db.news.find({}))
 
 
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
+    # category_list = list(db.news.find({}))
 
 
 # search_by_title('Vamo')
