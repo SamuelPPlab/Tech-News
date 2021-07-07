@@ -13,7 +13,7 @@ def search_by_title(title):
 
 
 """ REF:
-https://stackoverflow.com/questions/4709652/python-regex-to-match-dates 
+https://stackoverflow.com/questions/4709652/python-regex-to-match-dates
 """
 
 
