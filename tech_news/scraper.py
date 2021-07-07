@@ -23,7 +23,6 @@ def scrape_noticia(html_content):
     shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
     comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
     writer = selector.css(".tec--author__info__link::text").get()
-
     new_dict = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css("#js-article-title::text").get(),
