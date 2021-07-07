@@ -50,7 +50,7 @@ def scrape_noticia(html_content):
     else:
         result["comments_count"] = 0
     result["summary"] = "".join(selector.css(
-        "div.tec--article__body p:first-child *::text"
+        "div.tec--article__body > p:first-child *::text"
         ).getall())
     result["sources"] = []
     for source in selector.css("div.z--mb-16 a.tec--badge::text").getall():
@@ -91,8 +91,16 @@ def get_tech_news(amount):
     newsArray = scrape_novidades(response)
     while len(news) < amount:
         for link in newsArray:
-            news.append(scrape_noticia(response))
-        page = scrape_next_page_link(response)
-        response = fetch(page)
+            if len(news) < amount:
+                news.append(scrape_noticia(fetch(link)))
+            else:
+                break
+
+        if len(news) < amount:
+            page = scrape_next_page_link(response)
+            response = fetch(page)
+            newsArray = scrape_novidades(response)
+        else:
+            break
     create_news(news)
     return news
