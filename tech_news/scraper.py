@@ -43,7 +43,6 @@ def scrape_noticia(html_content):
     for i in range(len(categories)):
         categories[i] = categories[i].strip()
     noticia["categories"] = categories
-    print(noticia)
     return noticia
 
 
@@ -58,7 +57,11 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    next_page_link = selector.css(
+        "head link[rel='next']::attr(href)"
+    ).get()
+    return next_page_link
 
 
 # Requisito 5
@@ -66,4 +69,4 @@ def get_tech_news(amount):
     """Seu código deve vir aqui"""
 
 
-scrape_novidades(fetch("https://www.tecmundo.com.br/novidades"))
+# scrape_next_page_link(fetch("https://www.tecmundo.com.br/novidades"))
