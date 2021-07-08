@@ -44,12 +44,10 @@ def scrape_noticia(html_content):
 
     prop_comments = '#js-comments-btn::attr(data-count)'
     comments_count = int(selector.css(prop_comments).get())
-    prop_summary = '#js-main > div.z--container > article > '
-    'div.tec--article__body-grid > div.tec--article__body > '
-    'p:nth-child(1) *::text'
-    summary = ''.join(selector.css(
-        prop_summary
-    ).getall())
+    prop_summary = '#js-main > div.z--container > article >'
+    prop_summary += ' div.tec--article__body-grid > div.tec--article__body'
+    prop_summary += ' > p:nth-child(1) *::text'
+    summary = ''.join(selector.css(prop_summary).getall())
     sources = selector.css('.z--mb-16 div a::text').getall()
     sources = [word.strip() for word in sources]
 
