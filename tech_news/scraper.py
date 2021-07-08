@@ -90,5 +90,6 @@ def get_tech_news(amount):
         all_news.extend(news)
         url = scrape_next_page_link(fetch(url))
     news_urls = all_news[0:amount]
-    news_content = list(map(scrape_noticia, news_urls))
+    html_of_news = list(map(fetch, news_urls))
+    news_content = list(map(scrape_noticia, html_of_news))
     create_news(news_content)
