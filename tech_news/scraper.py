@@ -43,7 +43,7 @@ def scrape_noticia(html_content):
         ".tec--toolbar__item::text").get().strip())
     news["comments_count"] = int(page_content.css(
         "#js-comments-btn::attr(data-count)").get())
-    news["summary"] = " ".join(page_content.css(
+    news["summary"] = "".join(page_content.css(
         '.tec--article__body > p:first-child *::text').getall())
     news["sources"] = list(map(remove_space, page_content.css(
         ".z--mb-16 .tec--badge::text").getall()))
@@ -57,6 +57,10 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    page_content = Selector(html_content)
+    news_list = page_content.css(
+        ".tec--card__title .tec--card__title__link::attr(href)").getall()
+    return news_list
 
 
 # Requisito 4
