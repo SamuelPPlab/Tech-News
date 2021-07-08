@@ -3,6 +3,7 @@ import time
 import math
 from parsel import Selector
 from tech_news.database import create_news
+
 # import pprint
 
 
@@ -45,8 +46,9 @@ def scrape_noticia(html_content):
         if selector.css("button.tec--btn::attr(data-count)")
         else 0,
         "summary": "".join(
-            selector.css(".tec--article__body > p:first-child *::text")
-            .getall()
+            selector.css(
+                ".tec--article__body > p:first-child *::text"
+            ).getall()
         ),
         "sources": list(
             map(

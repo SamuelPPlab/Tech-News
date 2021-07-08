@@ -70,7 +70,7 @@ def test_buscar_noticia_pela_fonte():
     db.news.delete_many({})
     db.news.insert_one(NEW_NOTICE)
     assert search_by_source("ResetEra") == LIST
-    
+
     # fonte que não existe retorna lista vazia
     db.news.delete_many({})
     db.news.insert_one(NEW_NOTICE)
