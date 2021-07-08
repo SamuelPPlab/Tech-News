@@ -9,7 +9,7 @@ def search_by_title(title):
     """Seu código deve vir aqui"""
     items = search_news({'title': {'$regex': title, '$options': 'i'}})
     matches = [(item['title'], item['url']) for item in items]
-    print(matches)
+    return matches
 
 
 # Requisito 7
@@ -23,7 +23,7 @@ def search_by_date(date):
         return 'Data inválida'
     items = search_news({'timestamp': {'$regex': date, '$options': 'i'}})
     matches = [(item['title'], item['url']) for item in items]
-    print(matches)
+    return matches
 
 
 # Requisito 8
@@ -31,7 +31,7 @@ def search_by_source(source):
     """Seu código deve vir aqui"""
     items = search_news({'sources': {'$regex': source, '$options': 'i'}})
     matches = [(item['title'], item['url']) for item in items]
-    print(matches)
+    return matches
 
 
 # Requisito 9
@@ -39,4 +39,4 @@ def search_by_category(category):
     """Seu código deve vir aqui"""
     items = search_news({'categories': {'$regex': category, '$options': 'i'}})
     matches = [(item['title'], item['url']) for item in items]
-    print(matches)
+    return matches
