@@ -3,7 +3,7 @@ import requests
 import time
 
 
-def attribute_in(base):
+def scrape_in(base):
     selector = Selector(base)
 
     def get_one(query):
@@ -61,32 +61,33 @@ def attribute_in(base):
     }
 
 
-def scratch_attributes_to(url):
-    response = requests.get(url, timeout=3).text
+# Requisito 1
+def fetch(url):
+    try:
+        response = requests.get(url, timeout=3)
+        time.sleep(1)
+        return response.text if response.status_code == 200 else None
+    except requests.Timeout:
+        return None
 
-    title = attribute_in(response)["get_one"](
-        'h1[class="tec--article__header__title"]::text'
-    )
-    timestamp = attribute_in(response)["get_one"]("time::attr(datetime)")
-    writer = attribute_in(response)["get_writer"](
-        'a[class="tec--author__info__link"]::text'
-    )
-    shares_count = attribute_in(response)["get_shares_count"](
+
+# Requisito 2
+def scrape_noticia(html_content):
+    scraper = scrape_in(html_content)
+    url = scraper["get_one"]('link[rel="canonical"]::attr("href")')
+    title = scraper["get_one"]('h1[class="tec--article__header__title"]::text')
+    timestamp = scraper["get_one"]("time::attr(datetime)")
+    writer = scraper["get_writer"]('a[class="tec--author__info__link"]::text')
+    shares_count = scraper["get_shares_count"](
         'div[class="tec--toolbar__item"]::text'
     )
-
-    comments_count = attribute_in(response)["get_comments_count"](
+    comments_count = scraper["get_comments_count"](
         "#js-comments-btn::attr(data-count)"
     )
-    summary = attribute_in(response)["get_summary"](".tec--article__body p")
+    summary = scraper["get_summary"](".tec--article__body p")
+    sources = scraper["get_sources"]('div[class="z--mb-16 z--px-16"] a::text')
+    categories = scraper["get_categories"]("#js-categories a::text")
 
-    sources = attribute_in(response)["get_sources"](
-        'div[class="z--mb-16 z--px-16"] a::text'
-    )
-
-    categories = attribute_in(response)["get_categories"](
-        "#js-categories a::text"
-    )
     return dict(
         {
             "url": url,
@@ -100,27 +101,6 @@ def scratch_attributes_to(url):
             "categories": categories,
         }
     )
-
-
-# Requisito 1
-def fetch(url):
-    try:
-        response = requests.get(url, timeout=3)
-        time.sleep(1)
-        return response.text if response.status_code == 200 else None
-    except requests.Timeout:
-        return None
-
-
-# Requisito 2
-def scrape_noticia(html_content):
-    url_list = attribute_in(html_content)["get_many"](
-        'div[class="tec--card__info"] a::attr(href)'
-    )
-    attributes_list = list(
-        map(lambda url: scratch_attributes_to(url), url_list)
-    )
-    return attributes_list
 
 
 # Requisito 3
