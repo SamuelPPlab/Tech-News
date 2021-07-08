@@ -44,4 +44,14 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news = []
+    rgx = re.compile(category, re.IGNORECASE)
+    results = search_news({"categories": rgx})
+    for result in results:
+        news_tupla = (result["title"], result["url"])
+        news.append(news_tupla)
+    return news
+
+# db.stuff.find_one({'name': re.compile(username, re.IGNORECASE)})
+# db.employees.find( { first_name: { $regex: /michael/i } } )
+# db.yourCollectionName.find({"yourFieldName":/^yourvalue$/i});
