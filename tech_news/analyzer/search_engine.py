@@ -1,11 +1,11 @@
 import re
+import datetime
 from tech_news.database import db
 
 
 # Requisito 6
 def search_by_title(title):
     list_news = []
-    print(db.news.find({"title": {"$regex": title}}))
     for new in db.news.find({"title": re.compile(title, re.IGNORECASE)}):
         new_item = (new['title'], new['url'])
         list_news.append(new_item)
@@ -14,7 +14,16 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    list_news_for_date = []
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+        for new in db.news.find({"timestamp": {"$regex": date}}):
+            new_item = (new['title'], new['url'])
+            list_news_for_date.append(new_item)
+    except ValueError:
+        raise ValueError('Data inválida')
+    else:
+        return list_news_for_date
 
 
 # Requisito 8

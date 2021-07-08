@@ -8,3 +8,16 @@ db.news.find({"title": "vamoscomtudo"}, { _id: 0, title: 1 })
 use('tech_news');
 db.news.find()
 
+
+timestamp
+
+
+use('tech_news');
+db.news.find({'timestamp': {'$eq':  "2021-07-08T14:30:01"}}
+, { _id: 0, title: 1 })
+
+{"title": {"$regex": title}}
+
+use('tech_news');
+db.news.find({'timestamp': {"$regex": '2021-07-08'} }
+, { _id: 0, title: 1, timestamp: 1 })

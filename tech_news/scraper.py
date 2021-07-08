@@ -89,7 +89,6 @@ def get_tech_news(amount):
     url_news = 'https://www.tecmundo.com.br/novidades'
     array_news = []
     number_of_pages = (ceil(amount % 20)+amount) // 20
-    print(number_of_pages)
     index = 0
     while index < number_of_pages:
         html_content = fetch(url_news)
@@ -97,7 +96,6 @@ def get_tech_news(amount):
 
         for url_item in itens_urls:
             new_html_content = fetch(url_item)
-            print(url_item)
             if len(array_news) < amount:
                 news = scrape_noticia(new_html_content)
                 array_news.append(news)
