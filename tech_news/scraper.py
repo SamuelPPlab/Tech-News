@@ -1,6 +1,8 @@
 import requests
 import time
 from parsel import Selector
+from database import create_news
+from math import ceil
 
 
 # Requisito 1
@@ -21,12 +23,11 @@ def scrape_noticia(html_content):
     selector = Selector(text=html_content)
 
     links = selector.css('link').getall()
-
     for link in links:
         if ('canonical' in link):
-            url = link
-    index = url.index('href="')
-    url = url[index+6:len(url)-2]
+            url_news = link
+            index = url_news.index('href="')
+            url_news = url_news[index+6:len(url_news)-2]
 
     title = selector.css('#js-article-title::text').get()
     timestamp = selector.css('#js-article-date::attr(datetime)').get()
@@ -52,7 +53,7 @@ def scrape_noticia(html_content):
     categories = [word.strip() for word in categories]
 
     return {
-        "url": url,
+        "url": url_news,
         "title": title,
         "timestamp": timestamp,
         "writer": writer,
@@ -83,4 +84,21 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url_news = 'https://www.tecmundo.com.br/novidades'
+    array_news = []
+    number_of_pages = (ceil(amount % 20)+amount) // 20
+    print(number_of_pages)
+    index = 0
+    while index < number_of_pages:
+        html_content = fetch(url_news)
+        itens_urls = scrape_novidades(html_content)
+
+        for url_item in itens_urls:
+            new_html_content = fetch(url_item)
+            if len(array_news) < amount:
+                news = scrape_noticia(new_html_content)
+                array_news.append(news)
+        index += 1
+        url_news = scrape_next_page_link(html_content)
+    create_news(array_news)
+    return array_news
