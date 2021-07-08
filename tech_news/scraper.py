@@ -19,9 +19,13 @@ def scrape_noticia(html_content):
     return scraper.get_attributes_of(html_content)
 
 
-# Requisito 3
+# Requisito 3 class="tec--list__item"
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    url_list = scraper.get_many(
+        html_content,
+        'main a[class="tec--card__title__link"]::attr(href)',
+    )
+    return url_list
 
 
 # Requisito 4
