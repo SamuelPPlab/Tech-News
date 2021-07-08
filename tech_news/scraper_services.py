@@ -31,31 +31,3 @@ def extract_shares_count(string):
 def extract_summary(query):
     content_list = "".join(Selector(query).css("*::text").getall())
     return content_list
-
-
-def get_attributes_of(base):
-    return dict(
-        {
-            "url": get_one(base, 'link[rel="canonical"]::attr("href")'),
-            "title": get_one(
-                base, 'h1[class="tec--article__header__title"]::text'
-            ),
-            "timestamp": get_one(base, "time::attr(datetime)"),
-            "writer": cut_blanks_spaces(
-                get_one(base, 'a[class="tec--author__info__link"]::text')
-            ),
-            "shares_count": extract_shares_count(
-                get_one(base, 'div[class="tec--toolbar__item"]::text')
-            ),
-            "comments_count": int(
-                get_one(base, "#js-comments-btn::attr(data-count)")
-            ),
-            "summary": extract_summary(get_one(base, ".tec--article__body p")),
-            "sources": cut_blanks_spaces_list(
-                get_many(base, 'div[class="z--mb-16 z--px-16"] a::text')
-            ),
-            "categories": cut_blanks_spaces_list(
-                get_many(base, "#js-categories a::text")
-            ),
-        }
-    )
