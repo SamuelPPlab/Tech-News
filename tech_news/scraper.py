@@ -23,22 +23,29 @@ def scrape_noticia(html_content):
     selector = Selector(text=html_content)
 
     title = selector.css(".tec--article__header__title::text").get()
+
     url = selector.css("head > link[rel=canonical]::attr(href)").get()
+
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
+
     writer = selector.css(".tec--author__info__link::text").get().strip()
+
     shares_count = int(
         selector.css(".tec--toolbar__item::text")
         .get()
         .split("Compartilharam")[0]
     )
+
     comments_count = int(
         selector.css("#js-comments-btn::attr(data-count)").get()
     )
+
     summary = "".join(
         selector.css(".tec--article__body p:first-child *::text").getall()
     )
+
     for item in selector.css(".z--mb-16 .tec--badge::text").getall():
         sources.append(item.strip())
 
@@ -60,7 +67,13 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    noticias_listadas = []
+    selector = Selector(text=html_content)
+    for item in selector.css(
+        ".tec--list--lg .tec--card__title__link::attr(href)"
+    ).getall():
+        noticias_listadas.append(item)
+    return noticias_listadas
 
 
 # Requisito 4
