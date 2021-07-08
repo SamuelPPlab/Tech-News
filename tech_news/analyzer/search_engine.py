@@ -32,7 +32,14 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    news = []
+    for source_item in source:
+        rgx = re.compile(f".*{source_item}.*", re.IGNORECASE)
+        results = search_news({"sources": rgx})
+        for result in results:
+            tupla = (result["title"], result["url"])
+            news.append(tupla)
+        return news
 
 
 # Requisito 9
