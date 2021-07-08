@@ -22,11 +22,12 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
     shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
     comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+    writer = selector.css(".tec--author__info__link::text").get()
     data = {
         "url": selector.css("meta[property='og:url']::attr(content)").get(),
         "title": selector.css(".tec--article__header__title::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": selector.css(".tec--author__info__link::text").get().strip(),
+        "writer": writer.strip() if writer else writer,
         "shares_count": (int(shares_count) if shares_count else 0),
         "comments_count": (int(comments_count) if comments_count else 0),
         "summary": "".join(
