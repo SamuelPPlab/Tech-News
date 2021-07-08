@@ -11,6 +11,9 @@ def search_by_title(title):
         list_news.append(new_item)
     return list_news
 
+# CONSULTA EM: https://qastack.com.br/programming/16870663/how-do-i-
+# validate-a-date-string-format-in-python
+
 
 # Requisito 7
 def search_by_date(date):
@@ -28,7 +31,11 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    list_news = []
+    for new in db.news.find({"sources": re.compile(source, re.IGNORECASE)}):
+        new_item = (new['title'], new['url'])
+        list_news.append(new_item)
+    return list_news
 
 
 # Requisito 9
