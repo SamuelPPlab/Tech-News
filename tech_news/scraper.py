@@ -21,19 +21,17 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(html_content)
-    sources = []
-    for item in selector.css(".z--mb-16 div a::text").getall():
-        sources.append(item)
+
     return {
         "url": selector.css("head > link:nth-child(26)").css("link::attr(href)").get(),
         "title": selector.css("h1::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": selector.css("#js-author-bar div p a::text").get(),
+        "writer": selector.css("#js-author-bar div p a::text").get().strip(),
         "shares_count": int(selector.css("#js-author-bar nav div::text").get().split()[0]),
         "comments_count": int(selector.css("#js-author-bar nav div button::attr(data-count)").get()),
         "summary": ''.join(selector.css(".tec--article__body p:nth-child(1) *::text").getall()),
-        "sources": sources,
-        "categories": selector.css("#js-categories a::text").getall(),
+        "sources": [source.strip() for source in selector.css(".z--mb-16 div a::text").getall()],
+        "categories": [category.strip() for category in selector.css("#js-categories a::text").getall()],
     }
 
 
