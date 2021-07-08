@@ -20,7 +20,7 @@ def search_by_title(title):
 def search_by_date(date):
     """Seu código deve vir aqui"""
     rule = r'^20[0-2][0-9]-((0[1-9])|(1[0-2]))-([0-2][1-9]|3[0-1])$'
-    match = re.search(rule, date)    
+    match = re.search(rule, date)
     if match is None:
         raise ValueError('Data inválida')
     items = search_news({'timestamp': {'$regex': date}})
