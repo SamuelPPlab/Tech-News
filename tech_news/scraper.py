@@ -10,11 +10,11 @@ def fetch(url):
     time.sleep(1)
     try:
         response = requests.get(url, timeout=3)
+        if response.status_code == 200:
+            return response.text
+        return None
     except requests.ReadTimeout:
         return None
-    if response.status_code != 200:
-        return None
-    return response.text
 
 
 # Requisito 2
@@ -22,29 +22,34 @@ def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
     url = selector.css("link[rel=canonical]::attr(href)").get()
-    title = selector.css("h1.tec--article__header__title::text").get()
-    time = selector.css("div.tec--timestamp__item time::attr(datetime)").get()
-    writer = selector.css("a.tec--author__info__link::text").get()
-    shares_count = selector.css(".tec--toolbar__item::text").get()
-    comments = selector.css(
-        ".tec--toolbar__item button::attr(data-count)").get()
-    summary = selector.css(
-        ".tec--article__body p:first-child *::text").getall()
-    sources = selector.css(".z--mb-16 .tec--badge::text").getall()
-    categories = selector.css("div#js-categories a::text").getall()
+    title = selector.css(".tec--article__header__title::text").get()
+    time = selector.css("#js-article-date::attr(datetime)").get()
+    writer = selector.css(".tec--author__info__link::text").get()
 
     if writer:
         writer = writer.strip()
+    else:
+        writer = None
+
+    shares_count = selector.css(".tec--toolbar__item::text").get()
 
     if shares_count:
         shares_count = int((shares_count.strip()).split(" ")[0])
     else:
         shares_count = 0
 
+    comments = selector.css(
+        "#js-comments-btn::attr(data-count)").get()
+
     if comments:
         comments = int(comments)
     else:
         comments = 0
+
+    summary = selector.css(
+        ".tec--article__body > p:first-child *::text").getall()
+    sources = selector.css(".z--mb-16 .tec--badge::text").getall()
+    categories = selector.css("#js-categories a::text").getall()
 
     return {
       "url": url,
