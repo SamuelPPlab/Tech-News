@@ -1,67 +1,10 @@
-from parsel import Selector
 import requests
 import time
-
-
-def scrape_in(base):
-    selector = Selector(base)
-
-    def get_one(query):
-        attribute = selector.css(query).get()
-        return attribute
-
-    def get_many(query):
-        attribute = selector.css(query).getall()
-        return attribute
-
-    def cut_blanks_spaces(string):
-        return str(string)[1:-1]
-
-    def get_summary(query):
-        p = selector.css(query).get()
-        content_list = "".join(Selector(p).css("*::text").getall())
-        return content_list
-
-    def get_writer(query):
-        return cut_blanks_spaces(get_one(query))
-
-    def get_shares_count(query):
-        numbers = (
-            list(filter(lambda letter: str(letter).isnumeric(), query)) or 0
-        )
-        number = int(
-            numbers if str(numbers).isnumeric() else int("".join(numbers))
-        )
-        return number
-
-    def get_sources(query):
-        sources = map(
-            lambda source: cut_blanks_spaces(source), get_many(query)
-        )
-        return list(sources)
-
-    def get_comments_count(query):
-        return int(get_one(query))
-
-    def get_categories(query):
-        categories = map(
-            lambda category: cut_blanks_spaces(category), get_many(query)
-        )
-        return list(categories)
-
-    return {
-        "get_one": get_one,
-        "get_summary": get_summary,
-        "get_writer": get_writer,
-        "get_shares_count": get_shares_count,
-        "get_sources": get_sources,
-        "get_many": get_many,
-        "get_comments_count": get_comments_count,
-        "get_categories": get_categories,
-    }
-
+import tech_news.scraper_services as scraper
 
 # Requisito 1
+
+
 def fetch(url):
     try:
         response = requests.get(url, timeout=3)
@@ -73,34 +16,7 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    scraper = scrape_in(html_content)
-    url = scraper["get_one"]('link[rel="canonical"]::attr("href")')
-    title = scraper["get_one"]('h1[class="tec--article__header__title"]::text')
-    timestamp = scraper["get_one"]("time::attr(datetime)")
-    writer = scraper["get_writer"]('a[class="tec--author__info__link"]::text')
-    shares_count = scraper["get_shares_count"](
-        'div[class="tec--toolbar__item"]::text'
-    )
-    comments_count = scraper["get_comments_count"](
-        "#js-comments-btn::attr(data-count)"
-    )
-    summary = scraper["get_summary"](".tec--article__body p")
-    sources = scraper["get_sources"]('div[class="z--mb-16 z--px-16"] a::text')
-    categories = scraper["get_categories"]("#js-categories a::text")
-
-    return dict(
-        {
-            "url": url,
-            "title": title,
-            "timestamp": timestamp,
-            "writer": writer,
-            "shares_count": shares_count,
-            "comments_count": comments_count,
-            "summary": summary,
-            "sources": sources,
-            "categories": categories,
-        }
-    )
+    return scraper.get_attributes_of(html_content)
 
 
 # Requisito 3
