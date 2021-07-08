@@ -1,6 +1,5 @@
 import time
 import requests
-import math
 from parsel import Selector
 from tech_news.database import create_news
 
@@ -65,18 +64,16 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    noticias = []
-    url_list = []
-    url = "https://www.tecmundo.com.br/novidades"
-    for _ in range(math.ceil(amount / 20)):
-        data = fetch(url)
-        url_novidades = scrape_novidades(data)
-        for url_item in url_novidades:
-            url_list.append(url_item)
-        url = scrape_next_page_link(data)
-    for index in range(amount):
-        noticias.append(scrape_noticia(fetch(url_list[index])))
-    create_news(noticias)
-    return noticias
-
+    URL_BASE = "https://www.tecmundo.com.br/novidades"
+    data = []
+    while True:
+        html_content = fetch(URL_BASE)
+        news_urls = scrape_novidades(html_content)
+        for news_url in news_urls:
+            news = scrape_noticia(fetch(news_url))
+            data.append(news)
+            if len(data) == amount:
+                create_news(data)
+                return data
+        URL_BASE = scrape_next_page_link(html_content)
 
