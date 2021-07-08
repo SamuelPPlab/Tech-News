@@ -64,20 +64,18 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     selector = Selector(text=html_content)
-    # return selector.css(".tec--card__thumb a::attr(href)").getall()
     return selector.css(
         ".tec--list--lg .tec--list__item .tec--card__title a::attr(href)"
     ).getall()
-    # return selector.css(
-    #     "h3.tec--card__title a.tec--card__title__link::attr(href)"
-    # ).getall()
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    return selector.css(".tec--list--lg .tec--btn::attr(href)").get()
+
     # html = fetch("https://www.tecmundo.com.br/novidades")
-    # scrape_novidades(html)
+    # scrape_next_page_link(html)
 
 
 # Requisito 5
