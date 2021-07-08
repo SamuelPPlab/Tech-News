@@ -1,7 +1,7 @@
 import requests
 import time
 from parsel import Selector
-from database import create_news
+from tech_news.database import create_news
 from math import ceil
 
 
@@ -44,8 +44,12 @@ def scrape_noticia(html_content):
 
     prop_comments = '#js-comments-btn::attr(data-count)'
     comments_count = int(selector.css(prop_comments).get())
-    prop_summary = '.tec--article__body p:first-child *::text'
-    summary = ''.join(selector.css(prop_summary).getall())
+    prop_summary = '#js-main > div.z--container > article > '
+    'div.tec--article__body-grid > div.tec--article__body > '
+    'p:nth-child(1) *::text'
+    summary = ''.join(selector.css(
+        prop_summary
+    ).getall())
     sources = selector.css('.z--mb-16 div a::text').getall()
     sources = [word.strip() for word in sources]
 
@@ -95,6 +99,7 @@ def get_tech_news(amount):
 
         for url_item in itens_urls:
             new_html_content = fetch(url_item)
+            print(url_item)
             if len(array_news) < amount:
                 news = scrape_noticia(new_html_content)
                 array_news.append(news)
