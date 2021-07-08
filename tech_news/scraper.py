@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -17,6 +18,9 @@ def fetch(url):
 
 
 def count_shares(share_text):
+    if share_text is None:
+        return int(0)
+    share_text = share_text.strip()
     share_quantity = share_text.split(' ')
     if share_text:
         return int(share_quantity[0])
@@ -24,6 +28,8 @@ def count_shares(share_text):
 
 
 def remove_space(word):
+    if word is None:
+        return None
     return word.strip()
 
 
@@ -40,8 +46,8 @@ def scrape_noticia(html_content):
         ".tec--author__info__link::text").get())
     news["timestamp"] = page_content.css("time::attr(datetime)").get()
     news["shares_count"] = count_shares(page_content.css(
-        ".tec--toolbar__item::text").get().strip())
-    news["comments_count"] = int(page_content.css(
+        ".tec--toolbar__item::text").get())
+    news["comments_count"] = count_shares(page_content.css(
         "#js-comments-btn::attr(data-count)").get())
     news["summary"] = "".join(page_content.css(
         '.tec--article__body > p:first-child *::text').getall())
@@ -73,5 +79,16 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 5
+# https://stackoverflow.com/questions/2356501/how-do-you-round-up-a-number-in-python
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    pages_to_index = -(-amount//20)
+    url = 'https://www.tecmundo.com.br/novidades'
+    all_news = []
+    for _ in range(pages_to_index):
+        news = scrape_novidades(fetch(url))
+        all_news.extend(news)
+        url = scrape_next_page_link(fetch(url))
+    news_urls = all_news[0:amount]
+    news_content = list(map(scrape_noticia, news_urls))
+    create_news(news_content)
