@@ -2,6 +2,7 @@ import time
 import requests
 from parsel import Selector
 from tech_news.database import create_news
+import math
 
 
 # Requisito 1
@@ -71,8 +72,9 @@ def get_tech_news(amount):
         news_urls = scrape_novidades(html_content)
         for news_url in news_urls:
             news = scrape_noticia(fetch(news_url))
+            # fetch de cada urla
             data.append(news)
-            if len(data) == amount:
+            if len(data) == (math.ceil(amount / 20)):
                 create_news(data)
                 return data
         URL_BASE = scrape_next_page_link(html_content)
