@@ -1,3 +1,4 @@
+import re
 from parsel import Selector
 
 
@@ -20,12 +21,9 @@ def cut_blanks_spaces_list(item_list):
     return list(map(lambda category: cut_blanks_spaces(category), items))
 
 
-def extract_shares_count(string):
-    numbers = list(filter(lambda letter: str(letter).isnumeric(), string)) or 0
-    number = int(
-        numbers if str(numbers).isnumeric() else int("".join(numbers))
-    )
-    return number
+def extract_number(string):
+    print(re.sub(r"\D", "", string))
+    return int(re.sub(r"\D", "", string))
 
 
 def extract_summary(query):
