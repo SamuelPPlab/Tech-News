@@ -1,6 +1,8 @@
 import requests
 import time
+import math
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -22,9 +24,11 @@ def scrape_noticia(html_content):
     data["url"] = selector.css("meta[property='og:url']::attr(content)").get()
     data["title"] = selector.css("h1.tec--article__header__title::text").get()
     data["timestamp"] = selector.css("time::attr(datetime)").get()
-    data["writer"] = (
-        selector.css("a.tec--author__info__link::text").get().strip()
-    )
+    writer = selector.css("a.tec--author__info__link::text").get()
+    if writer:
+        data["writer"] = writer.strip()
+    else:
+        data["writer"] = None
 
     shares = selector.css("div.tec--toolbar__item::text").get()
     if shares:
@@ -34,10 +38,13 @@ def scrape_noticia(html_content):
     data["shares_count"] = shares_count
 
     comments = selector.css("button.tec--btn::attr(data-count)").get()
-    data["comments_count"] = int(comments)
+    if comments:
+        data["comments_count"] = int(comments)
+    else:
+        data["comments_count"] = 0
 
     summary = selector.css(
-        ".tec--article__body p:first-child *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall()
     data["summary"] = "".join(summary)
 
@@ -68,4 +75,29 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url_news = "https://www.tecmundo.com.br/novidades"
+    page_news = fetch(url_news)
+    urls_list = scrape_novidades(page_news)
+    pages_content = []
+    news = []
+    pages_quantity = math.ceil(amount / 20)
+
+    for index_page in range(pages_quantity):
+        if index_page == 0:
+            for url in urls_list:
+                pages_content.append(fetch(url))
+                news.append(
+                    scrape_noticia(pages_content[len(pages_content) - 1])
+                )
+        else:
+            url_news = scrape_next_page_link(page_news)
+            page_news = fetch(url_news)
+            urls_list = scrape_novidades(page_news)
+            for url in urls_list:
+                pages_content.append(fetch(url))
+                news.append(
+                    scrape_noticia(pages_content[len(pages_content) - 1])
+                )
+            del news[amount:]
+    create_news(news)
+    return news
