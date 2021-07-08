@@ -25,14 +25,21 @@ def search_by_date(date):
         results = search_news({"timestamp": regex})
         news = []
         for result in results:
-            newsList = (result["title"], result["url"])
-            news.append(newsList)
+            news_list = (result["title"], result["url"])
+            news.append(news_list)
     return news
 
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    news = []
+    for source_item in source:
+        regex = re.compile(f'.*{source_item}.*', re.IGNORECASE)
+        results = search_news({"sources": regex})
+        for result in results:
+            news_list = (result["title"], result["url"])
+            news.append(news_list)
+        return news
 
 
 # Requisito 9
