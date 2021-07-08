@@ -40,4 +40,8 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    list_news = []
+    for n in db.news.find({"categories": re.compile(category, re.IGNORECASE)}):
+        new_item = (n['title'], n['url'])
+        list_news.append(new_item)
+    return list_news
