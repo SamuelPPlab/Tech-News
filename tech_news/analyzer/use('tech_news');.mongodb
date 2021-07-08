@@ -1,0 +1,10 @@
+use('tech_news');
+db.news.find({"title": "VAMOSCOMTUDO"}, { _id: 0, title: 1 })
+
+
+use('tech_news');
+db.news.find({"title": "vamoscomtudo"}, { _id: 0, title: 1 })
+
+use('tech_news');
+db.news.find()
+
