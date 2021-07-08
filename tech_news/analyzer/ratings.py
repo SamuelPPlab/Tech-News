@@ -15,7 +15,6 @@ def top_5_news():
         {"$limit": 5},
     ]
     news_db = list(get_collection().aggregate(pipeline))
-    pprint.pprint(news_db)
     news_list = []
     for news in news_db:
         news_list.append((news["title"], news["url"]))
