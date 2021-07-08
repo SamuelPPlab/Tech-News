@@ -69,18 +69,13 @@ def get_tech_news(amount):
     url_list = []
     url = "https://www.tecmundo.com.br/novidades"
     for _ in range(math.ceil(amount / 20)):
-        data = fetch(url) 
-        # sempre multiplos de 20 pagina pricipal
+        data = fetch(url)
         url_novidades = scrape_novidades(data)
-        # retorna array de urls
         for url_item in url_novidades:
             url_list.append(url_item)
-        url = scrape_next_page_link(data) 
-        # aqui vira pages
+        url = scrape_next_page_link(data)
     for index in range(amount):
-        # amount é a quantidade de noticias
-        noticia = scrape_noticia(fetch(url_list[index]))
-        noticias.append(noticia)
+        noticias.append(scrape_noticia(fetch(url_list[index])))
     create_news(noticias)
     return noticias
 
