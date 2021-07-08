@@ -39,12 +39,12 @@ def scrape_noticia(html_content):
             str(item).strip()
             for item in selector.css("div.z--mb-16 .tec--badge::text").getall()
         ],
-        "categories": [
-            str(item).strip()
-            for item in selector.css(
-                "div#js-categories a.tec--badge::text"
-            ).getall()
-        ],
+        "categories": list(
+            map(
+                str.strip,
+                selector.css("div#js-categories a.tec--badge::text").getall(),
+            )
+        ),
     }
     return new_dict
 
@@ -78,4 +78,3 @@ def get_tech_news(amount):
                 create_news(data)
                 return data
         URL_BASE = scrape_next_page_link(html_content)
-

@@ -1,19 +1,18 @@
 # Requisito 10
 from tech_news.database import find_news
+from operator import itemgetter
 
-# https://pythonhelp.wordpress.com/2014/04/06/ordenacao-de-uma-lista/
 
-
+# https://www.programiz.com/python-programming/methods/built-in/sorted
+# https://stackoverflow.com/questions/18595686/how-do-operator-itemgetter-and-sort-work
 def top_5_news():
-    for index, valor in enumerate(
-        [
-            item
-            for item in find_news()
-            if (item["shares_count"] + item["comments_count"])
-        ].sort(reverse=True)
-    ):
-        if index < 5:
-            return (f"noticia_{index + 1}", valor["url"])
+    order_by_name = sorted(find_news(), key=itemgetter("title"))   
+    top = sorted(
+        order_by_name,
+        key=lambda item: item["shares_count"] + item["comments_count"],
+        reverse=True,
+    )[:5]
+    return [(top["title"], top["url"]) for top in top]
 
 
 # Requisito 11
