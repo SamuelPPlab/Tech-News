@@ -12,7 +12,7 @@ def search_by_title(title):
         a = (result["title"], result["url"])
         news.append(a)
     return news
-
+    
 
 # Requisito 7
 def search_by_date(date):
