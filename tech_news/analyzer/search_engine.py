@@ -51,7 +51,3 @@ def search_by_category(category):
         news_tupla = (result["title"], result["url"])
         news.append(news_tupla)
     return news
-
-# db.stuff.find_one({'name': re.compile(username, re.IGNORECASE)})
-# db.employees.find( { first_name: { $regex: /michael/i } } )
-# db.yourCollectionName.find({"yourFieldName":/^yourvalue$/i});
