@@ -1,4 +1,5 @@
 import requests
+import time
 
 
 LINK = "https://www.tecmundo.com.br/novidades"
@@ -6,20 +7,17 @@ LINK = "https://www.tecmundo.com.br/novidades"
 
 # Requisito 1
 def fetch(url):
-    REQUEST = requests.get(url)
-    print(REQUEST.raise_for_status())
-    # print(type(REQUEST.status_code))
-    # print(REQUEST.headers["Content-Type"])
-    if REQUEST.status_code == 200:
-        try:
-            HTML = REQUEST.text
-            # print(HTML)
-            return HTML
-        except ValueError:
-            print("Deu algum Erro")
-
-
-fetch(LINK)
+    try:
+        resquest_url = requests.get(url, timeout=3)
+        time.sleep(1)
+        print(resquest_url.status_code)
+        status = resquest_url.status_code
+        if status != 200:
+            return None
+        html = resquest_url.text
+        return html
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
