@@ -3,8 +3,6 @@ from tech_news.database import search_news, get_collection
 import re
 from datetime import datetime
 
-# sprptime
-
 
 def search_by_title(title):
     find_query = {"title": {"$regex": title, "$options": "i"}}
@@ -43,7 +41,9 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
-
-
-print(search_by_date("2020-11-23"))
+    find_query = {"categories": {"$regex": category, "$options": "i"}}
+    news_search = search_news(find_query)
+    news_list = []
+    for news in news_search:
+        news_list.append((news["title"], news["url"]))
+    return news_list
