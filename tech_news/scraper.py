@@ -31,11 +31,14 @@ def scrape_noticia(html_content):
         )
     )
     writer = writer if writer != "on" else None
-    sources_query = '//div[contains(@class,"z--mb-16")]//a[contains(@title,"Ir para")]/text()'
+    sources_contain = (
+        'contains(@class,"z--mb-16")',
+        'contains(@title,"Ir para")',
+    )
     sources = scraper.cut_blanks_spaces_list(
         scraper.get_many_xpath(
             html_content,
-            sources_query,
+            f"//div[{sources_contain[0]}]//a[{sources_contain[1]}]/text()",
         )
     )
     attributes = dict(
