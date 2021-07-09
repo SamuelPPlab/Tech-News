@@ -35,7 +35,8 @@ def scrape_noticia(html_content):
         "shares_count": int(shares_count.split()[0])
         if shares_count is not None
         else 0,
-        "comments_count": int(comments_count) if comments_count != None else 0,
+        "comments_count": int(comments_count) if comments_count is not None
+        else 0,
         "summary": "".join(
             seletor.css(
                 ".tec--article__body > p:nth-child(1) *::text"
