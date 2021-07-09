@@ -24,29 +24,54 @@ MENU_OPTIONS = [
     " 7 - Sair.",
 ]
 
-SUBMENU_OPTIONS = [
-    "Digite quantas notícias serão buscadas:",
-    "Digite o título:",
-    "Digite a data no formato aaaa-mm-dd:",
-    "Digite a fonte:",
-    "Digite a categoria:",
-]
+
+def option_zero():
+    sub_option = input("Digite quantas notícias serão buscadas: ")
+    print(get_tech_news(int(sub_option)))
+
+
+def option_one():
+    sub_option = input("Digite o título: ")
+    print(search_by_title(sub_option))
+
+
+def option_two():
+    sub_option = input("Digite a data no formato aaaa-mm-dd: ")
+    print(search_by_date(sub_option))
+
+
+def option_three():
+    sub_option = input("Digite a fonte: ")
+    print(search_by_source(sub_option))
+
+
+def option_four():
+    sub_option = input("Digite a categoria: ")
+    print(search_by_category(sub_option))
+
+
+def option_five():
+    print(top_5_news())
+
+
+def option_six():
+    print(top_5_categories())
 
 
 def show_exit_message():
     print("Encerrando script")
 
 
-COMMAND_OPTIONS = [
-    get_tech_news,
-    search_by_title,
-    search_by_date,
-    search_by_source,
-    search_by_category,
-    top_5_news,
-    top_5_categories,
-    show_exit_message,
-]
+COMMAND_OPTIONS = {
+    "0": option_zero,
+    "1": option_one,
+    "2": option_two,
+    "3": option_three,
+    "4": option_four,
+    "5": option_five,
+    "6": option_six,
+    "7": show_exit_message,
+}
 
 
 def show_menu():
@@ -57,15 +82,8 @@ def show_menu():
 
 def analyzer_menu():
     show_menu()
-    try:
-        chosen_number = int(input())
-        if 0 <= chosen_number < len(MENU_OPTIONS):
-            if 0 <= chosen_number < len(SUBMENU_OPTIONS):
-                chosen_term = input(SUBMENU_OPTIONS[chosen_number])
-                COMMAND_OPTIONS[chosen_number](chosen_term)
-            else:
-                COMMAND_OPTIONS[chosen_number]()
-        else:
-            raise ValueError()
-    except Exception:
-        sys.stderr.write("Opção inválida\n")
+    chosen_number = input()
+    if not chosen_number.isdigit() or int(chosen_number) not in range(8):
+        print("Opção inválida", file=sys.stderr)
+        return
+    COMMAND_OPTIONS.get(chosen_number)()
