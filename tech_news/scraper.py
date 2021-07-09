@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # src=https://docs.python-requests.org/en/master/user/quickstart/
@@ -26,18 +27,18 @@ def scrape_noticia(html_content):
     get_title = selector.css("#js-article-title::text").get()
     get_timestamp = selector.css("#js-article-date::attr(datetime)").get()
     get_writer = selector.css(".tec--author__info__link::text").get()
-    writer = get_writer.strip()
-    get_shares_count = selector.css(
+    writer = get_writer.strip() if get_writer else None
+    g_shares_count = selector.css(
         "#js-author-bar > nav > div:nth-child(1)::text"
     ).get()
     suffix = " Compartilharam"
-    get_shares_count = get_shares_count[:-len(suffix)]
-    shares_count = int(get_shares_count) if get_shares_count else 0
+    g_shares_count = g_shares_count[:-len(suffix)] if g_shares_count else 0
+    shares_count = int(g_shares_count)
     get_comments_count = selector.css(
         "#js-comments-btn::attr(data-count)").get()
     comments_count = int(get_comments_count)
     get_summary = selector.css(
-        ".tec--article__body p:nth-child(1) *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall()
     summary = "".join(get_summary)
     get_sources = selector.css(".z--mb-16 .tec--badge::text").getall()
@@ -55,6 +56,7 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories
     }
+    print(dic_result)
     return dic_result
 
 
@@ -76,4 +78,16 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    fetch_url = "https://www.tecmundo.com.br/novidades"
+    news_list = []
+    while len(news_list) < amount:
+        get_response_text = fetch(fetch_url)
+        news_list_links = scrape_novidades(get_response_text)
+        for link in news_list_links:
+            get_url = fetch(link)
+            get_noticia = scrape_noticia(get_url)
+            news_list.append(get_noticia)
+            if len(news_list) == amount:
+                create_news(news_list)
+                return news_list
+        fetch_url = scrape_next_page_link(get_response_text)
