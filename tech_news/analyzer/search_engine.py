@@ -1,5 +1,7 @@
 from tech_news.database import search_news
 import datetime
+
+
 # Requisito 6
 def search_by_title(title):
     query = {"title": {"$regex": title, "$options": "i"}}
@@ -20,7 +22,7 @@ def search_by_date(date):
         datetime.datetime.strptime(date, '%Y-%m-%d')
     except ValueError:
         raise ValueError("Data inválida")
-    query = {"timestamp": {"$gte":date+"T00:00:00", "$lte": date+"T23:59:59"}}
+    query = {"timestamp": {"$gte": date+"T00:00:00", "$lte": date+"T23:59:59"}}
     print(query)
     data = search_news(query)
     noticias = []
@@ -29,6 +31,7 @@ def search_by_date(date):
         url = news.get("url")
         noticias.append((title, url))
     return noticias
+
 
 # Requisito 8
 def search_by_source(source):
@@ -46,7 +49,9 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    query = {"categories": {"$elemMatch": {"$regex": category, "$options": "i"}}}
+    query = {
+      "categories": {"$elemMatch": {"$regex": category, "$options": "i"}}
+    }
 
     data = search_news(query)
 
@@ -56,8 +61,3 @@ def search_by_category(category):
         url = news.get("url")
         noticias.append((title, url))
     return noticias
-
-
-if __name__ == "__main__":
-
-    print(search_by_source("ResetEra"))

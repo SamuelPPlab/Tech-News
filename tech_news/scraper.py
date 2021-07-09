@@ -31,9 +31,9 @@ def scrape_noticia(html_content):
         "url": seletor.css('head > link[rel="canonical"]::attr(href)').get(),
         "title": seletor.css("#js-article-title::text").get(),
         "timestamp": seletor.css("#js-article-date::attr(datetime)").get(),
-        "writer": writer.strip() if writer != None else None,
+        "writer": writer.strip() if writer is not None else None,
         "shares_count": int(shares_count.split()[0])
-        if shares_count != None
+        if shares_count is not None
         else 0,
         "comments_count": int(comments_count) if comments_count != None else 0,
         "summary": "".join(
@@ -44,13 +44,15 @@ def scrape_noticia(html_content):
         "sources": [
             fonte.strip()
             for fonte in seletor.css(
-                ".tec--article__body-grid > div:nth-last-child(2) > div > a *::text"
+                ".tec--article__body-grid > " +
+                "div:nth-last-child(2) > div > a *::text"
             ).getall()
         ],
         "categories": [
             categoria.strip()
             for categoria in seletor.css(
-                ".tec--article__body-grid > div:nth-last-child(1) > div > a *::text"
+                ".tec--article__body-grid > " +
+                "div:nth-last-child(1) > div > a *::text"
             ).getall()
         ],
     }
