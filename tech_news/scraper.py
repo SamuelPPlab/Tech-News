@@ -40,7 +40,7 @@ def scrape_noticia(html_content):
 
     for source in sources:
         new_sources.append(source.strip())
-    
+
     return {
         'url': url,
         'title': title.strip(),
@@ -56,7 +56,13 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    news_links = selector.css(".tec--card__info h3 a::attr(href)").getall()
+
+    if len(news_links) == 0:
+        return []
+    else:
+        return news_links
 
 
 # Requisito 4
