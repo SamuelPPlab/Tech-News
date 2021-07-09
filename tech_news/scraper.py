@@ -117,7 +117,15 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    SELECTOR = Selector(text=html_content)
+
+    link_list = SELECTOR.css("div.tec--card__info h3 a::attr(href)").getall()
+    # print(link_list)
+    return link_list
+
+
+link = "https://www.tecmundo.com.br/novidades"
+scrape_novidades(fetch(link))
 
 
 # Requisito 4
