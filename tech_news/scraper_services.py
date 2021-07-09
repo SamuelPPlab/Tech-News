@@ -7,9 +7,19 @@ def get_one(base, query):
     return selector.css(query).get()
 
 
+def get_one_xpath(base, query):
+    selector = Selector(base)
+    return selector.xpath(query).get()
+
+
 def get_many(base, query):
     selector = Selector(base)
     return selector.css(query).getall()
+
+
+def get_many_xpath(base, query):
+    selector = Selector(base)
+    return selector.xpath(query).getall()
 
 
 def cut_blanks_spaces(string):
@@ -22,7 +32,8 @@ def cut_blanks_spaces_list(item_list):
 
 
 def extract_number(string):
-    print(re.sub(r"\D", "", string))
+    if not isinstance(string, str):
+        return 0
     return int(re.sub(r"\D", "", string))
 
 
