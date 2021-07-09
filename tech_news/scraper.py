@@ -40,7 +40,7 @@ def scrape_noticia(html_content):
 
     for source in sources:
         new_sources.append(source.strip())
-
+    
     return {
         'url': url,
         'title': title.strip(),
@@ -49,7 +49,7 @@ def scrape_noticia(html_content):
         'shares_count': int(shares_count),
         'comments_count': int(comments_count),
         'summary': new_sumary,
-        'sources': new_sources,
+        'sources': new_sources[0:2],
         'categories': new_categories
         }
 
