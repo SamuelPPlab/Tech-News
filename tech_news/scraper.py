@@ -1,21 +1,34 @@
 import requests
-import time
+from time import sleep
 from parsel import Selector
-import re
+from tech_news.database import create_news
+
+# Requisito 1
+
+
+# def fetch(url):
+#     try:
+#         if (url == ''):
+#             return None
+#         response = requests.get(url, timeout=3)
+#         time.sleep(1)
+#         if response.status_code != 200:
+#             return None
+#         return response.text
+#     except requests.ReadTimeout:
+#         return None
+
 
 # Requisito 1
 
 
 def fetch(url):
     try:
-        if (url == ''):
-            return None
+        sleep(1)
+        requests.encoding = "utf-8"
         response = requests.get(url, timeout=3)
-        time.sleep(1)
-        if response.status_code != 200:
-            return None
-        return response.text
-    except requests.ReadTimeout:
+        return response.text if response.status_code == 200 else None
+    except requests.Timeout:
         return None
 
 
@@ -24,61 +37,63 @@ def fetch(url):
 
 def scrape_noticia(html_content):
 
-    categories = []
-    sources = []
+    newsList = {}
 
     selector = Selector(html_content)
-    url = selector.css("head > meta[property='og:url']::attr(content)").get()
-    title = selector.css("#js-article-title::text").get()
-    writer = (
-        selector.css(
-            "#js-author-bar > div > \
-            p.z--m-none.z--truncate.z--font-bold > a::text"
+
+    newsList["url"] = selector.css("head > \
+    meta[property='og:url']::attr(content)").get()
+
+    newsList["title"] = selector.css("#js-article-title::text").get()
+
+    writer = selector.css(".tec--author__info__link::text").get()
+
+    if writer:
+        writer = writer.strip()
+
+    newsList["writer"] = writer
+
+    shares_count = selector.css("#js-author-bar > nav > div::text").get()
+
+    if shares_count:
+        shares_count = int(
+            shares_count.replace(" ", "").replace("Compartilharam", "")
         )
-        .get()
-        .strip()
-    )
-    shares_count = (
-        (selector.css("#js-author-bar > nav > div::text").get())
-        .replace(" ", "")
-        .replace("Compartilharam", "")
-    )
-    comments_count = int(
-        selector.css("#js-comments-btn::attr(data-count)").get()
-    )
+    else:
+        shares_count = 0
+
+    newsList["shares_count"] = shares_count
+
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+
+    if comments_count:
+        comments_count = int(comments_count)
+    elif comments_count is None:
+        comments_count = 0
+
+    newsList["comments_count"] = comments_count
+
     summary = selector.css(
-        "#js-main > div.z--container > article > div.tec--article__body-grid \
-        > div.tec--article__body.z--px-16.p402_premium > p:nth-child(1)"
-    ).get()
-    summary = re.sub(
-        "<[^>]+?>", "", summary
-    )
-    # https://pt.stackoverflow.com/questions/192176/como-remover-tags-em-um-texto-em-python
-    sourcesdiv = selector.css(
-        "#js-main > div.z--container > article > \
-        div.tec--article__body-grid > div.z--mb-16.z--px-16 > div > a::text"
+        "div.tec--article__body > p:first-child *::text"
     ).getall()
-    categoriesdiv = selector.css("#js-categories a::text").getall()
 
-    for categorie in categoriesdiv:
-        categories.append(categorie.strip())
+    summary = "".join(summary)
 
-    for source in sourcesdiv:
-        sources.append(source.strip())
+    newsList["summary"] = summary
 
-    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    newsList["categories"] = list(
+        map(str.strip, selector.css("#js-categories > a::text").getall())
+    )
 
-    newsList = {
-        "url": url,
-        "title": title,
-        "timestamp": timestamp,
-        "writer": writer,
-        "shares_count": int(shares_count),
-        "comments_count": comments_count,
-        "summary": summary,
-        "sources": sources,
-        "categories": categories,
-    }
+    newsList["sources"] = list(
+        map(
+            str.strip,
+            selector.css("a[class=tec--badge]::text").getall(),
+        )
+    )
+
+    newsList["timestamp"] = selector.css("\
+        #js-article-date::attr(datetime)").get()
 
     return newsList
 
@@ -93,12 +108,37 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     selector = Selector(html_content)
-    next_page = selector.css("#js-main > div > div > div.z--col.z--w-2-3 \
-    > div.tec--list.tec--list--lg > a::attr(href)").get()
-
+    next_page = selector.css(
+        "#js-main > div > div > div.z--col.z--w-2-3 \
+    > div.tec--list.tec--list--lg > a::attr(href)"
+    ).get()
     return next_page
 
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    restante = amount
+    url = "https://www.tecmundo.com.br/novidades"
+    noticias = scrape_novidades(fetch(url))
+    mongoappend = []
+    for noticia in noticias:
+        conteudo = fetch(noticia)
+        mongo = scrape_noticia(conteudo)
+        mongoappend.append(mongo)
+    restante = restante - 20
+    while restante > 0:
+        next_page = scrape_next_page_link(fetch(url))
+        noticias = scrape_novidades(fetch(next_page))
+        for noticia in noticias:
+            conteudo = fetch(noticia)
+            mongo = scrape_noticia(conteudo)
+            mongoappend.append(mongo)
+        url = next_page
+        restante = restante - 20
+
+    while len(mongoappend) > amount:
+        pos = len(mongoappend) - 1
+        del mongoappend[pos]
+
+    create_news(mongoappend)
+    return mongoappend
