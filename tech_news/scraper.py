@@ -1,7 +1,9 @@
 import requests
 import time
-import tech_news.scraper_pack.scraper_service as scraper
-import tech_news.scraper_pack.scraper_selector as selector
+from tech_news.scraper_pack import (
+    scraper_service as scraper,
+    scraper_selector as selector,
+)
 from tech_news.database import create_news
 
 # Requisito 1
