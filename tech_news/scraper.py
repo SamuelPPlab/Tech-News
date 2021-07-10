@@ -58,9 +58,7 @@ def scrape_noticia(html_content):
         "summary": summary,
         "sources": sources,
         "categories": categories,
-    }
-
-    
+    }   
 
 
 # Requisito 3
