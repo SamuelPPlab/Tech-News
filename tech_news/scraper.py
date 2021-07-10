@@ -34,12 +34,12 @@ def scrape_noticia(html_content):
     shares_count = selector.css(".tec--toolbar__item::text").get()
     if shares_count:
         noticia['shares_count'] = int(shares_count.split()[0])
-    else: 
+    else:
         noticia['shares_count'] = 0
     comments_count = selector.css("#js-comments-btn ::attr(data-count)").get()
     if comments_count:
         noticia['comments_count'] = int(comments_count.split()[0])
-    else: 
+    else:
         noticia['comments_count'] = 0
     noticia['summary'] = "".join(selector.css(
         ".tec--article__body > p:first-child *::text").getall())
@@ -50,13 +50,13 @@ def scrape_noticia(html_content):
 
     return {
         "url": noticia['url'],
-        "title":  noticia['title'] ,
+        "title": noticia['title'],
         "timestamp": noticia['timestamp'],
-        "writer": noticia['writer'] ,
+        "writer": noticia['writer'],
         "shares_count": noticia['shares_count'],
-        "comments_count":  noticia['comments_count'] ,
-        "summary":  noticia['summary'] ,
-        "sources":  noticia['sources'] ,
+        "comments_count": noticia['comments_count'],
+        "summary": noticia['summary'],
+        "sources": noticia['sources'],
         "categories": noticia['categories']
     }
 
