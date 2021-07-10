@@ -21,10 +21,10 @@ def fetch(url):
 def clear_selector_link(links):
     for link in links:
         if ('canonical' in link):
-            url_news = link
-            index = url_news.index('href="')
-            url_news = url_news[index+6:len(url_news)-2]
-    return url_news
+            link_news = link
+            index = link_news.index('href="')
+            link_news = link_news[index+6:len(link_news)-2]
+            return link_news
 
 
 # Requisito 2
@@ -102,8 +102,8 @@ def get_tech_news(amount):
     while index < number_of_pages:
         html_content = fetch(url_news)
         itens_urls = scrape_novidades(html_content)
-
         for url_item in itens_urls:
+            print(url_item)
             new_html_content = fetch(url_item)
             if len(array_news) < amount:
                 news = scrape_noticia(new_html_content)

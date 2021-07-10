@@ -32,4 +32,36 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    query_categorys = [
+        {
+          '$unwind': "$categories"
+        },
+        {
+          '$group': {
+            '_id': '$categories',
+            'count': {
+                '$sum': 1
+                }
+            }
+        },
+        {
+          '$project': {
+              '_id': 0,
+              'category': '$_id',
+              'count': 1
+            }
+        },
+        {
+          '$sort': {
+            'count': -1,
+            'category': 1
+          }
+        },
+        {
+          '$limit': 5
+        }
+    ]
+    list_top_categories = []
+    for item in db.news.aggregate(query_categorys):
+        list_top_categories.append(item['category'])
+    return list_top_categories

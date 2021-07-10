@@ -42,3 +42,32 @@ db.news.aggregate([
     $limit: 5
   }
 ])
+
+
+use('tech_news');
+db.news.aggregate([
+  {
+    $unwind: "$categories"
+  },
+  {
+    $group: {
+      _id: '$categories',
+      count: { $sum: 1 }
+    }
+  },
+  {
+    $project: 
+    {_id: 0,
+    category: '$_id',
+    count: 1}
+  },
+  {
+    $sort: {
+      count: -1,
+      category: 1
+    }
+  },
+  {
+    $limit: 5
+  }
+])
