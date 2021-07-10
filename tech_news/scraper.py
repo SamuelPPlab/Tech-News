@@ -2,6 +2,7 @@ import requests
 import time
 from parsel import Selector
 
+
 # Requisito 1
 def fetch(url):
     time.sleep(1)
@@ -14,19 +15,28 @@ def fetch(url):
     else:
         return response.text
 
+
 # Requisito 2
 def scrape_noticia(html_content):
     noticia = {}
     selector = Selector(text=html_content)
     noticia['url'] = selector.css("link[ rel=canonical] ::attr(href)").get()
     noticia['title'] = selector.css("#js-article-title::text").get()
-    noticia['timestamp'] = selector.css("#js-article-date ::attr(datetime)").get()
-    noticia['writer'] = (selector.css(".tec--author__info__link::text").get().strip() if selector.css(".tec--author__info__link::text").get() else None)
-    noticia['shares_count'] = int((selector.css(".tec--toolbar__item::text").get()).split()[0])
-    noticia['comments_count'] = int(selector.css("#js-comments-btn ::attr(data-count)").get())
-    noticia['summary'] = "".join(selector.css(".tec--article__body > p:first-child *::text").getall())
-    noticia['sources'] = list(map(str.strip, selector.css(".z--mb-16 .tec--badge::text").getall()))
-    noticia['categories'] = list(map(str.strip, selector.css("#js-categories a ::text").getall()))
+    noticia['timestamp'] = selector.css(
+        "#js-article-date ::attr(datetime)").get()
+    noticia['writer'] = (selector.css(
+        ".tec--author__info__link::text").get().strip()
+        if selector.css(".tec--author__info__link::text").get() else None)
+    noticia['shares_count'] = int((selector.css(
+        ".tec--toolbar__item::text").get()).split()[0])
+    noticia['comments_count'] = int(selector.css(
+        "#js-comments-btn ::attr(data-count)").get())
+    noticia['summary'] = "".join(selector.css(
+        ".tec--article__body > p:first-child *::text").getall())
+    noticia['sources'] = list(map(str.strip, selector.css(
+        ".z--mb-16 .tec--badge::text").getall()))
+    noticia['categories'] = list(map(str.strip, selector.css(
+        "#js-categories a ::text").getall()))
     return noticia
 
 
