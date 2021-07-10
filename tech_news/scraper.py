@@ -1,8 +1,7 @@
 import requests
 import time
 from parsel import Selector
-
-# import database
+from tech_news.database import create_news
 
 # Requisito 1
 
@@ -33,16 +32,14 @@ def scrape_noticia(html_content):
     ).get()
 
     writer = selector.css(".tec--author__info__link::text").get()
-    if writer:
-        writer = writer.strip()
 
     shares_count = selector.css(".tec--toolbar__item::text").get()
-    if shares_count:
-        shares_count = int(shares_count.split("Compartilharam")[0])
 
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    if comments_count:
-        comments_count = int(comments_count)
+
+    writer, shares_count, comments_count = set_fields(
+        writer, shares_count, comments_count
+    )
 
     summary = "".join(
         selector.css(".tec--article__body p:first-child *::text").getall()
@@ -67,6 +64,18 @@ def scrape_noticia(html_content):
     }
 
 
+def set_fields(writer, shares_count, comments_count):
+    if writer:
+        writer = writer.strip()
+    if shares_count:
+        shares_count = int(shares_count.split("Compartilharam")[0])
+    else:
+        shares_count = 0
+    if comments_count:
+        comments_count = int(comments_count)
+    return writer, shares_count, comments_count
+
+
 # Requisito 3
 def scrape_novidades(html_content):
     list_news = []
@@ -87,11 +96,13 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
+    list_news_data = []
     resp_fetch = fetch("https://www.tecmundo.com.br/novidades")
     list_news = scrape_novidades(resp_fetch)
     for item in list_news:
         resp_fecth_new = fetch(item)
         content_new = scrape_noticia(resp_fecth_new)
-        print(content_new)
-    # data = database.get_collection()
-    # return data
+        list_news_data.append(content_new)
+    print(list_news_data)
+    create_news(list_news_data)
+    return list_news_data
