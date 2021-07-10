@@ -1,6 +1,18 @@
+import tech_news.database as db
+import re
+
 # Requisito 6
+
+
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    news_list = db.search_news(
+        {"title": {"$regex": re.compile(title, re.IGNORECASE)}}
+    )
+    news_tuple_list = list(
+        map(lambda news: (news["title"], news["url"]), news_list)
+    )
+
+    return news_tuple_list
 
 
 # Requisito 7
