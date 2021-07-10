@@ -67,6 +67,7 @@ def get_tech_news(amount):
         new_response = fetch(news_urls[index])
         new_info = scrape_noticia(new_response)
         news.append(new_info)
+        print(new_info["title"])
     print('Size', len(news_urls))
     create_news(news)
     return news
