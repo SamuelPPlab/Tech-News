@@ -1,6 +1,10 @@
 import requests
 import time
+import math
 from parsel import Selector
+
+
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -27,17 +31,34 @@ def scrape_noticia(html_content):
     noticia['writer'] = (selector.css(
         ".tec--author__info__link::text").get().strip()
         if selector.css(".tec--author__info__link::text").get() else None)
-    noticia['shares_count'] = int((selector.css(
-        ".tec--toolbar__item::text").get()).split()[0])
-    noticia['comments_count'] = int(selector.css(
-        "#js-comments-btn ::attr(data-count)").get())
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    if shares_count:
+        noticia['shares_count'] = int(shares_count.split()[0])
+    else: 
+        noticia['shares_count'] = 0
+    comments_count = selector.css("#js-comments-btn ::attr(data-count)").get()
+    if comments_count:
+        noticia['comments_count'] = int(comments_count.split()[0])
+    else: 
+        noticia['comments_count'] = 0
     noticia['summary'] = "".join(selector.css(
         ".tec--article__body > p:first-child *::text").getall())
     noticia['sources'] = list(map(str.strip, selector.css(
         ".z--mb-16 .tec--badge::text").getall()))
     noticia['categories'] = list(map(str.strip, selector.css(
         "#js-categories a ::text").getall()))
-    return noticia
+
+    return {
+        "url": noticia['url'],
+        "title":  noticia['title'] ,
+        "timestamp": noticia['timestamp'],
+        "writer": noticia['writer'] ,
+        "shares_count": noticia['shares_count'],
+        "comments_count":  noticia['comments_count'] ,
+        "summary":  noticia['summary'] ,
+        "sources":  noticia['sources'] ,
+        "categories": noticia['categories']
+    }
 
 
 # Requisito 3
@@ -54,4 +75,18 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    URL = "https://www.tecmundo.com.br/novidades"
+    NEWS = []
+    LINK_NEWS = []
+    for _ in range(math.ceil(amount / 20)):
+        HTML_CONTENT = fetch(URL)
+        scrape_news = scrape_novidades(HTML_CONTENT)
+        for link_url in scrape_news:
+            LINK_NEWS.append(link_url)
+        URL = scrape_next_page_link(HTML_CONTENT)
+
+    for item in range(amount):
+        NEWS.append(scrape_noticia(fetch(LINK_NEWS[item])))
+
+    create_news(NEWS)
+    return NEWS
