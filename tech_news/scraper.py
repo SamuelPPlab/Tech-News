@@ -19,7 +19,7 @@ def fetch(url):
 
 # Requisito 2
 
-def scrape_noticia(html_content):   
+def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     all_news = {}
     selector = Selector(text=html_content)
