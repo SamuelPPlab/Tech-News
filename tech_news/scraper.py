@@ -18,16 +18,21 @@ def fetch(url):
         time.sleep(1)
 
 
-# Requisito 2
-def scrape_noticia(html_content):
-    selector = Selector(text=html_content)
-
-    links = selector.css('link').getall()
+def clear_selector_link(links):
     for link in links:
         if ('canonical' in link):
             url_news = link
             index = url_news.index('href="')
             url_news = url_news[index+6:len(url_news)-2]
+    return url_news
+
+
+# Requisito 2
+def scrape_noticia(html_content):
+    selector = Selector(text=html_content)
+
+    links = selector.css('link').getall()
+    url_news = clear_selector_link(links)
 
     title = selector.css('#js-article-title::text').get()
     timestamp = selector.css('#js-article-date::attr(datetime)').get()
