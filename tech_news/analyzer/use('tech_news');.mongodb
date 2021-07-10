@@ -21,3 +21,24 @@ db.news.find({'timestamp': {'$eq':  "2021-07-08T14:30:01"}}
 use('tech_news');
 db.news.find({'timestamp': {"$regex": '2021-07-08'} }
 , { _id: 0, title: 1, timestamp: 1 })
+
+
+use('tech_news');
+db.news.aggregate([
+  {
+    $project: {
+      'popularidade': { $add: ['$shares_count', '$comments_count']},
+      title: 1,
+      url: 1,
+      _id: 0
+    }
+  },
+  {
+    $sort: {
+      popularidade: -1, title: 1
+    }
+  },
+  {
+    $limit: 5
+  }
+])

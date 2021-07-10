@@ -43,7 +43,11 @@ def scrape_noticia(html_content):
         shares_count = 0
 
     prop_comments = '#js-comments-btn::attr(data-count)'
-    comments_count = int(selector.css(prop_comments).get())
+    comments_count = selector.css(prop_comments).get()
+    if comments_count is not None:
+        comments_count = int(comments_count)
+    else:
+        comments_count = 0
     prop_summary = '#js-main > div.z--container > article >'
     prop_summary += ' div.tec--article__body-grid > div.tec--article__body'
     prop_summary += ' > p:nth-child(1) *::text'
