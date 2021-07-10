@@ -15,58 +15,68 @@ def fetch(url):
         return None
 
 
-# Requisito 2
-def scrape_noticia(html_content):
-    url = scraper.get_one(html_content, 'link[rel="canonical"]::attr("href")')
-    title = scraper.get_one(
-        html_content, 'h1[class="tec--article__header__title"]::text'
-    )
-    timestamp = scraper.get_one(html_content, "time::attr(datetime)")
-
+def get_writer(base):
     writer_contain = "a[contains(@href, 'autor')]"
     writer = scraper.cut_blanks_spaces(
         scraper.get_one_xpath(
-            html_content,
+            base,
             f"//p/{writer_contain}/text()|/{writer_contain}/text()",
         )
     )
-    writer = writer if writer != "on" else None
+    return writer if writer != "on" else None
+
+
+def get_sources(base):
     sources_contain = (
         'contains(@class,"z--mb-16")',
         'contains(@title,"Ir para")',
     )
     sources = scraper.cut_blanks_spaces_list(
         scraper.get_many_xpath(
-            html_content,
+            base,
             f"//div[{sources_contain[0]}]//a[{sources_contain[1]}]/text()",
         )
     )
-    attributes = dict(
+    return sources
+
+
+# Requisito 2
+def scrape_noticia(html_content):
+    url = scraper.get_one(html_content, 'link[rel="canonical"]::attr("href")')
+    title = scraper.get_one_xpath(
+        html_content, '//h1[@class="tec--article__header__title"]/text()'
+    )
+    timestamp = scraper.get_one(html_content, "time::attr(datetime)")
+    writer = get_writer(html_content)
+    sources = get_sources(html_content)
+    shares_count = scraper.extract_number(
+        scraper.get_one_xpath(
+            html_content, '//div[@class="tec--toolbar__item"]/text()'
+        )
+    )
+    comments_count = int(
+        scraper.get_one(html_content, "#js-comments-btn::attr(data-count)")
+    )
+    summary = scraper.extract_summary(
+        scraper.get_one(html_content, ".tec--article__body p")
+    )
+    categories = scraper.cut_blanks_spaces_list(
+        scraper.get_many(html_content, "#js-categories a::text")
+    )
+
+    return dict(
         {
             "url": url,
             "title": title,
             "timestamp": timestamp,
             "writer": writer,
-            "shares_count": scraper.extract_number(
-                scraper.get_one(
-                    html_content, 'div[class="tec--toolbar__item"]::text'
-                )
-            ),
-            "comments_count": int(
-                scraper.get_one(
-                    html_content, "#js-comments-btn::attr(data-count)"
-                )
-            ),
-            "summary": scraper.extract_summary(
-                scraper.get_one(html_content, ".tec--article__body p")
-            ),
+            "shares_count": shares_count,
+            "comments_count": comments_count,
+            "summary": summary,
             "sources": sources,
-            "categories": scraper.cut_blanks_spaces_list(
-                scraper.get_many(html_content, "#js-categories a::text")
-            ),
+            "categories": categories,
         }
     )
-    return attributes
 
 
 # Requisito 3 class="tec--list__item"
