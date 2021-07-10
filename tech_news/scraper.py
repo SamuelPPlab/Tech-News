@@ -40,9 +40,10 @@ def scrape_noticia(html_content):
     if comments_count is not None:
         comments_count = int(comments_count)
     summary = "".join(
-        selector.css(
-            "div.tec--article__body p:nth-child(1) *::text").getall()
-    )
+            selector.css(
+                ".tec--article__body > p:first-child *::text"
+            ).getall()
+        )
     sources = selector.css("div.z--mb-16 a.tec--badge::text").getall()
     sources = [source.strip() for source in sources]
     categories = selector.css("div#js-categories a::text").getall()
@@ -58,6 +59,8 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories,
     }
+
+    
 
 
 # Requisito 3
