@@ -114,7 +114,6 @@ def get_tech_news(amount):
 
         nextPageUrl = scrape_next_page_link(html_content)
 
-        print(nextPageUrl)
         if nextPageUrl == 'https://www.tecmundo.com.br/novidades?page=3':
             break
 
@@ -127,6 +126,3 @@ def get_tech_news(amount):
 
     create_news(allNewsList)
     return allNewsList
-
-
-# print(get_tech_news(2))
