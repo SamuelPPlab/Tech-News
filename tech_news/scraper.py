@@ -81,12 +81,15 @@ def scrape_novidades(html_content):
     return selector.css("h3 .tec--card__title__link::attr(href)").getall()
 
 
-print(scrape_novidades(fetch("https://www.tecmundo.com.br/novidades")))
-
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
 
+    next_page_url = selector.css(".tec--btn::attr(href)").get()
+
+    return next_page_url
+
+# print(scrape_next_page_link(fetch("https://www.tecmundo.com.br/novidades")))
 
 # Requisito 5
 def get_tech_news(amount):
