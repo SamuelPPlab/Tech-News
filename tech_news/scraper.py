@@ -31,13 +31,12 @@ def scrape_noticia(html_content):
     writer = selector.css(".tec--author__info__link::text").get()
     if writer is not None:
         writer = writer.strip()
-    shares_count = selector.css(".tec--toolbar__item::text").get()
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
     if shares_count is not None:
         shares_count = int((shares_count.strip()).split(" ")[0])
     else:
         shares_count = 0
-    comments_count = selector.css(
-        "#js-comments-btn::attr(data-count)").get()
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
     if comments_count is not None:
         comments_count = int(comments_count)
     summary = "".join(
