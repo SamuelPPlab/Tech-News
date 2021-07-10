@@ -1,6 +1,15 @@
+from tech_news.database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    title = title.lower().capitalize()
+    response = search_news({"title": title})
+    if response:
+        tupla_response = [(response[0].get("title"), response[0].get("url"))]
+    else:
+        tupla_response = []
+    return tupla_response
 
 
 # Requisito 7
