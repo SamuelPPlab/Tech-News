@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+import datetime
 
 
 # Requisito 6
@@ -14,6 +15,17 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     """Seu código deve vir aqui"""
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+        date_list = search_news({"timestamp": {"$regex": date}})
+    except ValueError:
+        raise ValueError('Data inválida')
+
+    date_tupla = []
+    for tupla in date_list:
+        date_tupla.append((tupla['title'], tupla['url']))
+
+    return date_tupla
 
 
 # Requisito 8
