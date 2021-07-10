@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -33,15 +34,19 @@ def scrape_noticia(html_content):
 
     noticia['writer'] = selector.css(
         "a.tec--author__info__link::text"
-    ).get().strip()
+    ).get()
+    if noticia['writer'] is not None:
+        noticia['writer'] = noticia['writer'].strip()
 
     noticia['shares_count'] = selector.css(
         "div.tec--toolbar__item::text"
     ).get()
     suffix = " Compartilharam"
-    if noticia['shares_count'].endswith(suffix):
+    if noticia['shares_count']:
         noticia['shares_count'] = noticia['shares_count'][1:-len(suffix)]
-    noticia['shares_count'] = int(noticia['shares_count'])
+        noticia['shares_count'] = int(noticia['shares_count'])
+    else:
+        noticia['shares_count'] = 0
 
     noticia['comments_count'] = selector.css(
         "button#js-comments-btn::attr(data-count)"
@@ -71,9 +76,24 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css(".tec--btn::attr(href)").get()
 
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    noticias = []
+    link_noticias = []
+    html_novidades = fetch("https://www.tecmundo.com.br/novidades")
+    link_noticias.extend(scrape_novidades(html_novidades))
+    while len(link_noticias) < amount:
+        novidades_next_page = scrape_next_page_link(html_novidades)
+        html_novidades = fetch(novidades_next_page)
+        link_noticias.extend(scrape_novidades(html_novidades))
+
+    for link in link_noticias[:amount]:
+        html_noticia = fetch(link)
+        noticias.append(scrape_noticia(html_noticia))
+
+    create_news(noticias)
+    return noticias
