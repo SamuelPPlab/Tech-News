@@ -95,4 +95,3 @@ def get_tech_news(amount):
                 create_news(html_news)
                 return html_news
         page = scrape_next_page_link(html)
-# requisito 5
