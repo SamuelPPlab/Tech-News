@@ -14,13 +14,15 @@ def check_date(date):
         raise ValueError("Data inválida")
 
 
+def search_off_case_sensitive(key, search):
+    return db.search_news({key: {"$regex": re.compile(search, re.IGNORECASE)}})
+
+
 # Requisito 6
 
 
 def search_by_title(title):
-    news_list = db.search_news(
-        {"title": {"$regex": re.compile(title, re.IGNORECASE)}}
-    )
+    news_list = search_off_case_sensitive("title", title)
     news_tuple_list = get_tuple_list(news_list)
     return news_tuple_list
 
@@ -28,15 +30,17 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     check_date(date)
-    news_list = db.search_news({"timestamp": {"$regex": date}})
+    news_list = search_off_case_sensitive("timestamp", date)
     return get_tuple_list(news_list)
 
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    news_list = search_off_case_sensitive("sources", source)
+    return get_tuple_list(news_list)
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news_list = search_off_case_sensitive("categories", category)
+    return get_tuple_list(news_list)
