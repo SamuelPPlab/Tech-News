@@ -42,7 +42,7 @@ def scrape_noticia(html_content):
     )
 
     summary = "".join(
-        selector.css(".tec--article__body p:first-child *::text").getall()
+        selector.css(".tec--article__body > p:first-child *::text").getall()
     )
 
     for item in selector.css(".z--mb-16 .tec--badge::text").getall():
@@ -96,13 +96,26 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
+    number_page = 1
     list_news_data = []
-    resp_fetch = fetch("https://www.tecmundo.com.br/novidades")
-    list_news = scrape_novidades(resp_fetch)
-    for item in list_news:
-        resp_fecth_new = fetch(item)
-        content_new = scrape_noticia(resp_fecth_new)
-        list_news_data.append(content_new)
-    print(list_news_data)
+    counter = 0
+
+    while amount > counter:
+        if number_page == 1:
+            url = "https://www.tecmundo.com.br/novidades"
+        else:
+            url = "https://www.tecmundo.com.br/novidades?page=" + str(
+                number_page
+            )
+        resp_fetch = fetch(url)
+        list_news = scrape_novidades(resp_fetch)
+
+        for item in list_news:
+            if amount > counter:
+                resp_fecth_one_news = fetch(item)
+                content_one_news = scrape_noticia(resp_fecth_one_news)
+                list_news_data.append(content_one_news)
+                counter += 1
+        number_page += 1
     create_news(list_news_data)
     return list_news_data
