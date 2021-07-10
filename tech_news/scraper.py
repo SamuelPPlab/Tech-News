@@ -19,7 +19,7 @@ def fetch(url):
 
 # Requisito 2
 
-def scrape_noticia(html_content):
+def scrape_noticia(html_content):   
     """Seu código deve vir aqui"""
     all_news = {}
     selector = Selector(text=html_content)
@@ -47,7 +47,6 @@ def scrape_noticia(html_content):
 
     all_news['summary'] = "".join(selector.css(
         ".tec--article__body > p:first-child *::text").getall())
-        
     all_news['sources'] = list(map(str.strip, selector.css(
         ".z--mb-16 .tec--badge::text").getall()))
 
@@ -60,11 +59,15 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    return selector.css("h3 > .tec--card__title__link::attr(href)").getall()
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    return selector.css(".tec--btn::attr(href)").get()
 
 
 # Requisito 5
