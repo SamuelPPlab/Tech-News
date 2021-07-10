@@ -2,7 +2,7 @@ import requests
 import time
 from parsel import Selector
 
-# import tech_news.database as db
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -23,6 +23,31 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(html_content)
+    categories_aux = selector.css("#js-categories > a::text").getall()
+    categories = [category.strip() for category in categories_aux]
+
+    writer = selector.css(".tec--author__info__link::text").get()
+    # referência: Carol Andradre
+    if writer:
+        writer = writer.strip()
+    else:
+        writer = None
+
+    counts = selector.css("#js-author-bar nav div::text").get()
+    if counts is None:
+        counts = 0
+    else:
+        counts = str(
+            selector.css("#js-author-bar nav div::text").get()
+        ).split()[0]
+
+    comments = selector.css("#js-comments-btn::attr(data-count)").get()
+    if comments is None:
+        comments = 0
+
+    get_summary = selector.css(
+        ".tec--article__body > p:first-child *::text"
+    ).getall()  # referência: Carol Andrade
 
     return {
         "url": selector.css("head > link:nth-child(26)")
@@ -30,26 +55,15 @@ def scrape_noticia(html_content):
         .get(),
         "title": selector.css("h1::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": selector.css("#js-author-bar div p a::text").get().strip(),
-        "shares_count": int(
-            selector.css("#js-author-bar nav div::text").get().split()[0]
-        ),
-        "comments_count": int(
-            selector.css(
-                "#js-author-bar nav div button::attr(data-count)"
-            ).get()
-        ),
-        "summary": "".join(
-            selector.css(".tec--article__body p:nth-child(1) *::text").getall()
-        ),
+        "writer": writer,
+        "shares_count": int(counts),
+        "comments_count": int(comments),
+        "summary": "".join(get_summary),
         "sources": [
             source.strip()
             for source in selector.css(".z--mb-16 div a::text").getall()
         ],
-        "categories": [
-            category.strip()
-            for category in selector.css("#js-categories a::text").getall()
-        ],
+        "categories": categories,
     }
 
 
@@ -69,16 +83,15 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
-    html = fetch("https://www.tecmundo.com.br/novidades")
-    urls = scrape_novidades(html)
-    html_news = []  # colocar o html de cada link aqui
-    i = 0
-
-    while i <= amount:
+    html_news = []
+    page = "https://www.tecmundo.com.br/novidades"
+    while len(html_news) < amount:
+        html = fetch(page)
+        urls = scrape_novidades(html)
         for url in urls:
             new = scrape_noticia(fetch(url))
             html_news.append(new)
-            if i == 20 or i == 30:
-                scrape_next_page_link(html)
-            i += 1
+            if len(html_news) == amount:
+                create_news(html_news)
+                return html_news
+        page = scrape_next_page_link(html)
