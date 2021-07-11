@@ -90,7 +90,7 @@ def handle_writer_requests(SELECTOR):
 
     if writer_text is not None:
         return writer_text.strip()
-    return ""
+    return writer_text
 
 
 def handle_comments_count_requests(SELECTOR):
