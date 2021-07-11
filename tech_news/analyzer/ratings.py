@@ -1,10 +1,6 @@
 from tech_news.database import find_news
 
 
-def sort_by_popularity(e):
-    return e["popularity"]
-
-
 # Requisito 10
 def top_5_news():
     get_news = find_news()
@@ -32,9 +28,6 @@ def top_5_news():
             return list_of_popularity
     print(list_of_popularity)
     return list_of_popularity
-
-
-top_5_news()
 
 
 # Requisito 11
