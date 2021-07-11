@@ -302,4 +302,4 @@ def get_tech_news(amount):
     return result
 
 
-# get_tech_news(2)
+# get_tech_news(5)
