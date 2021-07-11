@@ -1,4 +1,6 @@
 from tech_news.database import search_news
+# https://www.alura.com.br/artigos/lidando-com-datas-e-horarios-no-python?gclid=EAIaIQobChMIk8i_z7jb8QIVkgyRCh3JhABGEAAYASAAEgJ8xPD_BwE
+from datetime import datetime
 
 
 # Requisito 6
@@ -17,7 +19,23 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    date_format = "%Y-%m-%d"
+    news = []
+
+# https://docs.python.org/3/tutorial/errors.html
+    try:
+        datetime.strptime(date, date_format)
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    query = {"timestamp": {"$regex": date}}
+    response = search_news(query)
+
+    for new in response:
+        news_items = (new["title"], new["url"])
+        news.append(news_items)
+
+    return news
 
 
 # Requisito 8
