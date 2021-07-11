@@ -34,7 +34,7 @@ def search_by_source(source):
     return [(new["title"], new["url"]) for new in search_list]
 
 
-print(search_by_source("Biel Glasses"))
+# print(search_by_source("Biel Glasses"))
 
 
 # Requisito 9
@@ -44,4 +44,4 @@ def search_by_category(category):
     return [(new["title"], new["url"]) for new in search_list]
 
 
-print(search_by_category("Minha Série"))
+# print(search_by_category("Minha Série"))

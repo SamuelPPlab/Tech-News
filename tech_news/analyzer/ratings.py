@@ -62,7 +62,7 @@ def top_5_categories():
     list_categories2 = [new["categories"][1] for new in limit_list]
     list_categories1.extend(list_categories2)
     limit_categories = list_categories1[:5]
-    print("MINHA LISTA: ", limit_categories)
+    # print("MINHA LISTA: ", limit_categories)
     return limit_categories
 
 
