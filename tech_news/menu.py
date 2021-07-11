@@ -4,27 +4,31 @@ import sys
 # Requisito 12
 
 
-def analyzer_menu():
+def generate_view_menu():
     print("Selecione uma das opções a seguir:")
 
     for index, option in enumerate(menu_options.options):
         print(f" {index} - {option[0]};")
 
-    last_option = len(menu_options.options)
-    print(f" {last_option} - Sair.")
+    exit_index = len(menu_options.options)
+    print(f" {exit_index} - Sair.")
+
+    return exit_index
+
+
+def analyzer_menu():
+    exit_index = generate_view_menu()
 
     try:
         option_selected = int(input())
 
-        if option_selected == last_option:
+        if option_selected == exit_index:
             print("Encerrando script")
             return
+
         result = menu_options.options[option_selected][1]()
         print(result)
-    except ValueError:
+    except ValueError or IndexError:
         print("Opção inválida")
-
     except IndexError:
         print("Opção inválida", file=sys.stderr)
-    except Exception as err:
-        print(err)
