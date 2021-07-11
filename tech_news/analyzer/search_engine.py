@@ -12,6 +12,7 @@ def search_by_title(title):
     response_list = search_news(query)
     for news in response_list:
         titles.append((news["title"], news["url"]))
+
     return titles
 
 
