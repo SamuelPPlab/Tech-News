@@ -20,7 +20,7 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(html_content)
     url = selector.css("meta[property='og:url']::attr(content)").get()
-    title = selector.css("meta[property='og:title']::attr(content)").get()
+    title = selector.css("#js-article-title::text").get(),
     timestamp = selector.css("#js-article-date::attr(datetime)").get()
     writer = selector.css(".tec--author__info__link::text").get()
     shares_count = selector.css(
@@ -53,7 +53,9 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    url = selector.css("h3 > a.tec--card__title__link::attr(href)").getall()
+    return url
 
 
 # Requisito 4
