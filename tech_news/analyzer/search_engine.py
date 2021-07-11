@@ -1,8 +1,6 @@
 from tech_news.database import search_news
 import datetime
 
-regex = datetime.datetime.strptime
-
 
 # Requisito 6
 def search_by_title(title):
