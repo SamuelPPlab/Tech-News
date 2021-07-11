@@ -1,8 +1,6 @@
 import requests
 import time
-import math
 from parsel import Selector
-from tech_news.database import create_news
 
 # Requisito 1
 
