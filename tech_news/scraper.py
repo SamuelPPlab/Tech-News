@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -22,16 +23,25 @@ def scrape_noticia(html_content):
     new["url"] = selector.css("head > link[rel='canonical']::attr(href)").get()
     new["title"] = selector.css(".tec--article__header__title::text").get()
     new["timestamp"] = selector.css("#js-article-date::attr(datetime)").get()
-    new["writer"] = selector.css(
-        ".tec--author__info__link::text").get().strip()
-    new["shares_count"] = int(
-        selector.css(".tec--toolbar__item::text").get().strip(" Compartilh")
-    )
-    new["comments_count"] = int(selector.css(
+    writer = selector.css(
+        ".tec--author__info__link::text").get()
+    if writer is not None:
+        new["writer"] = writer.strip()
+    else:
+        new["writer"] = None
+    shares = selector.css(".tec--toolbar__item::text").get()
+    if shares is not None:
+        new["shares_count"] = int(shares.strip(" Compartilh"))
+    else:
+        new["shares_count"] = 0
+    comments = selector.css(
         "#js-comments-btn::attr(data-count)").get()
-    )
+    if comments is not None:
+        new["comments_count"] = int(comments)
+    else:
+        new["comments_count"] = 0
     summary = selector.css(
-        ".tec--article__body p:first-child *::text").getall()
+        ".tec--article__body > p:first-child *::text").getall()
     new["summary"] = "".join(summary)
     sources = selector.css(
         "a[class='tec--badge']::text").getall()
@@ -60,4 +70,21 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    base_url = "https://www.tecmundo.com.br/novidades"
+    news = []
+
+    while len(news) < amount:
+        response = fetch(base_url)
+        news_links = scrape_novidades(response)
+        base_url = scrape_next_page_link(response)
+
+        for new in news_links:
+            content = fetch(new)
+            new_content = scrape_noticia(content)
+            if len(news) < amount:
+                news.append(new_content)
+            else:
+                break
+
+    create_news(news)
+    return news
