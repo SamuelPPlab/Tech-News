@@ -1,13 +1,15 @@
+from tech_news.database import create_news
 import requests
 from time import sleep
 import re
-# from tech_news.database import create_news
 from parsel import Selector
-summary_tag = '.tec--article__body.z--px-16.p402_premium > p:first-child'
+summary_tag = '.tec--article__body > p:first-child *::text'
 shared_tag = '.tec--toolbar__item::text'
-sources_tag = 'div.z--mb-16.z--px-16 > div > .tec--badge::text'
+sources_tag = 'div.z--mb-16 > div > .tec--badge::text'
 
 
+# referência:
+# https://stackoverflow.com/questions/9662346/python-code-to-remove-html-tags-from-a-string
 def cleaner(html):
     regex = re.compile('<.*?>')
     return re.sub(regex, '', html)
@@ -32,13 +34,17 @@ def scrape_noticia(html_content):
     title = selector.css('.tec--article__header__title::text').get()
     writer = selector.css('.tec--author__info__link::text').get()
     shared_count = selector.css(shared_tag).get()
-    if isinstance(shared_count, list):
-        shared_count = shared_count.split(' ')[1]
+    if isinstance(shared_count, str):
+        shared_count = shared_count.strip().split(' ')[0]
     else:
         shared_count = 0
     comments_count = selector.css('#js-comments-btn::attr(data-count)').get()
+    if isinstance(comments_count, str):
+        comments_count = int(comments_count)
+    else:
+        comments_count = 0
     summary = selector.css(summary_tag).getall()
-    summary = ''.join(summary[:6])
+    summary = ''.join(summary)
     timestamp = selector.css('#js-article-date::attr(datetime)').get()
     categories = selector.css('#js-categories > .tec--badge::text').getall()
     sources = selector.css(sources_tag).getall()
@@ -46,8 +52,6 @@ def scrape_noticia(html_content):
     categories = list(map(lambda x: x.strip(), categories))
     if isinstance(writer, str):
         writer = writer.strip()
-    typeComments = isinstance(comments_count, int)
-    comments_count = int(comments_count) if typeComments else 0
     return {
         "url": url,
         "title": title,
@@ -83,16 +87,20 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
     list = []
+    news = 'https://www.tecmundo.com.br/novidades'
+    html_content = fetch(news)
     while len(list) + 1 < amount:
-        news = 'https://tecmundo.com.br/novidades'
-        html_content = fetch(news)
-        links = scrape_novidades(html_content)
         c = amount if amount < 21 else 20
+        if amount - len(list) < 21:
+            c = amount - len(list)
+        links = scrape_novidades(html_content)
         for n in range(c):
             content = fetch(links[n])
             details = scrape_noticia(content)
             list.append(details)
-        news = scrape_next_page_link(news)
-    # create_news(list)
-    print(list)
+        if (len(list) >= amount):
+            break
+        news = scrape_next_page_link(fetch(news))
+        html_content = fetch(news)
+    create_news(list)
     return list
