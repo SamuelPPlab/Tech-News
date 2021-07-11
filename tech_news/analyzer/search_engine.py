@@ -28,9 +28,25 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    try:
+        find_source = search_news({"sources": {"$regex": source, "$options": "i"}})
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    mylist = []
+    for index in find_source:
+        mylist.append((index['title'], index['url']))
+    return mylist
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    try:
+        find_category = search_news({"categories": {"$regex": category, "$options": "i"}})
+    except ValueError:
+        raise ValueError("Data inválida")
+
+    mylist = []
+    for index in find_category:
+        mylist.append((index['title'], index['url']))
+    return mylist
