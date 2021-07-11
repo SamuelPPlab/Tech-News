@@ -32,7 +32,7 @@ def scrape_noticia(html_content):
         title = selectorItens.css("a.tec--card__title__link::text").get()
         #timestamp = selectorItens.css("div.tec--timestamp").get()
 
-        response_selector = parsel.Selector(html_content+"/"+url)        
+        response_selector = parsel.Selector(html_content+"/"+url)
         writer = response_selector.css("div.tec--author__info").get()
 
         print(writer)
@@ -66,7 +66,9 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     selector = parsel.Selector(html_content)
+    url = selector.css("a.tec--btn::attr(href)").get()
 
+    return url or None
 
 
 # Requisito 5
