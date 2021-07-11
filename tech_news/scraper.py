@@ -1,6 +1,8 @@
 import requests
 import time
+import math
 from parsel import Selector
+from tech_news.database import create_news
 
 # Requisito 1
 
@@ -20,34 +22,32 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(html_content)
     url = selector.css("meta[property='og:url']::attr(content)").get()
-    title = selector.css("#js-article-title::text").get(),
     timestamp = selector.css("#js-article-date::attr(datetime)").get()
     writer = selector.css(".tec--author__info__link::text").get()
     shares_count = selector.css(
         "#js-author-bar > nav > div:nth-child(1)::text"
     ).get()
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    summary = "".join(selector.css(
+    return {
+        "url": url,
+        "title": selector.css("#js-article-title::text").get(),
+        "timestamp": timestamp,
+        "writer": writer.strip() if writer is not None else None,
+        "shares_count": int(shares_count.split()[0]),
+        "comments_count": int(comments_count),
+        "summary": "".join(selector.css(
             ".tec--article__body > p:first-child *::text"
         ).getall()),
-    sources = list(map(
+        "sources": list(map(
             str.strip,
             selector.css("div.z--mb-16 .tec--badge::text").getall(),
         )),
-    categories = list(map(
-            str.strip,
-            selector.css("div#js-categories a.tec--badge::text").getall(),
-        )),
-    return {
-        "url": url,
-        "title": title,
-        "timestamp": timestamp,
-        "writer": writer.strip() if writer is not None else None,
-        "shares_count": shares_count,
-        "comments_count": comments_count,
-        "summary": summary,
-        "sources": sources,
-        "categories": categories,
+        "categories": [
+            categoria.strip()
+            for categoria in selector.css(
+                "div#js-categories a.tec--badge::text"
+            ).getall()
+        ],
     }
 
 
@@ -60,7 +60,8 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css("div.tec--list > a:last-child::attr(href)").get()
 
 
 # Requisito 5
