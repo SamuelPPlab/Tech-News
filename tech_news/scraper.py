@@ -58,7 +58,9 @@ def scrape_novidades(html_content):
     for quote in selector.css(article_selector).getall():
         selectorItens = parsel.Selector(quote)
         url = selectorItens.css("a.tec--card__title__link::attr(href)").get()
-        quotes.append(url)
+
+        if(url):
+            quotes.append(url)
 
     return quotes
 
