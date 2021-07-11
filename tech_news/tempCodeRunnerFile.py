@@ -72,8 +72,6 @@ def scrape_noticia(html_content):
     print(noticia)
 
 
-scrape_noticia(
-    fetch(
-        "https://www.tecmundo.com.br/dispositivos-moveis/215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm"
-    )
-)
+string1 = "https://www.tecmundo.com.br/dispositivos-moveis/215327"
+string2 = "-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm"
+scrape_noticia(fetch(string1 + string2))

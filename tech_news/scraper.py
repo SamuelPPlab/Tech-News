@@ -97,8 +97,6 @@ def scrape_next_page_link(html_content):
     return next_page_url
 
 
-# print(scrape_next_page_link(fetch("https://www.tecmundo.com.br/novidades")))
-
 # Requisito 5
 # def get_tech_news(amount):
 #     URL_BASE = "https://www.tecmundo.com.br/novidades"
@@ -142,3 +140,6 @@ def get_tech_news(amount):
 
     create_news(listaDeNoticias[:amount])
     return listaDeNoticias[:amount]
+
+
+get_tech_news(10)
