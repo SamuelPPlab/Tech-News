@@ -90,7 +90,7 @@ def handle_writer_requests(SELECTOR):
 
     if writer_text is not None:
         return writer_text.strip()
-    return writer_text
+    return ""
 
 
 def handle_comments_count_requests(SELECTOR):
@@ -120,7 +120,9 @@ def handle_title_requests(SELECTOR):
         if title is None:
             title = SELECTOR.css(select).get()
 
-    return title
+    if title is not None:
+        return title
+    return ""
 
 
 # Requisito 2
@@ -200,7 +202,7 @@ def request_amount_less_twenty(html_base, amount, count_value, result_value):
         dict_new = scrape_noticia(html_new)
         result.append(dict_new)
         count += 1
-        print(count, dict_new["title"], dict_new["writer"])
+        print(count, dict_new["title"], "-", dict_new["writer"])
     return {"result": result, "count": count}
 
 
@@ -216,7 +218,7 @@ def request_number_of_news_less_twenty(
         dict_new = scrape_noticia(html_new)
         result.append(dict_new)
         count += 1
-        print(count, dict_new["title"], dict_new["writer"])
+        print(count, dict_new["title"], "-", dict_new["writer"])
     return {"result": result, "count": count}
 
 
@@ -234,7 +236,7 @@ def request_amount_than_twenty(
         result.append(dict_new)
         number_of_news -= 1
         count += 1
-        print(count, dict_new["title"], dict_new["writer"])
+        print(count, dict_new["title"], "-", dict_new["writer"])
     return {"result": result, "count": count, "number_of_news": number_of_news}
 
 

@@ -12,6 +12,40 @@ from tech_news.analyzer.ratings import (
 )
 
 
+def condition_7(response, value, message, number):
+    if response == number and value == number:
+        print(message)
+        return True
+    return False
+
+
+def condition_5_and_6(response, value, function, number):
+    if response == number and value == number:
+        print(function())
+        return True
+    return False
+
+
+def conditional_option(response, value, message, function):
+    result = False
+    result = condition_7(response, value, message, "7")
+    if result is not True:
+        result = condition_5_and_6(response, value, function, "5")
+    if result is not True:
+        result = condition_5_and_6(response, value, function, "6")
+    if result is not True and response == value:
+        result = input(message)
+        if result.isnumeric() is True:
+            function(int(result))
+            result = True
+            return result
+        else:
+            print(function(result))
+            result = True
+            return result
+    return result
+
+
 # Requisito 12
 def analyzer_menu():
     menu_questions = (
@@ -25,33 +59,56 @@ def analyzer_menu():
         " 6 - Listar top 5 categorias;\n"
         " 7 - Sair.\n"
     )
+
+    list_values = [
+        {
+            "number": "0",
+            "message": "Digite quantas notícias serão buscadas:",
+            "function": get_tech_news,
+        },
+        {
+            "number": "1",
+            "message": "Digite o título:",
+            "function": search_by_title,
+        },
+        {
+            "number": "2",
+            "message": "Digite a data no formato aaaa-mm-dd:",
+            "function": search_by_date,
+        },
+        {
+            "number": "3",
+            "message": "Digite a fonte:",
+            "function": search_by_source,
+        },
+        {
+            "number": "4",
+            "message": "Digite a categoria:",
+            "function": search_by_category,
+        },
+        {"number": "5", "message": "", "function": top_5_news},
+        {"number": "6", "message": "", "function": top_5_categories},
+        {"number": "7", "message": "Encerrando script", "function": ""},
+    ]
+
     response = input(menu_questions)
-    result = "Opção inválida"
-    if response == "0":
-        result = input("Digite quantas notícias serão buscadas:")
-        get_tech_news(int(result))
-    elif response == "1":
-        result = input("Digite o título:")
-        print(search_by_title(result))
-    elif response == "2":
-        result = input("Digite a data no formato aaaa-mm-dd:")
-        print(search_by_date(result))
-    elif response == "3":
-        result = input("Digite a fonte:")
-        print(search_by_source(result))
-    elif response == "4":
-        result = input("Digite a categoria:")
-        print(search_by_category(result))
-    elif response == "5":
-        print(top_5_news())
-    elif response == "6":
-        print(top_5_categories())
-    elif response == "7":
-        print("Encerrando script")
-        return
-    else:
-        print(result, file=sys.stderr)
-        return result
+    fail = False
+
+    for value in list_values:
+        result = conditional_option(
+            response,
+            value["number"],
+            value["message"],
+            value["function"],
+        )
+        if result is True:
+            fail = False
+            break
+        else:
+            fail = True
+
+    if fail is True:
+        print("Opção inválida", file=sys.stderr)
 
 
 # analyzer_menu()
