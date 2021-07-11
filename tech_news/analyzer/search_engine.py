@@ -47,4 +47,15 @@ def has_source(noticia, source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    noticias = find_news()
+    return [
+        (noticia["title"], noticia["url"])
+        for noticia in noticias if has_category(noticia, category)
+    ]
+
+
+def has_category(noticia, category):
+    for categoria_noticia in noticia["categories"]:
+        if category.lower() == categoria_noticia.lower():
+            return True
+    return False
