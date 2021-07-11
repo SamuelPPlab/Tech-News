@@ -1,6 +1,18 @@
+from tech_news.database import search_news
+
+def insensitive(title):
+    #referência: Andre Horman
+    query = {"title": {"$regex": title, "$options": "i"}}
+    return query
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    titles = []
+    query = insensitive(title)
+    response_list = search_news(query)
+    for news in response_list:
+        titles.append((news["title"], news["url"]))
+    return titles
 
 
 # Requisito 7
