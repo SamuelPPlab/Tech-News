@@ -1,6 +1,6 @@
 import datetime
-from tech_news.database import search_news
 
+from tech_news.database import search_news
 
 
 # Requisito 6
@@ -29,7 +29,8 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     try:
-        find_source = search_news({"sources": {"$regex": source, "$options": "i"}})
+        find_source = search_news({
+            "sources": {"$regex": source, "$options": "i"}})
     except ValueError:
         raise ValueError("Data inválida")
 
@@ -42,7 +43,8 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     try:
-        find_category = search_news({"categories": {"$regex": category, "$options": "i"}})
+        find_category = search_news({
+            "categories": {"$regex": category, "$options": "i"}})
     except ValueError:
         raise ValueError("Data inválida")
 
