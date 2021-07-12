@@ -59,16 +59,11 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    next = selector.css(".tec--btn::attr(href)").get()
+    return next
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
-
-
-if __name__ == "__main__":
-    with open("tests/assets/tecmundo_pages/novidades.html") as f:
-        html_content = f.read()
-        result = scrape_novidades(html_content)
-        print(result)
