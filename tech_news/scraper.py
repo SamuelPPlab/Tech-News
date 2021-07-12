@@ -2,6 +2,7 @@ import time
 import requests
 from requests.exceptions import HTTPError, ReadTimeout
 
+
 # Requisito 1
 def fetch(url):
     time.sleep(1)
