@@ -44,7 +44,11 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    response = list(
+        get_collection().find({"sources": {"$regex": source, "$options": "i"}})
+    )
+    tupla_response = response_treatment(response)
+    return tupla_response
 
 
 # Requisito 9
