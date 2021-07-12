@@ -37,7 +37,16 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {"sources": {"$regex": '(?i)'+source}}
+    noticia = get_collection()
+    result = noticia.find(query, {"_id": 0, "title": 1, "url": 1})
+    resposta = []
+    for i in result:
+        empty = []
+        empty.append(i["title"])
+        empty.append(i["url"])
+        resposta.append(tuple(empty))
+    return resposta
 
 
 # Requisito 9
