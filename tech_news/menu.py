@@ -1,7 +1,5 @@
 # from tech_news.menu_pack import menu_options
 import sys
-
-
 from tech_news.scraper import get_tech_news
 from tech_news.analyzer.search_engine import (
     search_by_title,
