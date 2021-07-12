@@ -15,6 +15,7 @@ def top_5_news():
     return search_engine_service.get_tuple_list(news_list[:5])
 
 
+# Requisito 11
 def spread_all_categories(news_list):
     categories_list = [news["categories"] for news in news_list]
     return reduce(
@@ -22,24 +23,30 @@ def spread_all_categories(news_list):
     )
 
 
-# Requisito 11
+def count_occurrences(items):
+    return {category: items.count(category) for category in items}
+
+
 def top_5_categories():
     news_list = db.find_news()
     categories_list = spread_all_categories(news_list)
-    categories_list.sort()
-    return categories_list[:5]
 
+    categories_occurrence = count_occurrences(categories_list)
 
-"""  O requisito 11 está em conflito
-     pois solicita a rodenação por ocorrencias,
-     porém o teste cobra em ordem alfabética em um requisito
-    que só tem uma ocorrência de cada item.
-    def get_occurrence_dict(items):
-    return {category: items.count(category) for category in items}
+    categories_occurrences_tuples = list(categories_occurrence.items())
 
-    categories_occurrence = get_occurrence_dict(categories_list)
-    categories_occurrence_in_tuples = list(categories_occurrence.items())
-    categories_occurrence_in_tuples.sort(
-        key=lambda category: category[1],
+    # alphabetical order
+    categories_occurrences_tuples.sort(
+        key=lambda category: category[0],
     )
-    return categories_occurrence_in_tuples[:5] """
+
+    # order of occurrences
+    categories_occurrences_tuples.sort(
+        key=lambda category: category[1], reverse=True
+    )
+
+    sorted_categories = [
+        category[0] for category in categories_occurrences_tuples
+    ]
+
+    return sorted_categories[:5]
