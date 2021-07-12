@@ -13,7 +13,7 @@ def search_by_title(title):
         empty.append(i["url"])
         resposta.append(tuple(empty))
     return resposta
-     
+
 
 # Requisito 7
 def search_by_date(date):
@@ -28,5 +28,3 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
-
-
