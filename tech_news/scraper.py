@@ -22,7 +22,7 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    selector = Selector(text=html_content)
+    selector = Selector(html_content)
     url = selector.css("head link[rel=canonical]::attr(href)").get()
     title = selector.css("#js-article-title::text").get()
     timestamp = selector.css("#js-article-date::attr(datetime)").get()
@@ -50,7 +50,11 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    links = selector.css(
+        ".tec--list__item .tec--card__title__link::attr(href)"
+    ).getall()
+    return links
 
 
 # Requisito 4
@@ -61,3 +65,10 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+
+
+if __name__ == "__main__":
+    with open("tests/assets/tecmundo_pages/novidades.html") as f:
+        html_content = f.read()
+        result = scrape_novidades(html_content)
+        print(result)
