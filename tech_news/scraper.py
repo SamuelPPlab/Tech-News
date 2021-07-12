@@ -115,8 +115,15 @@ def get_tech_news(amount):
                 create_news(news)
                 return news
         url = scrape_next_page_link(url_list)
-
 # Referencias: Instrutores Tulio Olivieri e Maria Carolina req 2
 
 # Referencias: Instrutores Maria Carolina req 5
 # Tulio, Gleison e Lucival-T06 resolver conflito do re2 na tag do summary
+
+
+# if __name__ == "__main__":
+#     html_content = fetch(
+#         'https://www.tecmundo.com.br/novidades'
+#     )
+#     print(scrape_novidades(html_content))
+#     print(scrape_next_page_link(html_content))
