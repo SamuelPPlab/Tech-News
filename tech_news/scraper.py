@@ -20,6 +20,7 @@ def scrape_noticia(html_content):
     selector = Selector(text=html_content)
     url = selector.css("head link[rel='canonical']::attr(href)").get()
     title = selector.css(".tec--article__header__title::text").get()
+    print(title)
     timestamp = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
