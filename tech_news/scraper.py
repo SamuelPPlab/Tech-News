@@ -1,6 +1,8 @@
 import time
+
 import requests
 from parsel import Selector
+
 
 # Requisito 1
 def fetch(url):
