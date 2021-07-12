@@ -53,4 +53,10 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    response = list(
+        get_collection().find(
+            {"categories": {"$regex": category, "$options": "i"}}
+        )
+    )
+    tupla_response = response_treatment(response)
+    return tupla_response
