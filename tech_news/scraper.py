@@ -2,6 +2,7 @@ import re
 import requests
 import time
 
+from tech_news.database import create_news
 from parsel import Selector
 
 
@@ -9,7 +10,7 @@ from parsel import Selector
 def fetch(url):
     try:
         time.sleep(1)
-        response = requests.get(url, timeout=3)
+        response = requests.get(url, timeout=1)
         if(response.status_code == 200):
             return response.text
         else:
@@ -18,40 +19,56 @@ def fetch(url):
         return None
 
 
+def remove_space(list):
+    new_list = []
+    for iten in list:
+        new_list.append(iten.strip())
+    return new_list
+
+
 # Requisito 2
 def scrape_noticia(html_content):
     selector = Selector(text=html_content)
     url = selector.css('head link::attr(href)').getall()[20]
-    title = selector.css('title::text').get().split("-")[0]
     times = selector.css('.tec--timestamp__item time::attr(datetime)').get()
-    writer = selector.css('.z--m-none a::text').get().strip()
-    shares_count = selector.css('.tec--toolbar__item::text').get()[1]
     comments_count = selector.css('.tec--btn::attr(data-count)').get()
-    summary = selector.css('.tec--article__body p').get()
-    sources = selector.css('.tec--badge::text').getall()
+    summary = "".join(
+        selector.css('.tec--article__body > p:first-child *::text').getall()
+    )
+    sources = selector.css('.z--mb-16 a::text').getall()
     categories = selector.css('#js-categories a::text').getall()
+    writer = (
+        selector.css(".tec--author__info__link::text").get().strip()
+        if selector.css('.tec--author__info__link::text').get() else None
+    )
+    new_categories = remove_space(categories)
+    new_sources = remove_space(sources)
 
-    new_categories = []
-    new_sources = []
-    new_sumary = re.sub('<[^>]+?>', '', summary)
+    if re.search("minha-serie", url):
+        title = selector.css('title::text').get().split("| Minha Série")[0]
+    elif re.search("voxel", url):
+        title = selector.css('title::text').get().split("| Voxel")[0]
+    else:
+        shares_count = selector.css('.tec--toolbar__item::text').get()[1]
+        title = selector.css('title::text').get().split('- TecMundo')[0]
 
-    for categorie in categories:
-        new_categories.append(categorie.strip())
-
-    for source in sources:
-        new_sources.append(source.strip())
-
-    return {
+    news_response = {
         'url': url,
         'title': title.strip(),
         'timestamp': times,
         'writer': writer,
-        'shares_count': int(shares_count),
         'comments_count': int(comments_count),
-        'summary': new_sumary,
-        'sources': new_sources[0:2],
+        'summary': summary,
+        'sources': new_sources[0:len(new_sources)],
         'categories': new_categories
         }
+
+    if re.search("minha-serie", url) or re.search('voxel', url):
+        news_response['shares_count'] = int("0")
+        return news_response
+    else:
+        news_response['shares_count'] = int(shares_count)
+        return news_response
 
 
 # Requisito 3
@@ -77,8 +94,23 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    html_text = fetch("https://www.tecmundo.com.br/novidades")
+    links = []
+    news = []
+    while len(links) < amount:
+        next_page = scrape_next_page_link(html_text)
+        response = scrape_novidades(html_text)
+        links.extend(response)
+        if len(links) < amount:
+            html_text = fetch(next_page)
+
+    for link in links:
+        news_data = scrape_noticia(fetch(link))
+        news.append(news_data)
+
+    create_news(news[:amount])
+    return news[:amount]
 
 
-# print("Resultado do fetch:\n")
-# print(fetch("https://www.tecmundo.com.br/novidades"))
+# x = get_tech_news(30)
+# print(x)
