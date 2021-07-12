@@ -1,6 +1,18 @@
+import requests
+
 # Requisito 1
+url = "https://www.tecmundo.com.br/novidades"
+
+
 def fetch(url):
-    """Seu código deve vir aqui"""
+    try:
+        response = requests.get(url, timeout=3)
+        status = response.status_code
+        if status == 200:
+            return response.text
+        return None
+    except requests.Timeout:
+        return None
 
 
 # Requisito 2
