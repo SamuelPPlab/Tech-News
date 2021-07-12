@@ -1,9 +1,25 @@
-# Requisito 1
-def fetch(url):
-    """Seu código deve vir aqui"""
+import requests
+import time
 
+SUCCESS = 200
+
+# Requisito 1
+
+
+def fetch(url):
+    try:
+        response = requests.get(url, timeout=2)
+        time.sleep(1)
+    except requests.ReadTimeout:
+        return None
+    if response.status_code == SUCCESS:
+        return response.text
+    else:
+        return None
 
 # Requisito 2
+
+
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
 
