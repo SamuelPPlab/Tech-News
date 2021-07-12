@@ -1,6 +1,6 @@
 from tech_news.database import search_news
 
-#referência: Andre Horman
+
 def insensitive(title):
     query = {"title": {"$regex": title, "$options": "i"}}
     return query
