@@ -68,7 +68,9 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     selector = Selector(html_content)
 
-    return selector.css("h3.tec--card__title a.tec--card__title__link::attr(href)").getall() # @rafaelmguimaraes
+    return selector.css(
+        "h3.tec--card__title a.tec--card__title__link::attr(href)"
+    ).getall()  # @rafaelmguimaraes
 
 
 # Requisito 4
