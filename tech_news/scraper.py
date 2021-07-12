@@ -22,7 +22,7 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    selector = Selector(html_content)
+    selector = Selector(text=html_content)
     url = selector.css("head link[rel=canonical]::attr(href)").get()
     title = selector.css("#js-article-title::text").get()
     timestamp = selector.css("#js-article-date::attr(datetime)").get()
@@ -42,7 +42,7 @@ def scrape_noticia(html_content):
         "writer": author,
         "shares_count": shares_count,
         "comments_count": int(comments_count),
-        "summary": summary,
+        "summary": "".join(summary),
         "sources": [source.strip() for source in sources],
         "categories": [category.strip() for category in categories],
     }
