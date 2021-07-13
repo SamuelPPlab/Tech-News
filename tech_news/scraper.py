@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 import pprint
 
 
@@ -21,42 +22,51 @@ def fetch(url):
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    news_letter = {}
-    news_letter["url"] = selector.css(
+    newsletter = {}
+    newsletter["url"] = selector.css(
         "head > meta[property='og:url']::attr(content)"
     ).get()
-    news_letter["title"] = selector.css("#js-article-title::text").get()
-    news_letter["timestamp"] = selector.css(
+    newsletter["title"] = selector.css("#js-article-title::text").get()
+    newsletter["timestamp"] = selector.css(
         "#js-article-date::attr(datetime)"
     ).get()
-    news_letter["writer"] = (
+    newsletter["writer"] = (
         selector.css(".tec--author__info__link::text").get().strip()
+        if selector.css(".tec--author__info__link::text").get() is not None
+        else None
+        # source: github Anderson Alves
     )
-    news_letter["shares_count"] = int(
+    newsletter["shares_count"] = int(
         selector.css(".tec--toolbar__item::text")
-        .get()[: -len("Compartilharam")]
-        .strip()
+        .get()
+        .strip()[: -len("Compartilharam")]
+        if selector.css(".tec--toolbar__item::text").get() is not None
+        else 0
+        # source: github Anderson Alves
     )
-    news_letter["comments_count"] = int(
+    newsletter["comments_count"] = int(
         selector.css("#js-comments-btn::attr(data-count)").get()
+        if selector.css("#js-comments-btn::attr(data-count)").get() is not None
+        else 0
+        # source: github Anderson Alves
     )
-    news_letter["summary"] = "".join(
+    newsletter["summary"] = "".join(
         selector.css(".tec--article__body > p:first-child *::text").getall()
     )
-    news_letter["sources"] = list(
+    newsletter["sources"] = list(
         map(
             str.strip,
             selector.css(".z--mb-16 div a.tec--badge::text").getall(),
         )
     )
-    news_letter["categories"] = list(
+    newsletter["categories"] = list(
         map(
             str.strip,
             selector.css("#js-categories a.tec--badge::text").getall(),
         )
     )
 
-    return news_letter
+    return newsletter
 
 
 # Requisito 3
@@ -82,6 +92,18 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+    news = []
+    news_list = []
+    while len(news_list) < amount:
+        response = fetch(url)
+        news_list += scrape_novidades(response)
+        url = scrape_next_page_link(response)
+    for link in news_list[:amount]:
+        news.append(scrape_noticia(fetch(link)))
+
+    create_news(news)
+    return news
 
 
 pp = pprint.PrettyPrinter(indent=4)
