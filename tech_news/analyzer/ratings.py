@@ -4,6 +4,8 @@ from operator import itemgetter
 
 # Requisito 10
 def top_5_news():
+    # https://docs.python.org/3/howto/sorting.html
+    # https://stackoverflow.com/questions/8966538/syntax-behind-sortedkey-lambda
     try:
         found_news = find_news()
         news = sorted(found_news, key=itemgetter("title"))
