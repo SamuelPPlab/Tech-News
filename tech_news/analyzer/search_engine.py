@@ -35,4 +35,7 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = {'categories': {'$regex': f'.*{category}.*', '$options': "i"}}
+    news = search_news(query)
+
+    return [filter_by_column(new) for new in news]
