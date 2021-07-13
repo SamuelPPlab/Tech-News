@@ -41,9 +41,29 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    searched_news_by_source = search_news(
+        {'sources': {'$regex': source, '$options': 'i'}})
+    if not searched_news_by_source:
+        return []
+    news = []
+    for searched_new_by_source in searched_news_by_source:
+        news.append(
+            (searched_new_by_source["title"],
+                searched_new_by_source["url"]))
+    return news
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    # https://stackoverflow.com/questions/11587223/how-to-handle-assertionerror-in-python-and-find-out-which-line-or-statement-it-o
+    try:
+        searched_news_by_source = search_news(
+            {'categories': {'$regex': category, '$options': 'i'}})
+    except AssertionError:
+        return []
+    news = []
+    for searched_new_by_source in searched_news_by_source:
+        news.append(
+            (searched_new_by_source["title"],
+                searched_new_by_source["url"]))
+    return news
