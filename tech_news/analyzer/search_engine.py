@@ -16,7 +16,10 @@ def search_by_date(date):
     try:
         datetime.strptime(date, '%Y-%m-%d')
         news_list = []
-        for news in search_news({"timestamp": {"$regex": date, "$options": "x"}}):
+        for news in search_news({"timestamp": {
+            "$regex": date, "$options": "x"
+            }
+        }):
             tupla = (news['title'], news['url'])
             news_list.append(tupla)
         return news_list
@@ -35,4 +38,11 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    news_list = []
+    for news in search_news({"categories": {
+        "$regex": category, "$options": "i"
+        }
+    }):
+        tupla = (news['title'], news['url'])
+        news_list.append(tupla)
+    return news_list
