@@ -1,18 +1,17 @@
 import requests
+import time
 
 
 # Requisito 1
 def fetch(url):
     try:
-        response = requests.get(url)
+        time.sleep(1)
+        response = requests.get(url, timeout=3)
         if response.status_code == 200:
             return response.text
         return ""
     except requests.HTTPError:
         return ""
-
-
-fetch("https://www.tecmundo.com.br/novidades")
 
 
 # Requisito 2
