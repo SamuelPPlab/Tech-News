@@ -47,9 +47,9 @@ def scrape_novidades(html_content):
     return links
 
 
-scrape_novidades(fetch(
-    "https://www.tecmundo.com.br/novidades"
-))
+# scrape_novidades(fetch(
+#     "https://www.tecmundo.com.br/novidades"
+# ))
 
 
 # Requisito 4
