@@ -1,4 +1,5 @@
-from tech_news.database import find_news, get_collection
+from pymongo import collection
+from tech_news.database import find_news
 
 
 def extract_data(data):
@@ -11,17 +12,9 @@ def top_5_news():
     result = []
     for data in response:
         result.append(extract_data(data))
-    return result[:5]
+    return result
 
 
 # Requisito 11
 def top_5_categories():
-    response = list(get_collection())
-    result = []
-    for data in response:
-        result.append(data)
-    return result[:5]
-
-
-x = top_5_categories()
-print(x)
+    """Seu código deve vir aqui"""
