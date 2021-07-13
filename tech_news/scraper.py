@@ -1,7 +1,6 @@
 import requests
 import time
 from parsel import Selector
-from tech_news.database import create_news
 
 
 # python3 -m pytest tests/test_scraper.py
