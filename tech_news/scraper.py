@@ -1,6 +1,21 @@
+import requests
+import time
+
+def url_ok(request):
+    return request.status_code == 200
+
 # Requisito 1
+# Baseado em: https://github.com/tryber/sd-07-tech-news/blob/nonato-tech-news/tech_news/scraper.py
 def fetch(url):
-    print('teste')
+    try:
+        time.sleep(1)
+        page = requests.get(url)
+        if url_ok(page):
+            return page.text
+        return None
+
+    except requests.ReadTimeout:
+        return None
 
 
 # Requisito 2
