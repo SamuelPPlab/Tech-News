@@ -37,12 +37,30 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    noticias = search_news(
+        {"sources": {"$regex": source, "$options": "-i"}}
+    )
+    result = []
+    for noticia in noticias:
+        tempArray = []
+        tempArray.append(noticia["title"])
+        tempArray.append(noticia["url"])
+        result.append(tuple(tempArray))
+    return result
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    noticias = search_news(
+        {"categories": {"$regex": category, "$options": "-i"}}
+    )
+    result = []
+    for noticia in noticias:
+        tempArray = []
+        tempArray.append(noticia["title"])
+        tempArray.append(noticia["url"])
+        result.append(tuple(tempArray))
+    return result
 
 
-search_by_date("2020-11-23")
+search_by_source("ResetEra")
