@@ -1,5 +1,6 @@
 import requests
 import time
+from tech_news.database import create_news
 from parsel import Selector
 
 
