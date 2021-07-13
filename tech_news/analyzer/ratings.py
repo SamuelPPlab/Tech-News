@@ -1,4 +1,3 @@
-from pymongo import collection
 from tech_news.database import find_news
 
 
