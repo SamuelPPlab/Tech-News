@@ -1,11 +1,14 @@
 import requests
 import time
 
+
 def url_ok(request):
     return request.status_code == 200
 
+
 # Requisito 1
-# Baseado em: https://github.com/tryber/sd-07-tech-news/blob/nonato-tech-news/tech_news/scraper.py
+# Baseado em:
+# https://github.com/tryber/sd-07-tech-news/blob/nonato-tech-news/tech_news/scraper.py
 def fetch(url):
     try:
         time.sleep(1)
