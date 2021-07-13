@@ -8,7 +8,7 @@ def top_5_news():
     for news in all_news:
         news["total_rate"] = news["shares_count"] + news["comments_count"]
     rated_news = sorted(all_news, key=lambda keys: ("total_rate", "title"))[:5]
-    
+
     for item in rated_news:
         top_five_news.append((item["title"], item["url"]))
 
