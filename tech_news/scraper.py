@@ -50,18 +50,19 @@ def scrape_noticia(html_content):
     news["categories"] = [categorie.strip() for categorie in selector.css(
         '#js-categories .tec--badge::text').getall()]
 
-    print(news)
     return news
 
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css('h3 .tec--card__title__link::attr(href)').getall()
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    return selector.css('.tec--btn::attr(href)').get()
 
 
 # Requisito 5
