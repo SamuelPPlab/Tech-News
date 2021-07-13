@@ -41,15 +41,15 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     selector = Selector(html_content)
     links = selector.css(
-        ".tec--list__item a::attr(href)"
+        ".tec--card__title a::attr(href)"
     ).getall()
     print(links)
     return links
 
 
-# scrape_novidades(fetch(
-#     "https://www.tecmundo.com.br/novidades"
-# ))
+scrape_novidades(fetch(
+    "https://www.tecmundo.com.br/novidades"
+))
 
 
 # Requisito 4
