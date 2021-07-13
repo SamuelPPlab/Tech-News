@@ -10,7 +10,7 @@ def fetch(url):
         if response.status_code == 200:
             return response.text
         return None
-    except requests.HTTPError:
+    except requests.ReadTimeout:
         return None
 
 
