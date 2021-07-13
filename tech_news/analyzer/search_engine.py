@@ -11,7 +11,7 @@ def search_by_title(title):
     return news_list
 
 
-# Requisito 7 
+# Requisito 7
 def search_by_date(date):
     try:
         datetime.strptime(date, '%Y-%m-%d')
