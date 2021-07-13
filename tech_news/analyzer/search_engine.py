@@ -27,7 +27,10 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = {'sources': {'$regex': f'.*{source}.*', '$options': "i"}}
+    news = search_news(query)
+
+    return [filter_by_column(new) for new in news]
 
 
 # Requisito 9
