@@ -81,10 +81,10 @@ def scrape_next_page_link(html_content):
     """
 
     selector = Selector(html_content)
-    URL_list = selector.css(
+    URL = selector.css(
         ".tec--btn::attr(href)"
     ).get()
-    return URL_list
+    return URL
 
 
 # Requisito 5
