@@ -1,6 +1,14 @@
+from tech_news.database import search_news
+
+
 # Requisito 6
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    # Bloco 24 - MongoDB: Updates Simples e Complexos - regex
+    get_news = search_news({"title": {"$regex": title, "$options": "i"}})
+    title_and_url = []
+    for news in get_news:
+        title_and_url.insert(len(title_and_url), (news["title"], news["url"]))
+    return title_and_url
 
 
 # Requisito 7
