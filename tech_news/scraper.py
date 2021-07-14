@@ -48,9 +48,9 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     selector = parsel.Selector(html_content)
-    urls = selector.css("a.tec--card__title__link::attr(href)").getall()
+    urls = selector.css("h3 a::attr(href)").getall()
 
-    return urls or []
+    return urls 
 
 
 # Requisito 4
