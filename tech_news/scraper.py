@@ -66,7 +66,7 @@ def get_tech_news(amount):
     url = "https://www.tecmundo.com.br/novidades"
     all_news = list()
 
-    while len(all_news) <= amount :
+    while len(all_news) <= amount:
         request_text = fetch(url)
         for item_url in scrape_novidades(request_text):
             item_text = fetch(item_url)
@@ -74,7 +74,7 @@ def get_tech_news(amount):
             all_news.append(news)
             # if len(all_news) == amount :
         url = scrape_next_page_link(request_text)
-    
+
     return create_news(all_news)
 
 
