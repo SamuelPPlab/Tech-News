@@ -50,7 +50,7 @@ def scrape_novidades(html_content):
     selector = parsel.Selector(html_content)
     urls = selector.css("h3 a::attr(href)").getall()
 
-    return urls 
+    return urls
 
 
 # Requisito 4
