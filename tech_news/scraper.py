@@ -19,7 +19,11 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Recebe um conteúdo HTML e retorna um dict com as informações solicitadas"""
+    """
+        Recebe um conteúdo HTML e retorna um dict com as informações:
+            url, title, timestamp, writer, shares_count,
+            comments_count, summary, sources e categories.
+    """
     noticia = {}
     selector = Selector(html_content)
     noticia["url"] = selector.css("link[rel='canonical']::attr(href)").get()
