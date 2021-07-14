@@ -7,15 +7,18 @@ def insensitive(item, attribute):
     return query
 
 
+def fill_array(list):
+    if(len(list) == 0):
+        return list
+    array = [(item['title'], item['url']) for item in list]
+    return array
+
+
 # Requisito 6
 def search_by_title(title):
-    titles = []
     query = insensitive(title, "title")
     response_list = search_news(query)
-    for news in response_list:
-        titles.append((news["title"], news["url"]))
-
-    return titles
+    return fill_array(response_list)
 
 
 # Requisito 7
@@ -24,8 +27,7 @@ def search_by_date(date):
     try:
         datetime.datetime.strptime(date, "%y-%m-%d")
         response_news_by_date = search_news({"timestamp": {"$regex": date}})
-        news = [(new['title'], new['url']) for new in response_news_by_date]
-        return news
+        return fill_array(response_news_by_date)
     except ValueError:
         raise ValueError("Data inválida")
 
@@ -34,10 +36,11 @@ def search_by_date(date):
 def search_by_source(source):
     query = insensitive(source, "sources")
     response_list = search_news(query)
-    news = [(new['title'], new['url']) for new in response_list]
-    return news
+    return fill_array(response_list)
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    query = insensitive(category, "categories")
+    response_list = search_news(query)
+    return fill_array(response_list)
