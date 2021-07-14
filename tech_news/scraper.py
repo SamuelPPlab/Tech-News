@@ -23,13 +23,14 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(text=html_content)
     shares_count = selector.css(".tec--toolbar__item::text").get()
+    get_shares_count = re.sub(r"\D", "", str(shares_count))
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
     summary = selector.css(
         "div.tec--article__body > p:first-child ::text"
     ).getall()
-    sources = selector.css("div.z--mb-16.z--px-16 .tec--badge::text").getall()
+    sources = selector.css("div.z--mb-16 .tec--badge::text").getall()
     categories = selector.css(
-        "div.z--px-16 .tec--badge.tec--badge--primary::text"
+        "#js-categories .tec--badge.tec--badge--primary::text"
     ).getall()
     writer = selector.css(".tec--author__info__link::text").get()
 
@@ -37,12 +38,15 @@ def scrape_noticia(html_content):
         "url": selector.css("head link[rel=canonical]::attr(href)").get(),
         "title": selector.css("#js-article-title::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": writer.strip(),
-        "shares_count": int(re.sub(r"\D", "", shares_count)),
+        "writer": writer.strip() if writer else None,
+        "shares_count": int(get_shares_count)
+        if len(get_shares_count) > 0 else 0,
         "comments_count": int(comments_count),
         "summary": "".join(summary),
-        "sources": [source.strip() for source in sources],
-        "categories": [categorie.strip() for categorie in categories],
+        "sources": [source.strip() for source in sources]
+        if len(sources) > 0 else sources,
+        "categories": [category.strip() for category in categories]
+        if len(categories) > 0 else categories,
         }
 
 
@@ -72,10 +76,10 @@ def get_tech_news(amount):
             item_text = fetch(item_url)
             news = scrape_noticia(item_text)
             all_news.append(news)
-            # if len(all_news) == amount :
+            if len(all_news) == amount:
+                create_news(all_news)
+                return all_news
         url = scrape_next_page_link(request_text)
-
-    return create_news(all_news)
 
 
 # Referências:
@@ -86,3 +90,6 @@ def get_tech_news(amount):
 # https://stackoverflow.com/questions/4289331/how-to-extract-numbers-from-a-string-in-python
 # https://docs.python.org/3/library/stdtypes.html#str.strip
 # https://www.w3schools.com/python/ref_string_join.asp
+# https://stackoverflow.com/questions/43727583/re-sub-erroring-with-expected-string-or-bytes-like-object
+# https://github.com/tryber/sd-07-tech-news/blob/luciano-berchon-tech-news/tech_news/scraper.py
+# https://github.com/tryber/sd-07-tech-news/blob/carol-andrade-tech-news/tech_news/scraper.py
