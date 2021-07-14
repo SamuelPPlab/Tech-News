@@ -1,5 +1,6 @@
 -r requirements.txt
 
+html2text==2020.1.16
 pytest==6.1.2
 pytest-mock==3.5.1
 pytest-json==0.4.0
