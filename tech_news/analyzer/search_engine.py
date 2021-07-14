@@ -47,6 +47,5 @@ def search_by_category(category):
         info.append(get_tuple)
     return info
 
-# Referências:
-
+# Referência:
 # https://stackabuse.com/how-to-format-dates-in-python
