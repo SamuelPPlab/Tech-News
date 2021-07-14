@@ -1,9 +1,7 @@
 import requests
 import time
 import parsel
-import math
 from requests.exceptions import HTTPError, ReadTimeout
-from tech_news.database import create_news
 
 
 # Requisito 1
@@ -84,20 +82,9 @@ def scrape_novidades(html_content):
 def scrape_next_page_link(html_content):
     selector = parsel.Selector(html_content)
     url = selector.css("a.tec--btn::attr(href)").get()
-
     return url or None
 
 
 # Requisito 5
 def get_tech_news(amount):
-    url = "https://www.tecmundo.com.br/novidades"
-    index_pages = math.ceil(amount / 20)
-    html_content = fetch(url)
-
-    for _ in range(index_pages):
-        list_news = scrape_novidades(html_content)
-        array_news = [scrape_noticia(
-            fetch(list_news(item))) for item in range(amount)]
-
-    create_news(array_news)
-    return array_news
+    """faça seu códido aqui"""
