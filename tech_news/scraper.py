@@ -25,7 +25,7 @@ def scrape_noticia(html_content):
 
     url = selector.css("a.tec--card__title__link::attr(href)").get()
     title = selector.css("a.tec--card__title__link::text").get()
-    timestamp = selector.css("time::attr(datetime)").get()
+    timestamp = selector.css("#js-article-date ::attr(datetime)").get()
 
     is_writer = selector.css(".tec--author__info__link::text").get()
     if (is_writer):
@@ -42,12 +42,13 @@ def scrape_noticia(html_content):
     is_comments_count = selector.css(
         "#js-comments-btn::attr(data-count)").get()
     if (is_comments_count):
-        comments_count = int(is_shares_count.split()[0])
+        comments_count = int(is_comments_count.split()[0])
     else:
         comments_count = 0
 
-    summary = selector.css(
-        ".tec--article__body > p:first-child *::text").getall()
+    # referência: Tiago Esdras
+    summary = "".join(selector.css(
+        ".tec--article__body > p:first-child *::text").getall())
 
     # referência: Tiago Esdras
     sources = list(map(str.strip, selector.css(
