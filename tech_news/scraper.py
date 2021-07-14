@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from helpers.status_code import OK
 
 # Requisito 1
 
@@ -9,7 +10,7 @@ def fetch(url):
     try:
         time.sleep(1)
         response = requests.get(url, timeout=3)
-        if response.status_code == 200:
+        if response.status_code == OK:
             return response.text
         return None
     except requests.Timeout:
@@ -20,7 +21,7 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(html_content)
     url = selector.css("meta[property='og:url']::attr(content)").get()
-    timestamp = selector.css("#js-article-date::attr(datetime)").get()
+    timestamp = selector.css("#js-article-date::attr( datetime)").get()
     writer = selector.css(".tec--author__info__link::text").get()
     shares_count = selector.css(
         "#js-author-bar > nav > div:nth-child(1)::text"
