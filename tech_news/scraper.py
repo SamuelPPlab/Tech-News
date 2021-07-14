@@ -5,9 +5,8 @@ import re
 
 SUCCESS = 200
 
+
 # Requisito 1
-
-
 def fetch(url):
     try:
         response = requests.get(url, timeout=2)
@@ -19,9 +18,8 @@ def fetch(url):
     else:
         return None
 
+
 # Requisito 2
-
-
 def scrape_noticia(html_content):
     selector = Selector(text=html_content)
     shares_count = selector.css(".tec--toolbar__item::text").get()
@@ -50,7 +48,11 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    try:
+        return selector.css("h3 a::attr(href)").getall()
+    except Exception:
+        return list()
 
 
 # Requisito 4
