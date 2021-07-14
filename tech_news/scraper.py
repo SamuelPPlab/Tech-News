@@ -26,9 +26,13 @@ def scrape_noticia(html_content):
     selector = Selector(text=html_content)
     shares_count = selector.css(".tec--toolbar__item::text").get()
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
-    summary = selector.css("div.tec--article__body > p:first-child ::text").getall()
+    summary = selector.css(
+        "div.tec--article__body > p:first-child ::text"
+    ).getall()
     sources = selector.css("div.z--mb-16.z--px-16 .tec--badge::text").getall()
-    categories = selector.css("div.z--px-16 .tec--badge.tec--badge--primary::text").getall()
+    categories = selector.css(
+        "div.z--px-16 .tec--badge.tec--badge--primary::text"
+    ).getall()
     writer = selector.css(".tec--author__info__link::text").get()
 
     return {
@@ -42,6 +46,7 @@ def scrape_noticia(html_content):
         "sources": [source.strip() for source in sources],
         "categories": [categorie.strip() for categorie in categories],
         }
+
 
 # Requisito 3
 def scrape_novidades(html_content):
@@ -65,3 +70,4 @@ def get_tech_news(amount):
 # https://www.w3schools.com/cssref/sel_firstchild.asp
 # https://stackoverflow.com/questions/4289331/how-to-extract-numbers-from-a-string-in-python
 # https://docs.python.org/3/library/stdtypes.html#str.strip
+# https://www.w3schools.com/python/ref_string_join.asp
