@@ -17,9 +17,7 @@ def search_by_date(date):
     # https://www.programiz.com/python-programming/datetime/strptime
     try:
         datetime.datetime.strptime(date, "%Y-%m-%d")
-        get_news_by_date = search_news(
-            {"timestamp": {"$regex": date}}
-        )
+        get_news_by_date = search_news({"timestamp": {"$regex": date}})
         title_and_url = []
         for news in get_news_by_date:
             title_and_url.insert(
@@ -40,7 +38,11 @@ def search_by_source(source):
     return title_and_url
 
 
-
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    # Bloco 24 - MongoDB: Updates Simples e Complexos - regex
+    get_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    title_and_url = []
+    for news in get_news:
+        title_and_url.insert(len(title_and_url), (news["title"], news["url"]))
+    return title_and_url
