@@ -72,7 +72,7 @@ def get_tech_news(amount):
     newlist = []
 
     while(total != amount):
-        print(total)
+
         news = news if total == 0 else fetch(scrape_next_page_link(news))
         listrefs = scrape_novidades(news)
         for link in listrefs:
@@ -80,7 +80,6 @@ def get_tech_news(amount):
             newlist.append(result)
             counter += 1
             total += 1
-            print(total)
             if(total == amount):
                 break
 
