@@ -86,4 +86,3 @@ def get_tech_news(amount):
     create_news(newlist)
     print(len(newlist))
     return newlist
-            

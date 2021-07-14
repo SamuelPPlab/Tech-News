@@ -22,7 +22,7 @@ def search_by_date(date):
         return [(news["title"], news["url"]) for news in paginatedList]
     except ValueError:
         raise ValueError("Data inválida")
-      
+
 
 # Requisito 8
 def search_by_source(source):
