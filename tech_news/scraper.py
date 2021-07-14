@@ -22,7 +22,42 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    result = {}
+    result["url"] = selector.css("link[rel=canonical]::attr(href)").get()
+    result["title"] = selector.css(".tec--article__header__title::text").get()
+    result["timestamp"] = selector.css("time::attr(datetime)").get()
+    result["writer"] = (
+        selector.css(".tec--author__info__link::text").get().strip()
+        if selector.css(".tec--author__info__link::text").get()
+        else None
+    )
+    shares_verify = selector.css(".tec--toolbar__item::text").get()
+    if shares_verify:
+        shares = int(shares_verify.split()[0])
+    else:
+        shares = 0
+    result["shares_count"] = shares
+    comments_verify = selector.css("#js-comments-btn::attr(data-count)").get()
+    if comments_verify:
+        comments = int(comments_verify)
+    else:
+        comments = 0
+    result["comments_count"] = comments
+    result["summary"] = "".join(
+        selector.css(".tec--article__body > p:first-child *::text").getall()
+    )
+    sources = selector.css(".z--mb-16 div a.tec--badge::text").getall()
+    source_list = []
+    for source in sources:
+        source_list.append(source.strip())
+    result["sources"] = source_list
+    categories = selector.css("#js-categories a.tec--badge::text").getall()
+    category_list = []
+    for category in categories:
+        category_list.append(category.strip())
+    result["categories"] = category_list
+    return result
 
 
 # Requisito 3
