@@ -6,7 +6,8 @@ from parsel import Selector
 
 # Requisito 1
 def fetch(url):
-    
+
+
     try:
         response = requests.get(url, timeout=3)
         time.sleep(1)
@@ -18,7 +19,8 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    
+
+
     selector = Selector(html_content)
     writer = selector.css(".tec--author__info__link::text").get()
     categories = selector.css("#js-categories .tec--badge::text").getall()
@@ -32,7 +34,8 @@ def scrape_noticia(html_content):
         "writer": writer.strip() if writer else None,
         "shares_count": int(shares) if shares else 0,
         "comments_count": int(comments) if comments else 0,
-        "summary": "".join(selector.css(".tec--article__body > p:first-child *::text").getall()),
+        "summary": "".join(selector.css
+        (".tec--article__body > p:first-child *::text").getall()),
         "sources": [source.strip() for source in sources],
         "categories": [categorie.strip() for categorie in categories],
     }
@@ -40,7 +43,8 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    
+
+
     response = Selector(html_content)
     urlLists = response.css("h3 .tec--card__title__link::attr(href)").getall()
     if urlLists is not None:
@@ -51,6 +55,7 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
 
+
     response = Selector(html_content)
     nextPageUrl = response.css(
         "a:contains(' Mostrar mais notícias ')::attr(href)"
@@ -60,6 +65,7 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
+
 
     url = "https://www.tecmundo.com.br/novidades"
     links = []
@@ -76,4 +82,3 @@ def get_tech_news(amount):
 
     create_news(news_list)
     return news_list
-    
