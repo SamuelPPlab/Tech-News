@@ -59,12 +59,23 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    """
+        - Recebe uma string com conteúdo HTML,
+        - Faz o scrape de seu conteúdo,
+        - Retorna uma lista contendo as URLs das notícias listadas.
+    """
+
+    selector = Selector(html_content)
+    URL_list = selector.css(
+        "h3 > .tec--card__title__link::attr(href)"
+    ).getall()
+    return URL_list
 
 
 # Requisito 4
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    # print('URL*******', URL)
 
 
 # Requisito 5
