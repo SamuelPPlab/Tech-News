@@ -18,7 +18,7 @@ def search_by_date(date):
     try:
         datetime.datetime.strptime(date, "%Y-%m-%d")
         get_news_by_date = search_news(
-            {"timestamp": {"$regex": date, "$options": "i"}}
+            {"timestamp": {"$regex": date}}
         )
         title_and_url = []
         for news in get_news_by_date:
@@ -32,7 +32,13 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    # Bloco 24 - MongoDB: Updates Simples e Complexos - regex
+    get_news = search_news({"sources": {"$regex": source, "$options": "i"}})
+    title_and_url = []
+    for news in get_news:
+        title_and_url.insert(len(title_and_url), (news["title"], news["url"]))
+    return title_and_url
+
 
 
 # Requisito 9
