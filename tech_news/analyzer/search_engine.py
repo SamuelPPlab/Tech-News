@@ -21,7 +21,7 @@ def search_by_title(title):
 # Requisito 7
 # https://stackoverflow.com/questions/4709652/python-regex-to-match-dates
 def search_by_date(date):
-    datetime.datetime.strptime(date, "%y-/%m-/%d")
+    datetime.datetime.strptime(date, "%y-%m-%d")
     response_news_by_date = search_news({"timestamp": {"$regex": date}})
 
     if (response_news_by_date is None):
