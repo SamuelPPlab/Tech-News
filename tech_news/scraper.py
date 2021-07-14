@@ -4,9 +4,9 @@ from tech_news.database import create_news
 from requests.exceptions import ReadTimeout
 from parsel import Selector
 
+
 # Requisito 1
 def fetch(url):
-
 
     try:
         response = requests.get(url, timeout=3)
@@ -19,7 +19,6 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-
 
     selector = Selector(html_content)
     url = selector.css("meta[property='og:url']::attr(content)").get()
@@ -54,7 +53,6 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
 
-
     response = Selector(html_content)
     urlLists = response.css("h3 .tec--card__title__link::attr(href)").getall()
     if urlLists is not None:
@@ -65,7 +63,6 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
 
-
     response = Selector(html_content)
     nextPageUrl = response.css(
         "a:contains(' Mostrar mais notícias ')::attr(href)"
@@ -73,9 +70,9 @@ def scrape_next_page_link(html_content):
 
     return nextPageUrl if nextPageUrl else None
 
+
 # Requisito 5
 def get_tech_news(amount):
-
 
     url = "https://www.tecmundo.com.br/novidades"
     links = []
