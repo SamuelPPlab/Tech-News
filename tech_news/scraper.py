@@ -23,9 +23,8 @@ def fetch(url):
 # Requisito 2
 def scrape_noticia(html_content):
     selector = parsel.Selector(html_content)
-    news = {}
 
-    url = selector.css("a.tec--card__title__link::attr(href)").get()
+    url = selector.css("head link[rel=canonical]::attr(href)").get()
     title = selector.css(".tec--article__header__title::text").get()
     timestamp = selector.css("#js-article-date ::attr(datetime)").get()
 
@@ -60,7 +59,7 @@ def scrape_noticia(html_content):
     categories = list(map(str.strip, selector.css(
         "#js-categories a ::text").getall()))
 
-    temporaryNews = {
+    return {
         "url": url,
         "title": title,
         "timestamp": timestamp,
@@ -71,9 +70,6 @@ def scrape_noticia(html_content):
         "sources": sources,
         "categories": categories
     }
-
-    news.update(temporaryNews)
-    return news
 
 
 # Requisito 3
