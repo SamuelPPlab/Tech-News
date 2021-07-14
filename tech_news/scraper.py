@@ -60,7 +60,7 @@ def scrape_next_page_link(html_content):
         return selector.css(
             "a:last-child.tec--btn::attr(href)").get()
     except ValueError:
-        return [] 
+        return []
 
 
 # Requisito 5

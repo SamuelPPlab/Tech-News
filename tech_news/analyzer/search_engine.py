@@ -17,13 +17,12 @@ def search_by_date(date):
     dateFormat = "%Y-%m-%d"
     try:
         datetime.datetime.strptime(date, dateFormat)  # Parse here
-    except ValueError:
-        raise ValueError("Data inválida")
-    finally:
         paginatedList = search_news(
             {"timestamp": {"$regex": f"{date}", "$options": "i"}})
         return [(news["title"], news["url"]) for news in paginatedList]
-
+    except ValueError:
+        raise ValueError("Data inválida")
+      
 
 # Requisito 8
 def search_by_source(source):
