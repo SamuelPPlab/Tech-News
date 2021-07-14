@@ -20,29 +20,57 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    '''
     selector = parsel.Selector(html_content)
-    article_selector = "article.tec--card"
-    quotes = {}
+    news = {}
 
-    for quote in selector.css(article_selector).getall():
-        selectorItens = parsel.Selector(quote)
-        url = selectorItens.css("a.tec--card__title__link::attr(href)").get()
-        title = selectorItens.css("a.tec--card__title__link::text").get()
-        timestamp = selectorItens.css("div::attr(datetime)").get()
-        print(timestamp)
-        #response_selector = parsel.Selector(html_content+"/"+url)
-        #writer = response_selector.css("div.tec--author__info").get()
+    url = selector.css("a.tec--card__title__link::attr(href)").get()
+    title = selector.css("a.tec--card__title__link::text").get()
+    timestamp = selector.css("time::attr(datetime)").get()
 
-        temporaryQuotes = {
-          "url": url,
-          "title": title,
-        }
+    is_writer = selector.css(".tec--author__info__link::text").get()
+    if (is_writer):
+        writer = is_writer.strip()
+    else:
+        writer = None
 
-        quotes.update(temporaryQuotes)
-        #print(quotes)
-        break;
-    '''
+    is_shares_count = selector.css("tec--toolbar__item::text").get()
+    if (is_shares_count):
+        shares_count = int(is_shares_count.split()[0])
+    else:
+        shares_count = 0
+
+    is_comments_count = selector.css(
+        "#js-comments-btn::attr(data-count)").get()
+    if (is_comments_count):
+        comments_count = int(is_shares_count.split()[0])
+    else:
+        comments_count = 0
+
+    summary = selector.css(
+        ".tec--article__body > p:first-child *::text").getall()
+
+    # referência: Tiago Esdras
+    sources = list(map(str.strip, selector.css(
+        ".z--mb-16 .tec--badge::text").getall()))
+
+    # referência: Tiago Esdras
+    categories = list(map(str.strip, selector.css(
+        "#js-categories a ::text").getall()))
+
+    temporaryNews = {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categories
+    }
+
+    news.update(temporaryNews)
+    return news
 
 
 # Requisito 3
