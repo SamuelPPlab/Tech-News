@@ -1,6 +1,7 @@
 import requests
 import time
 import parsel
+from requests.exceptions import HTTPError, ReadTimeout
 
 
 # Requisito 1
@@ -8,14 +9,12 @@ def fetch(url):
     try:
         response = requests.get(url, timeout=3)
         time.sleep(1)
-        code = response.status_code
-
-        if(code == 200):
+        if(response.status_code == 200):
             return response.text
-        else:
-            return None
+    except ReadTimeout:
+        return None
 
-    except requests.Timeout:
+    except HTTPError:
         return None
 
 
@@ -30,12 +29,10 @@ def scrape_noticia(html_content):
         selectorItens = parsel.Selector(quote)
         url = selectorItens.css("a.tec--card__title__link::attr(href)").get()
         title = selectorItens.css("a.tec--card__title__link::text").get()
-        #timestamp = selectorItens.css("div.tec--timestamp").get()
-
-        response_selector = parsel.Selector(html_content+"/"+url)
-        writer = response_selector.css("div.tec--author__info").get()
-
-        print(writer)
+        timestamp = selectorItens.css("div::attr(datetime)").get()
+        print(timestamp)
+        #response_selector = parsel.Selector(html_content+"/"+url)
+        #writer = response_selector.css("div.tec--author__info").get()
 
         temporaryQuotes = {
           "url": url,
@@ -43,26 +40,17 @@ def scrape_noticia(html_content):
         }
 
         quotes.update(temporaryQuotes)
-
+        #print(quotes)
         break;
-
-        '''
+    '''
 
 
 # Requisito 3
 def scrape_novidades(html_content):
     selector = parsel.Selector(html_content)
-    article_selector = "article.tec--card"
-    quotes = []
+    urls = selector.css("a.tec--card__title__link::attr(href)").getall()
 
-    for quote in selector.css(article_selector).getall():
-        selectorItens = parsel.Selector(quote)
-        url = selectorItens.css("a.tec--card__title__link::attr(href)").get()
-
-        if(url):
-            quotes.append(url)
-
-    return quotes
+    return urls or []
 
 
 # Requisito 4
