@@ -41,7 +41,9 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     # Bloco 24 - MongoDB: Updates Simples e Complexos - regex
-    get_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    get_news = search_news(
+        {"categories": {"$regex": category, "$options": "i"}}
+    )
     title_and_url = []
     for news in get_news:
         title_and_url.insert(len(title_and_url), (news["title"], news["url"]))
