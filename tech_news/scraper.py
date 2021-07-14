@@ -15,8 +15,6 @@ def fetch(url):
         return None
     if response.status_code == SUCCESS:
         return response.text
-    else:
-        return None
 
 
 # Requisito 2
@@ -58,10 +56,7 @@ def scrape_novidades(html_content):
 # Requisito 4
 def scrape_next_page_link(html_content):
     selector = Selector(text=html_content)
-    try:
-        return selector.css(".tec--btn--lg::attr(href)").get()
-    except Exception:
-        return None
+    return selector.css(".tec--btn--lg::attr(href)").get()
 
 
 # Requisito 5
