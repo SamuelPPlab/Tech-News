@@ -33,7 +33,10 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    query = insensitive(source)
+    response_list = search_news(query)
+    news = [(new['title'], new['url']) for new in response_list]
+    return news
 
 
 # Requisito 9
