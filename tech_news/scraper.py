@@ -74,15 +74,20 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    """
+        - Recebe uma string com um conteúdo HTML
+        - Faz o scrape deste HTML para obter a URL da próxima página
+        - Retorna a URL obtida
+    """
+
     selector = Selector(html_content)
     URL_list = selector.css(
         ".tec--btn::attr(href)"
     ).get()
-    print('URL*******', URL_list)
     return URL_list
 
 
 # Requisito 5
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
+    # print('URL*******', URL_list)
