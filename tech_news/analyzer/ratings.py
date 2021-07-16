@@ -26,6 +26,14 @@ def remove_values_repeated(array_list):
     return list_news
 
 
+def fill_array(array):
+    response_list = []
+    for item in array:
+        for i in item:
+            response_list.append(i)
+    return response_list
+
+
 # Requisito 10
 def top_5_news():
     list_news = find_news()
@@ -46,4 +54,23 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    new_array = []
+
+    list_news = find_news()
+
+    if (len(list_news) == 0):
+        return list_news
+
+    array = [(item['categories']) for item in list_news]
+
+    response_list = fill_array(array)
+
+    response_list.sort()
+
+    if (len(response_list) <= 5):
+        return response_list
+
+    for i in range(5):
+        new_array.append(response_list[i])
+
+    return new_array
