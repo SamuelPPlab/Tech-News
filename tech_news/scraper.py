@@ -87,3 +87,6 @@ def get_tech_news(amount):
     ]
     create_news(lista_noticia_completa)
     return lista_noticia_completa
+
+
+get_tech_news(20)
