@@ -52,7 +52,7 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    query_search = {"categories": {
+    query_search = {"categor": {
         "$elemMatch": {"$regex": category, "$options": "i"}}
     }
     news_by_title = search_news(query_search)
@@ -62,6 +62,3 @@ def search_by_category(category):
         url = news.get("url")
         news_all.append((title, url))
     return news_all
-
-if __name__ == "__main__":
-    search_by_title("batman")
