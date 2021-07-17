@@ -31,9 +31,9 @@ def scrape_noticia(html_content):
     data["writer"] = (
         selector.css(".tec--author__info__link::text").get().strip()
     )
-    data["shares_count"] = (
-        selector.css(".tec--toolbar__item svg").get()
-    )
+    shares = selector.css(".tec--toolbar__item::text").get().strip().split()
+    print(shares)
+    data["shares_count"] = int(shares[0])
     print(data)
 
 
@@ -43,12 +43,12 @@ def scrape_novidades(html_content):
     links = selector.css(
         ".tec--card__title a::attr(href)"
     ).getall()
-    print(links)
+    # print(links)
     return links
 
 
-# scrape_novidades(fetch(
-#     "https://www.tecmundo.com.br/novidades"
+# scrape_noticia(fetch(
+#     "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
 # ))
 
 
