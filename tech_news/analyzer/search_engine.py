@@ -19,7 +19,7 @@ def search_by_date(date):
         datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise ValueError("Data inválida")
-    
+
     noticias = search_news({"timestamp": {"$regex": f".*{date}.*"}})
     titulo_url = []
     for noticia in noticias:
