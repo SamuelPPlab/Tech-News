@@ -52,7 +52,7 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    query_search = {"categor": {
+    query_search = {"categories": {
         "$elemMatch": {"$regex": category, "$options": "i"}}
     }
     news_by_title = search_news(query_search)
