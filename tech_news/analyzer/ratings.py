@@ -1,5 +1,6 @@
 from tech_news.database import find_news
 from operator import itemgetter
+from collections import Counter
 
 
 # Requisito 10
@@ -24,4 +25,19 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    """retorna as 5 categorias mais populares"""
+    todas_noticias = find_news()
+    lista_de_categorias = []
+    categoria_valor = []
+
+    for noticia in todas_noticias:
+        for categoria in noticia["categories"]:
+            lista_de_categorias.append(categoria)
+
+    cont_categoria = Counter(lista_de_categorias).most_common()
+    result = sorted(cont_categoria)
+
+    for categoria in result:
+        categoria_valor.append((categoria[0]))
+
+    return categoria_valor[:5]
