@@ -71,4 +71,3 @@ def search_by_category(category):
         news_list.append((title, url))
 
     return news_list
-    
