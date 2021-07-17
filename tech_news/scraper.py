@@ -1,6 +1,7 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
 
 # Requisito 1
 
@@ -25,12 +26,16 @@ def scrape_noticia(html_content):
     noticia["url"] = selector.css("link[rel='canonical']::attr(href)").get()
     noticia["title"] = selector.css(".tec--article__header__title::text").get()
     noticia["timestamp"] = selector.css("time::attr(datetime)").get()
-    noticia["writer"] = (
-        selector.css(".tec--author__info__link::text").get().strip() or None
-    )
-    noticia["shares_count"] = (
-        int(selector.css(".tec--toolbar__item::text").get().split()[0]) or 0
-    )
+    try:
+        writer = selector.css(".tec--author__info__link::text").get()
+        noticia["writer"] = writer.strip()
+    except AttributeError:
+        noticia["writer"] = None
+    try:
+        shares_count = selector.css(".tec--toolbar__item::text").get()
+        noticia["shares_count"] = int(shares_count.split()[0])
+    except AttributeError:
+        noticia["shares_count"] = 0
     noticia["comments_count"] = (
         int(selector.css(".tec--btn::attr(data-count)").get()) or 0
     )
@@ -69,4 +74,16 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    """executa a raspagem de dados de X noticias """
+    url = "https://www.tecmundo.com.br/novidades"
+    noticias = []
+    while len(noticias) < amount:
+        todas_noticias_pagina = scrape_novidades(fetch(url))
+        noticias.extend(todas_noticias_pagina)
+        url = scrape_next_page_link(fetch(url))
+    amount_noticias = noticias[0:amount]
+    lista_noticia_completa = [
+        scrape_noticia(fetch(noticia)) for noticia in amount_noticias
+    ]
+    create_news(lista_noticia_completa)
+    return lista_noticia_completa
