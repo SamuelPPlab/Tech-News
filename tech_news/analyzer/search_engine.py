@@ -39,4 +39,11 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    """Procura a noticia pela categoria e retorna uma tupla com titulo e url"""
+    noticias = search_news(
+        {"categories": {"$regex": category, "$options": "i"}}
+    )
+    titulo_url = []
+    for noticia in noticias:
+        titulo_url.insert(len(titulo_url), (noticia["title"], noticia["url"]))
+    return titulo_url
