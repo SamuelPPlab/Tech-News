@@ -29,7 +29,12 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    """Procura a noticia pela fonte  e retorna uma tupla com titulo e url"""
+    noticias = search_news({"sources": {"$regex": source, "$options": "i"}})
+    titulo_url = []
+    for noticia in noticias:
+        titulo_url.insert(len(titulo_url), (noticia["title"], noticia["url"]))
+    return titulo_url
 
 
 # Requisito 9
