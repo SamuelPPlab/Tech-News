@@ -1,4 +1,4 @@
-import sys
+
 from tech_news.analyzer.ratings import top_5_news, top_5_categories
 from tech_news.analyzer.search_engine import (
     search_by_title,
@@ -7,6 +7,7 @@ from tech_news.analyzer.search_engine import (
     search_by_category,
 )
 from tech_news.scraper import get_tech_news
+import sys
 
 
 def escolhido0():
