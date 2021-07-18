@@ -11,7 +11,7 @@ def fetch(url):
     except requests.ReadTimeout:
         return None
 
-    return r.txt if r.status_code == 200 else None
+    return r.text if r.status_code == 200 else None
 
 
 # Requisito 2
