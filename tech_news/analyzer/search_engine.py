@@ -2,7 +2,7 @@ from tech_news.database import search_news
 from datetime import datetime
 
 
-# Requisito 6
+# Requisito 6 vi regex no projeto da Brenda Lima
 def search_by_title(title):
     news_list = []
     for news in search_news({"title": {"$regex": title, "$options": "i"}}):
