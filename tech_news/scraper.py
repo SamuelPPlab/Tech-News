@@ -20,29 +20,48 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(html_content)
     data = {}
+
     data["url"] = selector.css("head link[rel=canonical]::attr(href)").get()
+
     data["title"] = selector.css(".tec--article__header__title::text").get()
+
     data["timestamp"] = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
-    data["writer"] = (
-        selector.css(".tec--author__info__link::text").get().strip()
-    )
-    shares = selector.css(".tec--toolbar__item::text").get().strip().split()
-    data["shares_count"] = int(shares[0])
-    data["comments_count"] = int(
-        selector.css("#js-comments-btn::attr(data-count)").get()
-    )
+
+    writer = selector.css(".tec--author__info__link::text").get()
+    if writer:
+        writer = writer.strip()
+    data["writer"] = writer
+
+    shares = selector.css(".tec--toolbar__item::text").get()
+    if shares:
+        shares = int(shares.strip().split()[0])
+    else:
+        shares = 0
+    data["shares_count"] = shares
+
+    comments = selector.css("#js-comments-btn::attr(data-count)").get()
+
+    if comments:
+        comments = int(comments)
+    else:
+        comments = 0
+    data["comments_count"] = comments
+
     summary = selector.css(
         ".tec--article__body p:first-child *::text"
     ).getall()
     data["summary"] = "".join(summary)
+
     sources = selector.css(".z--mb-16 div a::text").getall()
     sources = [source.strip() for source in sources]
+    data["sources"] = sources
+
     categories = selector.css("#js-categories a::text").getall()
     categories = [category.strip() for category in categories]
-    data["sources"] = sources
     data["categories"] = categories
+
     print(data)
     return data
 
@@ -76,6 +95,3 @@ def get_tech_news(amount):
     ]
     create_news(noticias)
     return noticias
-
-
-get_tech_news(5)
