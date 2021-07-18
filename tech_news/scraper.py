@@ -1,5 +1,6 @@
 import requests
 import time
+from parsel import Selector
 
 
 # Requisito 1
@@ -16,7 +17,53 @@ def fetch(url):
 
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content).css
+
+    url = selector("meta[property='og:url']::attr(content)").get()
+
+    title = selector("#js-article-title::text").get()
+
+    timestamp = selector("#js-article-date ::attr(datetime)").get()
+
+    writer = selector(".tec--author__info__link::text").get()
+
+    if writer:
+        writer = writer.strip()
+
+    shares_count = selector(".tec--toolbar__item::text").get()
+
+    if shares_count:
+        shares_count = int((shares_count.strip()).split(" ")[0])
+
+    else:
+        shares_count = 0
+    comments_count = selector(".tec--toolbar__item::text").get()
+
+    if comments_count:
+        comments_count = int((comments_count.strip()).split(" ")[0])
+
+    else:
+        comments_count = 0
+    summary = "".join(
+        selector(".tec--article__body p:first-child *::text").getall()
+    )
+
+    sources = selector(".z--mb-16 .tec--badge::text").getall()
+    sources = [source.strip() for source in sources]
+    categories = selector("#js-categories a::text").getall()
+    categoriesA = [category.strip() for category in categories]
+
+    return {
+        "url": url,
+        "title": title,
+        "timestamp": timestamp,
+        "writer": writer,
+        "shares_count": shares_count,
+        "comments_count": comments_count,
+        "summary": summary,
+        "sources": sources,
+        "categories": categoriesA,
+        }
 
 
 # Requisito 3
