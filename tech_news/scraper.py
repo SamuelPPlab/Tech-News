@@ -49,7 +49,7 @@ def scrape_noticia(html_content):
     )
 
     sources = selector(".z--mb-16 .tec--badge::text").getall()
-    sources = [source.strip() for source in sources]
+    sourcesA = [source.strip() for source in sources]
     categories = selector("#js-categories a::text").getall()
     categoriesA = [category.strip() for category in categories]
 
@@ -61,7 +61,7 @@ def scrape_noticia(html_content):
         "shares_count": shares_count,
         "comments_count": comments_count,
         "summary": summary,
-        "sources": sources,
+        "sources": sourcesA,
         "categories": categoriesA,
         }
 
