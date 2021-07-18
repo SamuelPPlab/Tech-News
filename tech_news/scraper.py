@@ -68,7 +68,8 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content).css
+    return selector("h3 .tec--card__title__link::attr(href)").getall()
 
 
 # Requisito 4
