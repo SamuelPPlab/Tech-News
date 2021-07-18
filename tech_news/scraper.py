@@ -46,13 +46,16 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    selector = Selector(html_content)
-    links = selector.css(".tec--card__title a::attr(href)").getall()
-    print(links)
-    return links
+    try:
+        selector = Selector(html_content)
+        links = selector.css(".tec--card__title a::attr(href)").getall()
+        print(links)
+        return links
+    except:
+        list()
 
 
-scrape_novidades(fetch("https://www.tecmundo.com.br/novidades"))
+# scrape_novidades(fetch("https://www.tecmundo.com.br/novidades"))
 
 
 # Requisito 4
