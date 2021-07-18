@@ -32,6 +32,8 @@ def scrape_noticia(html_content):
     data["comments_count"] = int(selector.css(
         "#js-comments-btn::attr(data-count)"
     ).get())
+    summary = selector.css(".tec--article__body p::text").getall()
+    data["summary"] = "".join(summary)
     print(data)
 
 
