@@ -69,7 +69,7 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
-        links = selector.css("h3 .tec--card__title__link::attr(href)").getall()
+        links = selector.css("h3 a::attr(href)").getall()
         return links
     except Exception:
         list()
@@ -87,10 +87,14 @@ def get_tech_news(amount):
     tecmundoUrl = "https://www.tecmundo.com.br/novidades"
 
     noticiasNovidades = scrape_novidades(fetch(tecmundoUrl))
-    noticiasNovidades = noticiasNovidades[0:amount]
+    noticiasNovidades = noticiasNovidades[:amount]
 
     noticias = [
         scrape_noticia(fetch(noticiaUrl)) for noticiaUrl in noticiasNovidades
     ]
+    print(noticias)
     create_news(noticias)
     return noticias
+
+
+get_tech_news(15)
