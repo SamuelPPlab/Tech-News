@@ -49,18 +49,16 @@ def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
         links = selector.css("h3 a::attr(href)").getall()
-        print(links)
         return links
     except Exception:
         list()
 
 
-# scrape_novidades(fetch("https://www.tecmundo.com.br/novidades"))
-
-
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    nextPage = selector.css(".tec--btn::attr(href)").get()
+    return nextPage
 
 
 # Requisito 5
