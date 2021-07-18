@@ -34,10 +34,13 @@ def scrape_noticia(html_content):
     )
     summary = selector.css(".tec--article__body p::text").getall()
     data["summary"] = "".join(summary)
-    data["sources"] = selector.css(".tec--badge::text").get().strip()
+    sources = selector.css(".z--mb-16 div a::text").getall()
+    sources = [source.strip() for source in sources]
     categories = selector.css("#js-categories a::text").getall()
     categories = [category.strip() for category in categories]
     data["categories"] = categories
+    data["sources"] = sources
+    print(data)
     return data
 
 
@@ -49,11 +52,12 @@ def scrape_novidades(html_content):
     return links
 
 
-# scrape_noticia(
-#     fetch(
-#         "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-#     )
-# )
+scrape_noticia(
+    fetch(
+        "https://www.tecmundo.com.br/dispositivos-moveis/"
+        "215327-pixel-5a-tera-lancamento-limitado-devido-escassez-chips.htm"
+    )
+)
 
 
 # Requisito 4
