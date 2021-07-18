@@ -62,7 +62,6 @@ def scrape_noticia(html_content):
     categories = [category.strip() for category in categories]
     data["categories"] = categories
 
-    print(data)
     return data
 
 
@@ -70,7 +69,7 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
-        links = selector.css("h3 a::attr(href)").getall()
+        links = selector.css("h3 .tec--card__title__link::attr(href)").getall()
         return links
     except Exception:
         list()
@@ -86,10 +85,10 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     tecmundoUrl = "https://www.tecmundo.com.br/novidades"
+
     noticiasNovidades = scrape_novidades(fetch(tecmundoUrl))
-    print(len(noticiasNovidades))
     noticiasNovidades = noticiasNovidades[0:amount]
-    print(len(noticiasNovidades))
+
     noticias = [
         scrape_noticia(fetch(noticiaUrl)) for noticiaUrl in noticiasNovidades
     ]
