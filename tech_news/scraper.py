@@ -48,10 +48,10 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
-        links = selector.css(".tec--card__title a::attr(href)").getall()
+        links = selector.css("h3 a::attr(href)").getall()
         print(links)
         return links
-    except:
+    except Exception:
         list()
 
 
