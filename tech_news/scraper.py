@@ -19,12 +19,8 @@ def fetch(url):
 def scrape_noticia(html_content):
     selector = Selector(html_content)
     data = {}
-    data["url"] = selector.css(
-        "head link[rel=canonical]::attr(href)"
-    ).get()
-    data["title"] = selector.css(
-        ".tec--article__header__title::text"
-    ).get()
+    data["url"] = selector.css("head link[rel=canonical]::attr(href)").get()
+    data["title"] = selector.css(".tec--article__header__title::text").get()
     data["timestamp"] = selector.css(
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
@@ -32,24 +28,26 @@ def scrape_noticia(html_content):
         selector.css(".tec--author__info__link::text").get().strip()
     )
     shares = selector.css(".tec--toolbar__item::text").get().strip().split()
-    print(shares)
     data["shares_count"] = int(shares[0])
+    data["comments_count"] = int(selector.css(
+        "#js-comments-btn::attr(data-count)"
+    ).get())
     print(data)
 
 
 # Requisito 3
 def scrape_novidades(html_content):
     selector = Selector(html_content)
-    links = selector.css(
-        ".tec--card__title a::attr(href)"
-    ).getall()
+    links = selector.css(".tec--card__title a::attr(href)").getall()
     # print(links)
     return links
 
 
-# scrape_noticia(fetch(
-#     "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-# ))
+scrape_noticia(
+    fetch(
+        "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
+    )
+)
 
 
 # Requisito 4
