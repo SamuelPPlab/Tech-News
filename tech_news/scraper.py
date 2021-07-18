@@ -29,12 +29,16 @@ def scrape_noticia(html_content):
     )
     shares = selector.css(".tec--toolbar__item::text").get().strip().split()
     data["shares_count"] = int(shares[0])
-    data["comments_count"] = int(selector.css(
-        "#js-comments-btn::attr(data-count)"
-    ).get())
+    data["comments_count"] = int(
+        selector.css("#js-comments-btn::attr(data-count)").get()
+    )
     summary = selector.css(".tec--article__body p::text").getall()
     data["summary"] = "".join(summary)
-    print(data)
+    data["sources"] = selector.css(".tec--badge::text").get().strip()
+    categories = selector.css("#js-categories a::text").getall()
+    categories = [category.strip() for category in categories]
+    data["categories"] = categories
+    return data
 
 
 # Requisito 3
@@ -45,11 +49,11 @@ def scrape_novidades(html_content):
     return links
 
 
-scrape_noticia(
-    fetch(
-        "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
-    )
-)
+# scrape_noticia(
+#     fetch(
+#         "https://www.tecmundo.com.br/mobilidade-urbana-smart-cities/155000-musk-tesla-carros-totalmente-autonomos.htm"
+#     )
+# )
 
 
 # Requisito 4
