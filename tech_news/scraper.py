@@ -98,9 +98,7 @@ def get_tech_news(amount):
             ]
         )
         if len(resultList) < amount:
-            noticiasNovidades = fetch(scrape_next_page_link(noticiasNovidades))
+            tecmundoHTML = fetch(scrape_next_page_link(tecmundoHTML))
     noticias = resultList[:amount]
     create_news(noticias)
     return noticias
-
-get_tech_news(30)
