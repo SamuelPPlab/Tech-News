@@ -15,7 +15,7 @@ def fetch(url):
     except requests.ReadTimeout:
         return None
 
-# Requisito 2
+# Requisito 2 Isabela Cardoso me ajudou com esse requisito
 
 
 def scrape_noticia(html_content):
