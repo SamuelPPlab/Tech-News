@@ -19,6 +19,8 @@ def fetch(url):
 
 # Funções Requisito 2
 def get_url(selector):
+    # https://github.com/tryber/sd-07-tech-news/pull/86/files - Lucas Nonato
+    # tech_news/scraper.py linha 24
     url = selector.css(
         'head link[rel=canonical]::attr(href)'
     ).get()
@@ -113,31 +115,14 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
     data = {}
 
-    # url
     data['url'] = get_url(selector)
-
-    # title
     data['title'] = get_title(selector)
-
-    # timestamp
     data['timestamp'] = get_timestamp(selector)
-
-    # writer
     data['writer'] = get_writer(selector)
-
-    # shares_count
     data['shares_count'] = get_shares_count(selector)
-
-    # comments_count
     data['comments_count'] = get_comments_count(selector)
-
-    # summary
     data['summary'] = get_summary(selector)
-
-    # sources
     data['sources'] = get_sources(selector)
-
-    # categories
     data['categories'] = get_categories(selector)
 
     return data
@@ -145,7 +130,15 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    links_container = selector.css(
+        'div > div > article > div > h3 > a::attr(href)'
+    ).getall()
+
+    if links_container:
+        return links_container
+    else:
+        return []
 
 
 # Requisito 4
