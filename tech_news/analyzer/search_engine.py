@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+import datetime
 
 
 # Requisito 6
@@ -15,8 +16,13 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    result_search = search_news({"timestamp": date})
-    print(result_search)
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+        result_search = search_news({"timestamp": {"$regex": date}})
+        if result_search:
+            print(result_search)
+    except ValueError:
+        raise ValueError('Data inválida')
 
 
 # Requisito 8
