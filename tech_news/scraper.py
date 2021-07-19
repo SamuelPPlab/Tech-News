@@ -1,7 +1,6 @@
 import requests
 import time
-
-# from parsel import Selector
+from parsel import Selector
 # URL = 'https://www.tecmundo.com.br/novidades'
 
 
@@ -18,9 +17,130 @@ def fetch(url):
         return None
 
 
+# Funções Requisito 2
+def get_url(selector):
+    url = selector.css(
+        'head link[rel=canonical]::attr(href)'
+    ).get()
+    return url
+
+
+def get_title(selector):
+    title = selector.css(
+        '#js-article-title::text'
+    ).get()
+    return title
+
+
+def get_timestamp(selector):
+    timestamp = selector.css(
+        '#js-article-date::attr(datetime)'
+    ).get()
+    return timestamp
+
+
+def get_writer(selector):
+    writer = selector.css(
+        '#js-author-bar > div > p.z--m-none.z--truncate.z--font-bold > a::text'
+    ).get()
+    if writer:
+        return writer.strip()
+    else:
+        return None
+
+
+def get_shares_count(selector):
+    shares_count = selector.css(
+        '#js-author-bar > nav > div:nth-child(1)::text'
+    ).get()
+    if shares_count:
+        shares_suffix = 'Compartilharam'
+        shares_count = shares_count[:-len(shares_suffix)]
+        return int(shares_count.strip())
+    else:
+        return 0
+
+
+def get_comments_count(selector):
+    comments_count = selector.css(
+        '#js-comments-btn::attr(data-count)'
+    ).get()
+    if comments_count:
+        return int(comments_count)
+    else:
+        return 0
+
+
+def get_summary(selector):
+    summary_list = selector.css(
+        'div.tec--article__body.z--px-16.p402_premium > p:nth-child(1) *::text'
+    ).getall()
+    expected_summary = ''
+    for summary in summary_list:
+        expected_summary += summary
+    return expected_summary
+
+
+def get_sources(selector):
+    sources_list = selector.css(
+        'div.tec--article__body-grid > div.z--mb-16.z--px-16 > div *::text'
+    ).getall()
+    expected_sources = []
+    for source in sources_list:
+        if (source == '') or (source == ' '):
+            print(source)
+        else:
+            expected_sources.append(source.strip())
+    return expected_sources
+
+
+def get_categories(selector):
+    categories = selector.css(
+        '#js-categories *::text'
+    ).getall()
+    expected_categories = []
+    for category in categories:
+        if (category == '') or (category == ' '):
+            print(category)
+        else:
+            expected_categories.append(category.strip())
+    return expected_categories
+
+
 # Requisito 2
 def scrape_noticia(html_content):
-    """Seu código deve vir aqui"""
+    # https://www.w3schools.com/python/ref_string_strip.asp
+    selector = Selector(html_content)
+    data = {}
+
+    # url
+    data['url'] = get_url(selector)
+
+    # title
+    data['title'] = get_title(selector)
+
+    # timestamp
+    data['timestamp'] = get_timestamp(selector)
+
+    # writer
+    data['writer'] = get_writer(selector)
+
+    # shares_count
+    data['shares_count'] = get_shares_count(selector)
+
+    # comments_count
+    data['comments_count'] = get_comments_count(selector)
+
+    # summary
+    data['summary'] = get_summary(selector)
+
+    # sources
+    data['sources'] = get_sources(selector)
+
+    # categories
+    data['categories'] = get_categories(selector)
+
+    return data
 
 
 # Requisito 3
