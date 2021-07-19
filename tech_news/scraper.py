@@ -27,43 +27,65 @@ def fetch(url):
 # Vitor Rodrigues
 
 
+def get_scraped_shares_count(selector):
+    selected_text = selector.css(".tec--toolbar__item::text").get()
+    for i in selected_text.split():
+        if i.isdigit():
+            return int(i)
+
+
+def get_scraped_comments_count(selector):
+    selected_text = selector.css(".tec--btn::text").get()
+    for i in selected_text.split():
+        if i.isdigit():
+            return int(i)
+
+
 # Requisito 2
 def scrape_noticia(html_content):
 
     selector = Selector(text=html_content)
 
+    scraped_shares_count = 0
+
+    scraped_comments_count = 0
+
     scraped_url = selector.css("head link[rel=canonical]::attr(href)").get()
 
-    scraped_title = selector.css("h1.tec--article__header__title::text").get()
+    scraped_title = selector.css(".tec--article__header__title::text").get()
 
     scraped_timestamp = selector.css(
-        "div.tec--timestamp__item time::attr(datetime)"
+        ".tec--timestamp__item time::attr(datetime)"
     ).get()
 
-    scraped_writer = selector.css("a.tec--author__info__link::text").get()
+    scraped_writer = (
+        selector.css(".tec--author__info__link::text").get().strip()
+        if len(selector.css(".tec--author__info__link")) >= 1
+        else None
+    )
 
-    scraped_source = selector.css(".z--mb-16 .tec--badge::text").getall()
+    scraped_source = selector.css(".z--mb-16 div a.tec--badge::text").getall()
 
-    scraped_categories = selector.css("div#js-categories a::text").getall()
+    scraped_categories = selector.css(".tec--badge--primary::text").getall()
 
-    if scraped_writer:
-        scraped_writer = scraped_writer.strip()
-    scraped_shares_count = selector.css("div.tec--toolbar__item::text").get()
+    scraped_shares = selector.css(".tec--toolbar__item")
 
-    if scraped_shares_count:
-        scraped_shares_count = int(
-            (scraped_shares_count.strip()).split(" ")[0]
+    scraped_comments = selector.css(".tec--btn")
+
+    if len(scraped_shares) != 0:
+        scraped_shares_count = (
+            get_scraped_shares_count(selector)
+            if get_scraped_shares_count(selector) is not None
+            else 0
         )
-    else:
-        scraped_shares_count = 0
-    scraped_comments_count = selector.css("div.tec--toolbar__item::text").get()
 
-    if scraped_comments_count:
-        scraped_comments_count = int(
-            (scraped_comments_count.strip()).split(" ")[0]
+    if len(scraped_comments) != 0:
+        scraped_comments_count = (
+            get_scraped_comments_count(selector)
+            if get_scraped_comments_count(selector) is not None
+            else 0
         )
-    else:
-        scraped_comments_count = 0
+
     scraped_summary = selector.css(
         ".tec--article__body p:first-child *::text"
     ).getall()
