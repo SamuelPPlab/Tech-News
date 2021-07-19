@@ -44,7 +44,7 @@ def get_scraped_comments_count(selector):
 # Requisito 2
 def scrape_noticia(html_content):
 
-    selector = Selector(text=html_content)
+    selector = Selector(html_content)
 
     scraped_shares_count = 0
 
@@ -108,7 +108,14 @@ def scrape_noticia(html_content):
 
 # Requisito 3
 def scrape_novidades(html_content):
-    """Seu código deve vir aqui"""
+
+    selector = Selector(html_content)
+
+    scraped_urls = selector.css(
+        "h3.tec--card__title a.tec--card__title__link::attr(href)"
+    ).getall()
+
+    return scraped_urls if len(scraped_urls) >= 1 else []
 
 
 # Requisito 4
