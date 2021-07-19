@@ -15,7 +15,8 @@ def search_by_title(title):
 
 # Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    result_search = search_news({"timestamp": date})
+    print(result_search)
 
 
 # Requisito 8
@@ -28,4 +29,4 @@ def search_by_category(category):
     """Seu código deve vir aqui"""
 
 
-search_by_title("Vamoscomtudao")
+search_by_date("2020-11-23")
