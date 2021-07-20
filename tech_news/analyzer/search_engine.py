@@ -61,7 +61,9 @@ def search_by_category(category: str) -> list[tuple]:
             - Uma lista vazia, caso não haja correspondência.
     """
 
-    get_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    get_news = search_news(
+        {"categories": {"$regex": category, "$options": "i"}}
+    )
     return [
         (news["title"], news["url"])
         for news in get_news
