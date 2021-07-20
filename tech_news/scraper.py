@@ -41,7 +41,8 @@ def scrape_noticia(html_content):
         "writer": writer.strip() if writer else '',
         "shares_count": int(get_shares_count)
         if len(get_shares_count) > 0 else 0,
-        "comments_count": int(comments_count) if type(comments_count) == 'int' else 0,
+        "comments_count": int(comments_count)
+        if type(comments_count) == 'int' else 0,
         "summary": "".join(summary),
         "sources": [source.strip() for source in sources]
         if len(sources) > 0 else sources,
@@ -65,24 +66,28 @@ def scrape_next_page_link(html_content):
     return selector.css(".tec--btn--lg::attr(href)").get()
 
 
-# Requisito 5
-def get_tech_news(amount):
+def generate_list(amount):
     url = "https://www.tecmundo.com.br/novidades"
     all_news = list()
 
+    while len(all_news) <= amount:
+        request_text = fetch(url)
+        for item_url in scrape_novidades(request_text):
+            item_text = fetch(item_url)
+            news = scrape_noticia(item_text)
+            all_news.append(news)
+            if len(all_news) == amount:
+                create_news(all_news)
+                return all_news
+            url = scrape_next_page_link(request_text)
+
+
+# Requisito 5
+def get_tech_news(amount):
     try:
-        while len(all_news) <= amount:
-            request_text = fetch(url)
-            for item_url in scrape_novidades(request_text):
-                item_text = fetch(item_url)
-                news = scrape_noticia(item_text)
-                all_news.append(news)
-                if len(all_news) == amount:
-                    create_news(all_news)
-                    return all_news
-                url = scrape_next_page_link(request_text)
+        generate_list(amount)
     except ValueError as error:
-        print('***********REQ5', error)
+        raise ValueError(error)
 
 # Referências:
 

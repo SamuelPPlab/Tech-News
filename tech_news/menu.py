@@ -15,17 +15,21 @@ def get_by_news():
     amount = int(input("Digite quantas notícias serão buscadas:"))
     return get_tech_news(amount)
 
+
 def get_by_title():
     amount = int(input("Digite o título:"))
     return search_by_title(amount)
+
 
 def get_by_date():
     amount = int(input("Digite a data no formato aaaa-mm-dd:"))
     search_by_date(amount)
 
+
 def get_by_source():
     amount = int(input("Digite a fonte:"))
     search_by_source(amount)
+
 
 def get_by_category():
     amount = int(input("Digite a categoria:"))
@@ -33,7 +37,7 @@ def get_by_category():
 
 
 # Requisito 12
-def analyzer_menu()->None: # Indica o retorno da func
+def analyzer_menu() -> None:  # Indica o retorno da func
     format = [
         " 0 - Popular o banco com notícias;",
         " 1 - Buscar notícias por título;",
@@ -45,7 +49,8 @@ def analyzer_menu()->None: # Indica o retorno da func
         " 7 - Sair."
     ]
     print("Selecione uma das opções a seguir:")
-    for item in format: print(item)
+    for item in format:
+        print(item)
     try:
         user_response = int(input())
         if 0 <= user_response <= 7:
@@ -58,8 +63,8 @@ def analyzer_menu()->None: # Indica o retorno da func
                 top_5_news,
                 top_5_categories,
             ]
-            response = raise_func[user_response]() # executa a função
+            response = raise_func[user_response]()  # executa a função
             print(response)
     except ValueError:
         print("Opção inválida")
-    
+
