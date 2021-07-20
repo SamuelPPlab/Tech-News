@@ -39,8 +39,18 @@ def search_by_date(date: str) -> list[tuple]:
 
 
 # Requisito 8
-def search_by_source(source):
-    """Seu código deve vir aqui"""
+def search_by_source(source: str) -> list[tuple]:
+    """
+        - Faz uma busca case-insensitive no DB por fonte e retorna:
+            - Uma lista de tuplas de notícias correspondentes.
+            - Uma lista vazia, caso não haja correspondência.
+    """
+
+    get_news = search_news({"sources": {"$regex": source, "$options": "i"}})
+    return [
+        (news["title"], news["url"])
+        for news in get_news
+    ]
 
 
 # Requisito 9
