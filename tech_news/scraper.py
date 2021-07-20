@@ -73,7 +73,6 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
-    # try:
     selector = Selector(text=html_content)
     try:
         notice_links = (
@@ -92,12 +91,26 @@ def scrape_novidades(html_content):
         return []
 
 
-scrape_novidades(fetch('https://www.tecmundo.com.br/novidades'))
-
-
 # Requisito 4
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
+    selector = Selector(text=html_content)
+    try:
+        next_notice_page = (
+            selector.css(
+                'a.tec--btn::attr(href)'
+            ).get()
+            if selector.css(
+                'a.tec--btn::attr(href)'
+            ).get() is not None
+            else None
+        )
+        return next_notice_page
+    except requests.ReadTimeout:
+        return None
+
+
+scrape_next_page_link(fetch('https://www.tecmundo.com.br/novidades'))
 
 
 # Requisito 5
