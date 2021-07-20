@@ -74,10 +74,6 @@ def get_tech_news(amount):
     url = "https://www.tecmundo.com.br/novidades"
     url_list = []
     data_list = []
-    if amount <= 20:
-        page = scrape_novidades(fetch(url))
-        for index in page:
-            url_list.append(index)
     pages_number = math.ceil(amount / 20)
     for index in range(pages_number):
         page = scrape_novidades(fetch(url))
