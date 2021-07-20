@@ -4,8 +4,7 @@ import time
 # import math
 
 from parsel import Selector
-
-# from tech_news.database import create_news
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -29,16 +28,19 @@ def fetch(url):
 
 def get_scraped_shares_count(selector):
     selected_text = selector.css(".tec--toolbar__item::text").get()
-    for i in selected_text.split():
-        if i.isdigit():
-            return int(i)
+    if selected_text is None:
+        selected_text = 0
+    else:
+        for i in selected_text.split():
+            if i.isdigit():
+                return int(i)
 
 
 def get_scraped_comments_count(selector):
-    selected_text = selector.css(".tec--btn::text").get()
-    for i in selected_text.split():
-        if i.isdigit():
-            return int(i)
+    selected_text = selector.css(
+        "div.tec--toolbar__item button::attr(data-count)"
+    ).get()
+    return int(selected_text)
 
 
 # Requisito 2
@@ -87,7 +89,7 @@ def scrape_noticia(html_content):
         )
 
     scraped_summary = selector.css(
-        ".tec--article__body p:first-child *::text"
+        "div.tec--article__body > p:nth-child(1) *::text"
     ).getall()
 
     return {
@@ -129,6 +131,24 @@ def scrape_next_page_link(html_content):
 
     return scraped_next_page_urls
 
+
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = "https://www.tecmundo.com.br/novidades"
+
+    news_list = []
+
+    while len(news_list) < amount:
+        scraped_text = fetch(url)
+        urls_array = scrape_novidades(scraped_text)
+        for url in urls_array:
+            html_text = fetch(url)
+            news_text = scrape_noticia(html_text)
+            news_list.append(news_text)
+            if len(news_list) == amount:
+                create_news(news_list)
+                return news_list
+        url = scrape_next_page_link(scraped_text)
+
+
+# Vanessa Naara e Maria Carolina
