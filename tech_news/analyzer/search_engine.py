@@ -54,5 +54,15 @@ def search_by_source(source: str) -> list[tuple]:
 
 
 # Requisito 9
-def search_by_category(category):
-    """Seu código deve vir aqui"""
+def search_by_category(category: str) -> list[tuple]:
+    """
+        - Faz uma busca case-insensitive no DB por categoria e retorna:
+            - Uma lista de tuplas de notícias correspondentes.
+            - Uma lista vazia, caso não haja correspondência.
+    """
+
+    get_news = search_news({"categories": {"$regex": category, "$options": "i"}})
+    return [
+        (news["title"], news["url"])
+        for news in get_news
+    ]
