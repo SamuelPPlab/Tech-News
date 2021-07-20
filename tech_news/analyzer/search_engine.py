@@ -1,4 +1,5 @@
 from tech_news.database import search_news
+from datetime import datetime
 
 
 # Requisito 6
@@ -17,8 +18,24 @@ def search_by_title(title):
 
 
 # Requisito 7
-def search_by_date(date):
-    """Seu código deve vir aqui"""
+def search_by_date(date: str) -> list[tuple]:
+    """ - Caso o formato da data seja válido (AAAA-MM-DD):
+            - Faz pesquisa por data
+            - Retorna uma lista de notícias filtrada pela data
+        - Se o formato for incorreto, retorna uma lista vazia.
+    """
+
+    try:
+        datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError('Data inválida')
+
+    get_news = search_news({"timestamp": {"$regex": date}})
+
+    return [
+        (news["title"], news["url"])
+        for news in get_news
+    ]
 
 
 # Requisito 8
@@ -29,7 +46,3 @@ def search_by_source(source):
 # Requisito 9
 def search_by_category(category):
     """Seu código deve vir aqui"""
-
-
-teste = 'CAIXA_ALTA'
-print(teste.lower())
