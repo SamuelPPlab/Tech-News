@@ -67,4 +67,3 @@ def analyzer_menu() -> None:  # Indica o retorno da func
             print(response)
     except ValueError:
         print("Opção inválida")
-

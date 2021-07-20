@@ -38,11 +38,11 @@ def scrape_noticia(html_content):
         "url": selector.css("head link[rel=canonical]::attr(href)").get(),
         "title": selector.css("#js-article-title::text").get(),
         "timestamp": selector.css("#js-article-date::attr(datetime)").get(),
-        "writer": writer.strip() if writer else '',
+        "writer": writer.strip() if writer else None,
         "shares_count": int(get_shares_count)
         if len(get_shares_count) > 0 else 0,
         "comments_count": int(comments_count)
-        if type(comments_count) == 'int' else 0,
+        if not isinstance(comments_count, int) else 0,
         "summary": "".join(summary),
         "sources": [source.strip() for source in sources]
         if len(sources) > 0 else sources,
@@ -85,7 +85,7 @@ def generate_list(amount):
 # Requisito 5
 def get_tech_news(amount):
     try:
-        generate_list(amount)
+        return generate_list(amount)
     except ValueError as error:
         raise ValueError(error)
 
@@ -100,3 +100,4 @@ def get_tech_news(amount):
 # https://stackoverflow.com/questions/43727583/re-sub-erroring-with-expected-string-or-bytes-like-object
 # https://github.com/tryber/sd-07-tech-news/blob/luciano-berchon-tech-news/tech_news/scraper.py
 # https://github.com/tryber/sd-07-tech-news/blob/carol-andrade-tech-news/tech_news/scraper.py
+# python3 -m pytest tests/test_scraper.py
