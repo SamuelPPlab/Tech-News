@@ -73,6 +73,26 @@ def scrape_noticia(html_content):
 # Requisito 3
 def scrape_novidades(html_content):
     """Seu código deve vir aqui"""
+    # try:
+    selector = Selector(text=html_content)
+    try:
+        notice_links = (
+            selector.css(
+                'h3.tec--card__title a.tec--card__title__link::attr(href)'
+            ).getall()
+            if selector.css(
+                'h3.tec--card__title a.tec--card__title__link::attr(href)'
+            ).getall() is not None
+            else []
+        )
+        if (len(notice_links) == 0):
+            return []
+        return notice_links
+    except requests.ReadTimeout:
+        return []
+
+
+scrape_novidades(fetch('https://www.tecmundo.com.br/novidades'))
 
 
 # Requisito 4
