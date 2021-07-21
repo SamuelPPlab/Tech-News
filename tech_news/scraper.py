@@ -20,59 +20,56 @@ def fetch(url):
 def scrape_noticia(html_content):
     notice = {}
     shares_sufix = "Compartilharam"
-    try:
-        selector = Selector(text=html_content)
+    selector = Selector(text=html_content)
 
-        notice["url"] = selector.css(
-            "head > meta[property='og:url']::attr(content)"
-        ).get()
+    notice["url"] = selector.css(
+        "head > meta[property='og:url']::attr(content)"
+    ).get()
 
-        notice["title"] = selector.css('#js-article-title::text').get()
+    notice["title"] = selector.css('#js-article-title::text').get()
 
-        notice["timestamp"] = selector.css(
-            '#js-article-date::attr(datetime)'
-        ).get()
+    notice["timestamp"] = selector.css(
+        '#js-article-date::attr(datetime)'
+    ).get()
 
-        notice["writer"] = (
-            selector.css('.tec--author__info__link::text').get().strip()
-            if selector.css('.tec--author__info__link::text').get() is not None
-            else None
-        )
+    notice["writer"] = (
+        selector.css('.tec--author__info__link::text').get().strip()
+        if selector.css('.tec--author__info__link::text').get() is not None
+        else None
+    )
 
-        notice["shares_count"] = int(
-            selector.css(
-                '.tec--toolbar__item::text'
-            ).get()[: -len(shares_sufix)].strip()
-            if selector.css('.tec--toolbar__item::text').get() is not None
-            else 0
-        )
+    notice["shares_count"] = int(
+        selector.css(
+            '.tec--toolbar__item::text'
+        ).get()[: -len(shares_sufix)].strip()
+        if selector.css('.tec--toolbar__item::text').get() is not None
+        else 0
+    )
 
-        notice["comments_count"] = int(
-            selector.css('#js-comments-btn::attr(data-count)').get().strip()
-            if selector.css(
-                '#js-comments-btn::attr(data-count)'
-            ).get() is not None
-            else 0
-        )
+    notice["comments_count"] = int(
+        selector.css('#js-comments-btn::attr(data-count)').get().strip()
+        if selector.css(
+            '#js-comments-btn::attr(data-count)'
+        ).get() is not None
+        else 0
+    )
 
-        notice["summary"] = "".join(selector.css(
-            '.tec--article__body > p:first-child *::text'
-        ).getall())
+    notice["summary"] = "".join(selector.css(
+        '.tec--article__body > p:first-child *::text'
+    ).getall())
 
-        notice["sources"] = [
-            source.strip()
-            for source in selector.css(
-                '.z--mb-16 div a.tec--badge::text'
-            ).getall()
-        ]
+    notice["sources"] = [
+        source.strip()
+        for source in selector.css(
+            '.z--mb-16 div a.tec--badge::text'
+        ).getall()
+    ]
 
-        notice["categories"] = [
-            category.strip()
-            for category in selector.css('.tec--badge--primary::text').getall()
-        ]
-        return notice
-    except requests.ReadTimeout:
-        return None
+    notice["categories"] = [
+        category.strip()
+        for category in selector.css('.tec--badge--primary::text').getall()
+    ]
+    return notice
 
 
 # Requisito 3
@@ -100,19 +97,11 @@ def scrape_novidades(html_content):
 def scrape_next_page_link(html_content):
     """Seu código deve vir aqui"""
     selector = Selector(text=html_content)
-    try:
-        next_notice_page = (
-            selector.css(
-                'a.tec--btn::attr(href)'
-            ).get()
-            if selector.css(
-                'a.tec--btn::attr(href)'
-            ).get() is not None
-            else None
-        )
-        return next_notice_page
-    except requests.ReadTimeout:
-        return None
+    next_notice_page = selector.css(
+            'div.tec--list.tec--list--lg a.tec--btn--primary::attr(href)'
+        ).get()
+
+    return next_notice_page
 
 
 # Requisito 5
@@ -128,7 +117,6 @@ def get_tech_news(amount):
 
     count = 0
     notices = []
-    print(len(notice_links))
     while (count < amount):
         notice_content = fetch(notice_links[count])
         notices.append(scrape_noticia(notice_content))
@@ -136,3 +124,6 @@ def get_tech_news(amount):
 
     create_news(notices)
     return(notices)
+
+
+get_tech_news(10)
