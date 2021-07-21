@@ -53,7 +53,6 @@ def search_by_date(date):
 # Requisito 8
 def search_by_source(source):
     result = search_news({'sources': {'$regex': source, '$options': 'i'}})
-    # Referência: projetod a Thays Costa
     list_of_news = []
 
     for new in result:
@@ -64,4 +63,10 @@ def search_by_source(source):
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    result = search_news({'categories': {'$regex': category, '$options': 'i'}})
+    list_of_news = []
+
+    for new in result:
+        list_of_news.append((new['title'], new['url']))
+
+    return list_of_news
