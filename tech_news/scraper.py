@@ -2,7 +2,7 @@ import requests
 import time
 from requests.exceptions import ReadTimeout
 from parsel import Selector
-import html2text
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -21,7 +21,7 @@ def fetch(url):
 def scrape_noticia(html_content):
     """
         Recebe um conteúdo HTML e retorna um dict com as informações:
-            url, title, timestamp, writer, shares_count,
+            - url, title, timestamp, writer, shares_count,
             comments_count, summary, sources e categories.
     """
     noticia = {}
@@ -29,25 +29,24 @@ def scrape_noticia(html_content):
     noticia["url"] = selector.css("link[rel='canonical']::attr(href)").get()
     noticia["title"] = selector.css("#js-article-title::text").get()
     noticia["timestamp"] = selector.css("time::attr(datetime)").get()
-
-    writer = selector.css(".tec--author__info__link::text").get().strip()
+    writer = selector.css(".tec--author__info__link::text").get()
+    writer = writer.strip() if writer else None
     noticia["writer"] = None if not writer else writer
 
-    shares_count = int(selector.css(
-        ".tec--toolbar__item::text"
-    ).get().split()[0])
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    shares_count = int(shares_count.split()[0]) if shares_count else None
     noticia["shares_count"] = 0 if not shares_count else shares_count
 
-    noticia["comments_count"] = int(selector.css(
+    comments_count = selector.css(
         "#js-comments-btn::attr(data-count)"
-    ).get())
+    ).get()
+    noticia["comments_count"] = int(comments_count) if comments_count else None
 
-    first_paragraph = selector.css(".tec--article__body p").get()
-    convert_html2text = html2text.HTML2Text()
-    convert_html2text.ignore_links = True
-    summary = convert_html2text.handle(first_paragraph).replace("\n", " ")
-    noticia["summary"] = summary.replace("  ", "")
-    # ref: https://github.com/Alir3z4/html2text/blob/master/docs/usage.md
+    first_paragraph = selector.css(
+        "div.tec--article__body > p:first-child ::text"
+    ).getall()
+    summary = "".join(first_paragraph)
+    noticia["summary"] = summary
 
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
     noticia["sources"] = [source.strip() for source in sources]
@@ -88,6 +87,21 @@ def scrape_next_page_link(html_content):
 
 
 # Requisito 5
-def get_tech_news(amount):
-    """Seu código deve vir aqui"""
-    # print('URL*******', URL_list)
+def get_tech_news(amount: int) -> list[str]:
+    """
+        - Recebe um número e retorna essa quantidade de noticias
+        - Insere essas notícias no MongoDB
+        - Retorna as notícias inseridas no DB
+    """
+    # Ref: Desenvolvido com ajuda da Lorena Goes
+
+    url = 'https://www.tecmundo.com.br/novidades'
+    all_news_list = []
+    while len(all_news_list) <= amount:
+        request = fetch(url)
+        for endpoint in scrape_novidades(request):
+            all_news_list.append(scrape_noticia(fetch(endpoint)))
+            if len(all_news_list) == amount:
+                create_news(all_news_list)
+                return all_news_list
+            url = scrape_next_page_link(request)
