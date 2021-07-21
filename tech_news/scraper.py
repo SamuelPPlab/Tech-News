@@ -1,7 +1,7 @@
 import requests
 import time
 from parsel import Selector
-# URL = 'https://www.tecmundo.com.br/novidades'
+from tech_news.database import create_news
 
 
 # Requisito 1
@@ -75,7 +75,7 @@ def get_comments_count(selector):
 
 def get_summary(selector):
     summary_list = selector.css(
-        'div.tec--article__body.z--px-16.p402_premium > p:nth-child(1) *::text'
+        'div.tec--article__body > p:nth-child(1) *::text'
     ).getall()
     expected_summary = ''
     for summary in summary_list:
@@ -85,7 +85,7 @@ def get_summary(selector):
 
 def get_sources(selector):
     sources_list = selector.css(
-        'div.tec--article__body-grid > div.z--mb-16.z--px-16 > div *::text'
+        'div.tec--article__body-grid > div.z--mb-16 > div *::text'
     ).getall()
     expected_sources = []
     for source in sources_list:
@@ -143,9 +143,30 @@ def scrape_novidades(html_content):
 
 # Requisito 4
 def scrape_next_page_link(html_content):
-    """Seu código deve vir aqui"""
+    selector = Selector(html_content)
+    next_page_link = selector.css(
+        'div.z--col.z--w-2-3 > div.tec--list.tec--list--lg > a::attr(href)'
+    ).get()
+
+    if next_page_link:
+        return next_page_link
+    else:
+        return None
 
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = 'https://www.tecmundo.com.br/novidades'
+    news_info = []
+    while len(news_info) < amount:
+        html_content = fetch(url)
+        news_url_list = scrape_novidades(html_content)
+
+        for news_url in news_url_list:
+            page_content = fetch(news_url)
+            news_info.append(scrape_noticia(page_content))
+            if len(news_info) == amount:
+                create_news(news_info)
+                return news_info
+
+        url = scrape_next_page_link(html_content)
