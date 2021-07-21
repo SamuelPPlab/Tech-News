@@ -42,13 +42,13 @@ def scrape_noticia(html_content):
         "shares_count": int(get_shares_count)
         if len(get_shares_count) > 0 else 0,
         "comments_count": int(comments_count)
-        if not isinstance(comments_count, int) else 0,
+        if comments_count is not None else 0,
         "summary": "".join(summary),
         "sources": [source.strip() for source in sources]
         if len(sources) > 0 else sources,
         "categories": [category.strip() for category in categories]
         if len(categories) > 0 else categories,
-        }
+    }
 
 
 # Requisito 3
@@ -66,7 +66,8 @@ def scrape_next_page_link(html_content):
     return selector.css(".tec--btn--lg::attr(href)").get()
 
 
-def generate_list(amount):
+# Requisito 5
+def get_tech_news(amount):
     url = "https://www.tecmundo.com.br/novidades"
     all_news = list()
 
@@ -81,14 +82,6 @@ def generate_list(amount):
                 return all_news
             url = scrape_next_page_link(request_text)
 
-
-# Requisito 5
-def get_tech_news(amount):
-    try:
-        return generate_list(amount)
-    except ValueError as error:
-        raise ValueError(error)
-
 # Referências:
 
 # https://www.w3schools.com/python/python_try_except.asp
@@ -100,4 +93,3 @@ def get_tech_news(amount):
 # https://stackoverflow.com/questions/43727583/re-sub-erroring-with-expected-string-or-bytes-like-object
 # https://github.com/tryber/sd-07-tech-news/blob/luciano-berchon-tech-news/tech_news/scraper.py
 # https://github.com/tryber/sd-07-tech-news/blob/carol-andrade-tech-news/tech_news/scraper.py
-# python3 -m pytest tests/test_scraper.py
