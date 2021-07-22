@@ -2,6 +2,7 @@ import requests
 import time
 from parsel import Selector
 import re
+from tech_news.database import create_news
 
 
 def url_ok(request):
@@ -108,4 +109,23 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    url = 'https://www.tecmundo.com.br/novidades'
+    list_of_news = []
+
+    while len(list_of_news) <= amount:
+        text = fetch(url)
+        links = scrape_novidades(text)
+
+        for link in links:
+            link_text = fetch(link)
+            news = scrape_noticia(link_text)
+            list_of_news.append(news)
+
+            if len(list_of_news) == amount:
+                create_news(list_of_news)
+                return list_of_news
+
+            url = scrape_next_page_link(text)
+
+# Ref: https://github.com/tryber/sd-07-tech-news
+# /blob/lorena-goes-tech-news/tech_news/scraper.py
