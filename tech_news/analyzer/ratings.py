@@ -1,4 +1,5 @@
 from tech_news.database import find_news
+from collections import Counter
 
 
 # https://stackoverflow.com/questions/72899/how-do-i-sort-a-list-of-dictionaries-by-a-value-of-the-dictionary
@@ -26,5 +27,20 @@ def top_5_news():
 
 
 # Requisito 11
+# Caputo
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news_list = find_news()
+
+    categories_list = []
+    sorted_categories = []
+
+    for news in news_list:
+        for category in news['categories']:
+            categories_list.append(category)
+
+    categories_and_qty = sorted(Counter(categories_list).most_common())
+
+    for category_and_qty in categories_and_qty:
+        sorted_categories.append(category_and_qty[0])
+
+    return sorted_categories[:5]

@@ -1,3 +1,8 @@
+from sys import exit
+from tech_news import scraper
+from tech_news.analyzer import search_engine, ratings
+
+
 def print_options():
     return input(
         'Selecione uma das opções a seguir:\n'
@@ -13,23 +18,52 @@ def print_options():
 
 
 def handle_selected_option0():
-    return input('Digite quantas notícias serão buscadas: ')
+    amount = input('Digite quantas notícias serão buscadas: ')
+    result = scraper.get_tech_news(amount)
+    print(result)
+    return result
 
 
 def handle_selected_option1():
-    return input('Digite o título: ')
+    title = input('Digite o título: ')
+    result = search_engine.search_by_title(title)
+    print(result)
+    return result
 
 
 def handle_selected_option2():
-    return input('Digite a data no formato aaaa-mm-dd: ')
+    date = input('Digite a data no formato aaaa-mm-dd: ')
+    result = search_engine.search_by_date(date)
+    print(result)
+    return result
 
 
 def handle_selected_option3():
-    return input('Digite a fonte: ')
+    result = input('Digite a fonte: ')
+    return search_engine.search_by_source(result)
 
 
 def handle_selected_option4():
-    return input('Digite a categoria: ')
+    category = input('Digite a categoria: ')
+    result = search_engine.search_by_category(category)
+    print(result)
+    return result
+
+
+def handle_selected_option5():
+    result = ratings.top_5_news()
+    print(result)
+    return result
+
+
+def handle_selected_option6():
+    result = ratings.top_5_categories()
+    print(result)
+    return result
+
+
+def handle_selected_option7():
+    return exit('Encerrando script\n')
 
 
 def analyzer_menu():
@@ -41,6 +75,9 @@ def analyzer_menu():
         "2": handle_selected_option2,
         "3": handle_selected_option3,
         "4": handle_selected_option4,
+        "5": handle_selected_option5,
+        "6": handle_selected_option6,
+        "7": handle_selected_option7,
     }
 
     try:
@@ -48,4 +85,4 @@ def analyzer_menu():
         print(result)
         return result
     except KeyError:
-        print('Opção inválida')
+        print('Opção inválida\n')

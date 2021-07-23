@@ -158,14 +158,14 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     url = 'https://www.tecmundo.com.br/novidades'
     news_info = []
-    while len(news_info) < amount:
+    while len(news_info) < int(amount):
         html_content = fetch(url)
         news_url_list = scrape_novidades(html_content)
 
         for news_url in news_url_list:
             page_content = fetch(news_url)
             news_info.append(scrape_noticia(page_content))
-            if len(news_info) == amount:
+            if len(news_info) == int(amount):
                 create_news(news_info)
                 return news_info
 
