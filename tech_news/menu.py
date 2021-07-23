@@ -1,69 +1,75 @@
-from sys import exit
-from tech_news import scraper
-from tech_news.analyzer import search_engine, ratings
+import sys
+from tech_news.analyzer.search_engine import (
+    search_by_title,
+    search_by_date,
+    search_by_source,
+    search_by_category,
+)
+from tech_news.analyzer.ratings import top_5_news, top_5_categories
+from tech_news.scraper import get_tech_news
 
 
 def print_options():
     return input(
-        'Selecione uma das opções a seguir:\n'
-        + ' 0 - Popular o banco com notícias;\n'
-        + ' 1 - Buscar notícias por título;\n'
-        + ' 2 - Buscar notícias por data;\n'
-        + ' 3 - Buscar notícias por fonte;\n'
-        + ' 4 - Buscar notícias por categoria;\n'
-        + ' 5 - Listar top 5 notícias;\n'
-        + ' 6 - Listar top 5 categorias;\n'
-        + ' 7 - Sair.\n'
+        "Selecione uma das opções a seguir:\n"
+        + " 0 - Popular o banco com notícias;\n"
+        + " 1 - Buscar notícias por título;\n"
+        + " 2 - Buscar notícias por data;\n"
+        + " 3 - Buscar notícias por fonte;\n"
+        + " 4 - Buscar notícias por categoria;\n"
+        + " 5 - Listar top 5 notícias;\n"
+        + " 6 - Listar top 5 categorias;\n"
+        + " 7 - Sair.\n"
     )
 
 
 def handle_selected_option0():
-    amount = input('Digite quantas notícias serão buscadas: ')
-    result = scraper.get_tech_news(amount)
+    amount = input("Digite quantas notícias serão buscadas: ")
+    result = get_tech_news(amount)
     print(result)
     return result
 
 
 def handle_selected_option1():
-    title = input('Digite o título: ')
-    result = search_engine.search_by_title(title)
+    title = input("Digite o título: ")
+    result = search_by_title(title)
     print(result)
     return result
 
 
 def handle_selected_option2():
-    date = input('Digite a data no formato aaaa-mm-dd: ')
-    result = search_engine.search_by_date(date)
+    date = input("Digite a data no formato aaaa-mm-dd: ")
+    result = search_by_date(date)
     print(result)
     return result
 
 
 def handle_selected_option3():
-    result = input('Digite a fonte: ')
-    return search_engine.search_by_source(result)
+    result = input("Digite a fonte: ")
+    return search_by_source(result)
 
 
 def handle_selected_option4():
-    category = input('Digite a categoria: ')
-    result = search_engine.search_by_category(category)
+    category = input("Digite a categoria: ")
+    result = search_by_category(category)
     print(result)
     return result
 
 
 def handle_selected_option5():
-    result = ratings.top_5_news()
+    result = top_5_news()
     print(result)
     return result
 
 
 def handle_selected_option6():
-    result = ratings.top_5_categories()
+    result = top_5_categories()
     print(result)
     return result
 
 
 def handle_selected_option7():
-    return exit('Encerrando script\n')
+    print("Encerrando script")
 
 
 def analyzer_menu():
@@ -83,6 +89,12 @@ def analyzer_menu():
     try:
         result = options[option]()
         print(result)
-        return result
     except KeyError:
-        print('Opção inválida\n')
+        sys.stderr.write('Opção inválida\n')
+
+    '''if option not in options:
+        stderr.write("Opção inválida\n")
+
+    if option in options:
+        result = options[option]()
+        return result'''
