@@ -40,11 +40,9 @@ def search_by_date(date):
 
 def search_by_source(source):
     news = []
-    # for value in source:
     source_with_rg = re.compile(f'.*{source}.*', re.IGNORECASE)
     try:
         result = search_news({"sources": source_with_rg})
-        # print(result)
         if result is None:
             return []
     except ValueError:
@@ -52,7 +50,6 @@ def search_by_source(source):
     else:
         for new in result:
             tupla = (new["title"], new["url"])
-            # print(tupla)
             news.append(tupla)
         return news
 
