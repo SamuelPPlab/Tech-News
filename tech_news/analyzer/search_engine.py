@@ -39,16 +39,25 @@ def search_by_date(date):
 
 
 def search_by_source(source):
-    # iterar value in source para inserir regex IGNORECASE
-    # try except caso nao encontre source no bd returne []
-    # result = search_news(query {"sources": value})
-    # criar news = []
-    # iterar new in result
-    # news.append(new)
-    # return news
-    
-
+    news = []
+    # for value in source:
+    source_with_rg = re.compile(f'.*{source}.*', re.IGNORECASE)
+    try:
+        result = search_news({"sources": source_with_rg})
+        # print(result)
+        if result is None:
+            return []
+    except ValueError:
+        raise ValueError("Fonte inválida")
+    else:
+        for new in result:
+            tupla = (new["title"], new["url"])
+            # print(tupla)
+            news.append(tupla)
+        return news
 
 # Requisito 9
+
+
 def search_by_category(category):
     """Seu código deve vir aqui"""
