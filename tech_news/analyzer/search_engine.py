@@ -20,17 +20,24 @@ def search_by_title(title):
 
 
 def search_by_date(date):
-    # https://www.alura.com.br/artigos/lidando-com-datas-e-ho
-    # rarios-no-python?gclid=Cj0KCQjw0emHBhC1ARIsAL1QGNenAki-Y
-    # -E31W-lEdbyx9IO3fNaFElYiqlNFVBAGEc5h52Wvxzunx0aAhlVEALw_wcB
-    # print(type(date)) <class 'str'>
-    datetime
-
-    
-
-search_by_date("2020-11-23T11:00:01")
+    # print(type(date))  <class 'str'>
+    # https://docs.python.org/pt-br/3/library/datetime.html
+    try:
+        datetime.datetime.strptime(date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError("Data inválida")
+    else:
+        rgx = re.compile(f'.*{date}.*')
+        results = search_news({"timestamp": rgx})
+        news = []
+        for result in results:
+            news_tupla = (result["title"], result["url"])
+            news.append(news_tupla)
+    return news
 
 # Requisito 8
+
+
 def search_by_source(source):
     """Seu código deve vir aqui"""
 

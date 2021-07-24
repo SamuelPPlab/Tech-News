@@ -115,8 +115,9 @@ def get_tech_news(amount):
         news_link_list = scrape_novidades(html_content)
         for url_link in news_link_list:
             url_list.append(url_link)
-    url = scrape_next_page_link(html_content)
+            url = scrape_next_page_link(html_content)
     for index in range(amount):
         news.append(scrape_noticia(fetch(url_list[index])))
+    print(url_list)
     create_news(news)
     return news
