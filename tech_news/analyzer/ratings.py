@@ -4,7 +4,7 @@ from functools import reduce
 
 # Requisito 10
 def top_5_news():
-    list =  sorted(
+    list = sorted(
             find_news(),
             key=lambda field: (
                 -(field["shares_count"] + field["comments_count"]),
