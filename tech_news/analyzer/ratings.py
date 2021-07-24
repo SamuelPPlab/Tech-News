@@ -24,6 +24,8 @@ def top_5_news():
 
     return top_five_popularity[:5]
 
+# Thays Costa e Gleison
+
 
 # Requisito 11
 def top_5_categories():
