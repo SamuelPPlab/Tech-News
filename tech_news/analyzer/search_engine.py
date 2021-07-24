@@ -1,15 +1,14 @@
 from tech_news.database import search_news
 
 
+def search(key, value):
+    query = search_news({key: {"$regex": f"{value}", "$options": "i"}})
+    return [(news["title"], news["url"]) for news in query]
+
+
 # Requisito 6
 def search_by_title(title):
-    result = list()
-    query = search_news({"title": {"$regex": title, "$options": "i"}})
-    for news in query:
-        if news["title"]:
-            format = (news["title"], news["url"])
-            result.append(format)
-    return result
+    return search("title", title)
 
 
 # Requisito 7
@@ -19,9 +18,9 @@ def search_by_date(date):
 
 # Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    return search("sources", source)
 
 
 # Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    return search("categories", category)
