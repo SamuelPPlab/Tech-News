@@ -5,16 +5,28 @@ import datetime
 # Requisito 6
 
 
-def search_by_title(title):
-    # print(title) Vamoscomtudo
-    pattern = re.compile(f'.*{title}.*', re.IGNORECASE)
-    # print(pattern) VAMOSCOMTUDO
-    results = search_news({"title": pattern})
+def return_general(results):
     news = []
     for result in results:
         search = (result["title"], result["url"])
         news.append(search)
     return news
+
+
+def results_is_none(results):
+    if results is None:
+        return []
+
+
+def search_by_title(title):
+    pattern = re.compile(f'.*{title}.*', re.IGNORECASE)
+    try:
+        results = search_news({"title": pattern})
+    except ValueError:
+        raise ValueError("Titulo inválido")
+    else:
+        results_is_none(results)
+        return return_general(results)
 
 # Requisito 7
 
@@ -29,32 +41,31 @@ def search_by_date(date):
     else:
         rgx = re.compile(f'.*{date}.*')
         results = search_news({"timestamp": rgx})
-        news = []
-        for result in results:
-            news_tupla = (result["title"], result["url"])
-            news.append(news_tupla)
-    return news
+        results_is_none(results)
+        return return_general(results)
 
 # Requisito 8
 
 
 def search_by_source(source):
-    news = []
     source_with_rg = re.compile(f'.*{source}.*', re.IGNORECASE)
     try:
-        result = search_news({"sources": source_with_rg})
-        if result is None:
-            return []
+        results = search_news({"sources": source_with_rg})
+        results_is_none(results)
     except ValueError:
         raise ValueError("Fonte inválida")
     else:
-        for new in result:
-            tupla = (new["title"], new["url"])
-            news.append(tupla)
-        return news
+        return return_general(results)
 
 # Requisito 9
 
 
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    category_with_rg = re.compile(f'.*{category}.*', re.IGNORECASE)
+    try:
+        results = search_news({"categories": category_with_rg})
+        results_is_none(results)
+    except ValueError:
+        raise ValueError('Categoria inválida')
+    else:
+        return return_general(results)
