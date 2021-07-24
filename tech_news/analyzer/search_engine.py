@@ -1,5 +1,5 @@
 from tech_news.database import search_news
-import datetime
+from datetime import datetime
 
 
 def search(key, value):
@@ -15,7 +15,7 @@ def search_by_title(title):
 # Requisito 7
 def search_by_date(date):
     try:
-        datetime.datetime.strptime(date, "%Y-%m-%d")
+        datetime.strptime(date, "%Y-%m-%d")
     except ValueError:
         raise ValueError("Data inválida")
     else:
