@@ -1,6 +1,8 @@
 import requests
 import time
 from parsel import Selector
+from tech_news.database import create_news
+import math
 # Requisito 1
 
 
@@ -30,14 +32,22 @@ def scrape_noticia(html_content):
 
     timestamp = selector.css("time ::attr(datetime)").get()
     # print(selector.css("time ::attr(datetime)").get())
-
+    # try:
     writer = selector.css("a.tec--author__info__link::text").get()
+    #     if writer is None:
+    #         print("Reclamando que não pode retirar vazio de objeto nulo")
+    # except AttributeError:
+    #     writer = " valor nulo "
     # retirar espaços em branco
     # https://www.delftstack.com/pt/howto/python/how-to-remove-whitespace-in-a-string/
     # print(selector.css("a.tec--author__info__link::text").get())
-
+    # try:
     shares_count = int(selector.css(".tec--toolbar__item::text").re_first(
         r"\d+"))
+    #     if shares_count is not None:
+    #         print("nada é alguma coisa em python")
+    # except TypeError:
+    #     shares_count = "valor nulo"
     # cast para int
     # print(shares_count = selector.css(".tec--toolbar__item::text").re_first(
     # r"\d+"))
@@ -69,7 +79,7 @@ def scrape_noticia(html_content):
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": writer.strip(),
+        "writer": writer.strip() if writer else "valor nulo",
         "shares_count": shares_count if shares_count else 0,
         "comments_count": comments_count if comments_count else 0,
         "summary": summary,
@@ -96,4 +106,17 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    """Seu código deve vir aqui"""
+    news = []
+    url_list = []
+    url = "https://www.tecmundo.com.br/novidades"
+    for _ in range(math.ceil(amount / 20)):
+        time.sleep(0.1)
+        html_content = fetch(url)
+        news_link_list = scrape_novidades(html_content)
+        for url_link in news_link_list:
+            url_list.append(url_link)
+    url = scrape_next_page_link(html_content)
+    for index in range(amount):
+        news.append(scrape_noticia(fetch(url_list[index])))
+    create_news(news)
+    return news
