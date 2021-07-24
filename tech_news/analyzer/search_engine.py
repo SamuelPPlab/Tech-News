@@ -39,7 +39,14 @@ def search_by_date(date):
 
 
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    # iterar value in source para inserir regex IGNORECASE
+    # try except caso nao encontre source no bd returne []
+    # result = search_news(query {"sources": value})
+    # criar news = []
+    # iterar new in result
+    # news.append(new)
+    # return news
+    
 
 
 # Requisito 9
