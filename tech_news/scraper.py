@@ -33,7 +33,7 @@ def scrape_noticia(html_content):
     timestamp = selector.css("time ::attr(datetime)").get()
     # print(selector.css("time ::attr(datetime)").get())
     # try:
-    writer = selector.css("a.tec--author__info__link::text").get()
+    writer = selector.css(".tec--author__info__link::text").get()
     #     if writer is None:
     #         print("Reclamando que não pode retirar vazio de objeto nulo")
     # except AttributeError:
@@ -42,8 +42,7 @@ def scrape_noticia(html_content):
     # https://www.delftstack.com/pt/howto/python/how-to-remove-whitespace-in-a-string/
     # print(selector.css("a.tec--author__info__link::text").get())
     # try:
-    shares_count = int(selector.css(".tec--toolbar__item::text").re_first(
-        r"\d+"))
+    shares_count = selector.css(".tec--toolbar__item::text").re_first(r"\d+")
     #     if shares_count is not None:
     #         print("nada é alguma coisa em python")
     # except TypeError:
@@ -63,9 +62,10 @@ def scrape_noticia(html_content):
             ".tec--article__body >p:first-child ::text"
             ).getall())
 
-    comments_count = int(selector.css(
-        "div.tec--toolbar__item ::text").re_first(r"\d+"))
-    # print(selector.css("div.tec--toolbar__item ::text").re_first(r"\d+"))
+    comments_count = selector.css("#js-comments-btn::text").re_first(r"\d+")
+
+    writer = selector.css(".tec--author__info__link::text").get()
+    # print(selector.css(".tec--author__info__link::text").get())
 
     sources = selector.css("div.z--mb-16 .tec--badge::text").getall()
     # retirar espaços em branco
@@ -79,9 +79,9 @@ def scrape_noticia(html_content):
         "url": url,
         "title": title,
         "timestamp": timestamp,
-        "writer": writer.strip() if writer else "valor nulo",
-        "shares_count": shares_count if shares_count else 0,
-        "comments_count": comments_count if comments_count else 0,
+        "writer": writer.strip() if writer else writer,
+        "shares_count": (int(shares_count) if shares_count else 0),
+        "comments_count": (int(comments_count) if comments_count else 0),
         "summary": summary,
         "sources": list(map(lambda source: source.strip(), sources)),
         "categories": list(map(lambda category: category.strip(), categories))
@@ -106,18 +106,31 @@ def scrape_next_page_link(html_content):
 
 # Requisito 5
 def get_tech_news(amount):
-    news = []
+    noticias = []
     url_list = []
     url = "https://www.tecmundo.com.br/novidades"
     for _ in range(math.ceil(amount / 20)):
-        time.sleep(0.1)
-        html_content = fetch(url)
-        news_link_list = scrape_novidades(html_content)
-        for url_link in news_link_list:
-            url_list.append(url_link)
-            url = scrape_next_page_link(html_content)
+        data = fetch(url)
+        url_novidades = scrape_novidades(data)
+        for url_item in url_novidades:
+            url_list.append(url_item)
+            url = scrape_next_page_link(data)
     for index in range(amount):
-        news.append(scrape_noticia(fetch(url_list[index])))
-    print(url_list)
-    create_news(news)
-    return news
+        noticias.append(scrape_noticia(fetch(url_list[index])))
+    create_news(noticias)
+    return noticias
+
+    # news = []
+    # url_list = []
+    # url = "https://www.tecmundo.com.br/novidades"
+    # for _ in range(math.ceil(amount / 20)):
+    #     # time.sleep(0.1)
+    #     html_content = fetch(url)
+    #     news_link_list = scrape_novidades(html_content)
+    #     for url_link in news_link_list:
+    #         url_list.append(url_link)
+    #         url = scrape_next_page_link(html_content)
+    # for index in range(amount):
+    #     news.append(scrape_noticia(fetch(url_list[index])))
+    # create_news(news)
+    # return news
