@@ -1,5 +1,6 @@
 from tech_news.database import search_news
 import re
+import datetime
 
 # Requisito 6
 
@@ -19,8 +20,15 @@ def search_by_title(title):
 
 
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    # https://www.alura.com.br/artigos/lidando-com-datas-e-ho
+    # rarios-no-python?gclid=Cj0KCQjw0emHBhC1ARIsAL1QGNenAki-Y
+    # -E31W-lEdbyx9IO3fNaFElYiqlNFVBAGEc5h52Wvxzunx0aAhlVEALw_wcB
+    # print(type(date)) <class 'str'>
+    datetime
 
+    
+
+search_by_date("2020-11-23T11:00:01")
 
 # Requisito 8
 def search_by_source(source):
