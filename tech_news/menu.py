@@ -1,6 +1,8 @@
+from sys import stderr
+
 # Requisito 12
-def analyzer_menu():
-    menu = [
+
+menu = [
     "Selecione uma das opções a seguir:",
     " 0 - Popular o banco com notícias;",
     " 1 - Buscar notícias por título;",
@@ -12,6 +14,27 @@ def analyzer_menu():
     " 7 - Sair.",
 ]
 
-    # loop no menu e capturar a opcao escolhida
-    # print na opção com o numero escolhidos
 
+def option_invalid(option):
+    if option in range(5, 8):
+        return print("Opção inválida", file=stderr)
+    if option not in range(8):
+        return print("Opção inválida", file=stderr)
+
+
+def analyzer_menu():
+    try:
+        for option in menu:
+            print(option)
+        user_option = int(input("Digite a opção desejada"))
+        option_invalid(user_option)
+        searches = {
+            0: "Digite quantas notícias serão buscadas:",
+            1: "Digite o título:",
+            2: "Digite a data no formato aaaa-mm-dd:",
+            3: "Digite a fonte:",
+            4: "Digite a categoria:",
+        }
+        return print(searches[user_option])
+    except (KeyError, ValueError):
+        stderr.write("Opção inválida\n")
