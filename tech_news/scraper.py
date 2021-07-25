@@ -1,9 +1,10 @@
 import requests
 import time
-from parsel import Selector
 from requests.exceptions import ReadTimeout
 
 url = "https://www.tecmundo.com.br/novidades"
+
+
 # Requisito 1
 def fetch(url):
     """Seu código deve vir aqui"""
