@@ -1,6 +1,7 @@
 import requests
 import time
 from requests.exceptions import ReadTimeout
+from parsel import Selector
 
 url = "https://www.tecmundo.com.br/novidades"
 
@@ -18,8 +19,34 @@ def fetch(url):
 
 
 # Requisito 2
+# aprendi estudando o codeReview thayscosta3 pull request 92
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
+    news = {}
+    selector = Selector(html_content)
+    news["url"] = selector.css("meta[property='og:url']::attr(content)").get()
+    news["title"] = selector.css("#js-article-title::text").get()
+    news["timestamp"] = selector.css("time::attr(datetime)").get()
+    writer = selector.css(".tec--author__info__link::text").get().strip()
+    news["writer"] = None if not writer else writer
+    shares_count = selector.css(".tec--toolbar__item::text").get()
+    shares_count = int(shares_count.split()[0]) if shares_count else None
+    news["shares_count"] = 0 if not shares_count else shares_count
+
+    comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
+
+    news["comments_count"] = int(comments_count) if comments_count else None
+    first_paragraph = selector.css(
+        ".tec--article__body > p:first-child *::text"
+    ).getall()
+
+    news["summary"] = "".join(first_paragraph)
+    sources = selector.css(".z--mb-16 .tec--badge::text").getall()
+    news["sources"] = [source.strip() for source in sources]
+
+    categories = selector.css("#js-categories .tec--badge::text").getall()
+    news["categories"] = [category.strip() for category in categories]
+    return news
 
 
 # Requisito 3
