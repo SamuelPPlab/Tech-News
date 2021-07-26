@@ -72,3 +72,17 @@ def analyzer_menu():
     if not option.isdigit() or int(option) not in range(8):
         print("Opção inválida", file=sys.stderr)
         return
+
+    options = {
+        "0": option_zero,
+        "1": option_one,
+        "2": option_two,
+        "3": option_three,
+        "4": option_four,
+        "5": option_five,
+        "6": option_six,
+        "7": option_seven,
+    }
+
+    result = options[option]()
+    print(result)
