@@ -1,4 +1,5 @@
 from tech_news.database import find_news
+from collections import Counter
 
 
 def sort_by_popularity(news):
@@ -9,8 +10,6 @@ def sort_by_popularity(news):
 # Requisito 10
 def top_5_news():
     news_all = find_news()
-
-    news = []
 
     def mapping(news_item):
         title = news_item.get("title")
@@ -36,8 +35,21 @@ def top_5_news():
 
 # Requisito 11
 def top_5_categories():
-    """Seu código deve vir aqui"""
+    news_all = find_news()
 
+    categories_list = []
+    
+    for news in news_all:
+        for category in news['categories']:
+            categories_list.append(category)
 
-if __name__ == "__main__":
-    top_5_news()
+    categories_and_qty = sorted(
+        Counter(categories_list).most_common()
+    )
+
+    sorted_categories = []
+
+    for category_and_qty in categories_and_qty:
+        sorted_categories.append(category_and_qty[0])
+
+    return sorted_categories[:5]
