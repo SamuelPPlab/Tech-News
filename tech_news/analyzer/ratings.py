@@ -3,6 +3,7 @@ import collections
 from functools import reduce
 
 
+# Requisito 10
 def top_5_news():
     """
         - Pesquisa no DB e retorna as 5 notícias mais populares;
@@ -19,6 +20,7 @@ def top_5_news():
        for news in get_all_news
     ]
     sorted(news_info, key=lambda news: news[0], reverse=True)
+    sorted(news_info, key=lambda news: news[2],)
 
     news_by_popularity = [
         (info[0], info[1]) for info in news_info

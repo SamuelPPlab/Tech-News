@@ -40,7 +40,9 @@ def scrape_noticia(html_content):
     comments_count = selector.css(
         "#js-comments-btn::attr(data-count)"
     ).get()
-    noticia["comments_count"] = int(comments_count) if comments_count else None
+    # noticia["comments_count"] = int(comments_count) if comments_count else None
+    noticia["comments_count"] = int(
+        comments_count) if comments_count is not None else 0
 
     first_paragraph = selector.css(
         "div.tec--article__body > p:first-child ::text"
