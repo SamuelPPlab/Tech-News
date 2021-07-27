@@ -23,42 +23,35 @@ MENU_OPTIONS = (
 
 def option_zero():
     message = input("Digite quantas notícias serão buscadas: ")
-    response = get_tech_news(int(message))
-    print(response)
+    print(get_tech_news(int(message)))
 
 
 def option_one():
     message = input("Digite o título: ")
-    response = search_by_title(message)
-    print(response)
+    print(search_by_title(message))
 
 
 def option_two():
     message = input("Digite a data no formato aaaa-mm-dd: ")
-    response = search_by_date(message)
-    print(response)
+    print(search_by_date(message))
 
 
 def option_three():
     message = input("Digite a fonte: ")
-    response = search_by_source(message)
-    print(response)
+    print(search_by_source(message))
 
 
 def option_four():
     message = input("Digite a categoria: ")
-    response = search_by_category(message)
-    print(response)
+    print(search_by_category(message))
 
 
 def option_five():
-    response = top_5_news()
-    print(response)
+    print(top_5_news())
 
 
 def option_six():
-    response = top_5_categories()
-    print(response)
+    print(top_5_categories())
 
 
 def option_seven():
