@@ -12,7 +12,8 @@ def fetch(url):
         response = requests.get(url, timeout=3)
         if response.status_code == 200:
             return response.text
-        return None
+        else:
+            return None
     except requests.ReadTimeout:
         return None
 
@@ -26,9 +27,7 @@ def scrape_noticia(html_content):
 
     data["title"] = selector.css(".tec--article__header__title::text").get()
 
-    data["timestamp"] = selector.css(
-        ".tec--timestamp__item time::attr(datetime)"
-    ).get()
+    data["timestamp"] = selector.css("time::attr(datetime)").get()
 
     data["writer"] = selector.css("a.tec--author__info__link::text").get()
 
@@ -43,7 +42,6 @@ def scrape_noticia(html_content):
     data["shares_count"] = shares
 
     comments = selector.css("#js-comments-btn::attr(data-count)").get()
-
     if comments:
         comments = int(comments)
     else:
@@ -51,18 +49,18 @@ def scrape_noticia(html_content):
     data["comments_count"] = comments
 
     summary = selector.css(
-        ".tec--article__body p:first-child *::text"
+        ".tec--article__body > p:first-child *::text"
     ).getall()
     data["summary"] = "".join(summary)
 
-    sources = selector.css(".z--mb-16 div a::text").getall()
+    sources = selector.css(".z--mb-16 div a.tec--badge::text").getall()
     sources = [source.strip() for source in sources]
     data["sources"] = sources
 
-    categories = selector.css("#js-categories a::text").getall()
+    categories = selector.css("#js-categories a.tec--badge::text").getall()
     categories = [category.strip() for category in categories]
     data["categories"] = categories
-
+    # print(data)
     return data
 
 
@@ -77,7 +75,9 @@ def scrape_noticia(html_content):
 def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
-        links = selector.css("h3 a.tec--card__title__link::attr(href)").getall()
+        links = selector.css(
+            "h3 a.tec--card__title__link::attr(href)"
+        ).getall()
         return links
     except Exception:
         list()
@@ -102,9 +102,7 @@ def get_tech_news(amount):
         tecmundoUrl = scrape_next_page_link(tecmundoHTML)
 
     for noticias in linksList[:amount]:
-        resultList.extend(scrape_noticia(fetch(noticias)))
-
+        resultList.append(scrape_noticia(fetch(noticias)))
+    # print(resultList)
     create_news(resultList)
     return resultList
-
-    # tecmundoHTML = fetch(scrape_next_page_link(tecmundoHTML))
