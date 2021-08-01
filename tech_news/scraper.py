@@ -22,7 +22,7 @@ def scrape_noticia(html_content):
     selector = Selector(html_content)
     data = {}
 
-    data["url"] = selector.css("head link[rel=canonical]::attr(href)").get()
+    data["url"] = selector.css("link[rel=canonical]::attr(href)").get()
 
     data["title"] = selector.css(".tec--article__header__title::text").get()
 
@@ -30,10 +30,10 @@ def scrape_noticia(html_content):
         ".tec--timestamp__item time::attr(datetime)"
     ).get()
 
-    writer = selector.css(".tec--author__info__link::text").get()
-    if writer:
-        writer = writer.strip()
-    data["writer"] = writer
+    data["writer"] = selector.css("a.tec--author__info__link::text").get()
+
+    if data["writer"]:
+        data["writer"] = data["writer"].strip()
 
     shares = selector.css(".tec--toolbar__item::text").get()
     if shares:
@@ -66,11 +66,18 @@ def scrape_noticia(html_content):
     return data
 
 
+# scrape_noticia(
+#     fetch(
+#         "https://www.tecmundo.com.br/ciencia/215295-spacex-planeja-torre-captura-foguete-lancamento.htm"
+#     )
+# )
+
+
 # Requisito 3
 def scrape_novidades(html_content):
     try:
         selector = Selector(html_content)
-        links = selector.css("h3 a::attr(href)").getall()
+        links = selector.css("h3 a.tec--card__title__link::attr(href)").getall()
         return links
     except Exception:
         list()
@@ -86,19 +93,18 @@ def scrape_next_page_link(html_content):
 # Requisito 5
 def get_tech_news(amount):
     tecmundoUrl = "https://www.tecmundo.com.br/novidades"
-    tecmundoHTML = fetch(tecmundoUrl)
     resultList = list()
-    noticiasNovidades = scrape_novidades(tecmundoHTML)
+    linksList = list()
 
-    while len(resultList) < amount:
-        resultList.extend(
-            [
-                scrape_noticia(fetch(noticiaUrl))
-                for noticiaUrl in noticiasNovidades
-            ]
-        )
-        if len(resultList) < amount:
-            tecmundoHTML = fetch(scrape_next_page_link(tecmundoHTML))
-    noticias = resultList[:amount]
-    create_news(noticias)
-    return noticias
+    while len(linksList) < amount:
+        tecmundoHTML = fetch(tecmundoUrl)
+        linksList.extend(scrape_novidades(tecmundoHTML))
+        tecmundoUrl = scrape_next_page_link(tecmundoHTML)
+
+    for noticias in linksList[:amount]:
+        resultList.extend(scrape_noticia(fetch(noticias)))
+
+    create_news(resultList)
+    return resultList
+
+    # tecmundoHTML = fetch(scrape_next_page_link(tecmundoHTML))
