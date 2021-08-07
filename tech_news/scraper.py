@@ -23,31 +23,34 @@ def fetch(url):
 # aprendi estudando o codeReview thayscosta3 pull request 92
 def scrape_noticia(html_content):
     """Seu código deve vir aqui"""
-    news = {}
+    noticia = {}
     selector = Selector(html_content)
-    news["url"] = selector.css("meta[property='og:url']::attr(content)").get()
-    news["title"] = selector.css("#js-article-title::text").get()
-    news["timestamp"] = selector.css("time::attr(datetime)").get()
-    writer = selector.css(".tec--author__info__link::text").get().strip()
-    news["writer"] = None if not writer else writer
+    noticia["url"] = selector.css(
+        "meta[property='og:url']::attr(content)"
+    ).get()
+    noticia["title"] = selector.css("#js-article-title::text").get()
+    noticia["timestamp"] = selector.css("time::attr(datetime)").get()
+    writer = selector.css(".tec--author__info__link::text").get()
+    writer = writer.strip() if writer else None
+    noticia["writer"] = None if not writer else writer
     shares_count = selector.css(".tec--toolbar__item::text").get()
     shares_count = int(shares_count.split()[0]) if shares_count else None
-    news["shares_count"] = 0 if not shares_count else shares_count
+    noticia["shares_count"] = 0 if not shares_count else shares_count
 
     comments_count = selector.css("#js-comments-btn::attr(data-count)").get()
 
-    news["comments_count"] = int(comments_count) if comments_count else None
+    noticia["comments_count"] = int(comments_count) if comments_count else None
     first_paragraph = selector.css(
         ".tec--article__body > p:first-child *::text"
     ).getall()
 
-    news["summary"] = "".join(first_paragraph)
+    noticia["summary"] = "".join(first_paragraph)
     sources = selector.css(".z--mb-16 .tec--badge::text").getall()
-    news["sources"] = [source.strip() for source in sources]
+    noticia["sources"] = [source.strip() for source in sources]
 
     categories = selector.css("#js-categories .tec--badge::text").getall()
-    news["categories"] = [category.strip() for category in categories]
-    return news
+    noticia["categories"] = [category.strip() for category in categories]
+    return noticia
 
 
 # Requisito 3
@@ -72,15 +75,15 @@ def scrape_next_page_link(html_content):
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
     url = "https://www.tecmundo.com.br/novidades"
-    all_news = list()
+    all_noticia = []
 
-    while len(all_news) <= amount:
+    while len(all_noticia) <= amount:
         request_text = fetch(url)
         for item_url in scrape_novidades(request_text):
             item_text = fetch(item_url)
             news = scrape_noticia(item_text)
-            all_news.append(news)
-            if len(all_news) == amount:
-                create_news(all_news)
-                return all_news
+            all_noticia.append(news)
+            if len(all_noticia) == amount:
+                create_news(all_noticia)
+                return all_noticia
             url = scrape_next_page_link(request_text)
