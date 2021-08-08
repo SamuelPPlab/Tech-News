@@ -1,17 +1,17 @@
-import time
 import requests
-from requests.exceptions import HTTPError, ReadTimeout
+import time
 
 
 def fetch(url):
     time.sleep(1)
     try:
         response = requests.get(url, timeout=3)
-        response.raise_for_status()
-    except (ReadTimeout or HTTPError):
+    except requests.ReadTimeout:
         return None
-    finally:
-        return response.headers["Content-Type"]
+    if(response.status_code == 200):
+        return response.text
+    else:
+        return None
 
 
 def scrape_noticia(html_content):
