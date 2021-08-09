@@ -7,9 +7,9 @@ def search_by_title(title):
     db = search_news({'title': {'$regex': title, '$options': 'i'}})
     response = []
 
-    if(len(db) > 0):
-        for result in db:
-            response.append((result['title', result['url']]))
+    for result in db:
+        print(result)
+        response.append((result['title'], result['url']))
 
     return response
 
@@ -23,26 +23,26 @@ def search_by_date(date):
     response = []
 
     for result in db_result:
-        response.append((result['title', result['url']]))
+        response.append((result['title'], result['url']))
 
     return response
 
 
 def search_by_source(source):
-    db_result = search_news({'source': {'$regex': source}})
+    db_result = search_news({'sources': {'$regex': source, '$options': 'i'}})
     response = []
 
     for result in db_result:
-        response.append((result['title', result['url']]))
+        response.append((result['title'], result['url']))
 
     return response
 
 
 def search_by_category(category):
-    db_result = search_news({'categories': {'$regex': category}})
+    db_result = search_news({'categories': {'$regex': category, '$options': 'i'}})
     response = []
 
     for result in db_result:
-        response.append((result['title', result['url']]))
+        response.append((result['title'], result['url']))
 
     return response
