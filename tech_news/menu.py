@@ -18,12 +18,12 @@ def analyzer_menu():
     )
     option = input()
     returnedOptions = {
-        0: "Digite quantas notícias serão buscadas:",
-        1: "Digite o título",
-        2: "Digite a data no formato aaaa-mm-dd:",
-        3: "Digite a fonte:",
-        4: "Digite a categoria:"
+        "0": "Digite quantas notícias serão buscadas:",
+        "1": "Digite o título",
+        "2": "Digite a data no formato aaaa-mm-dd:",
+        "3": "Digite a fonte:",
+        "4": "Digite a categoria:",
     }
-    if int(option) > 7:
-        sys.stderr.write("spam\n")
+    if option == '' or int(option) > 7:
+        return sys.stderr.write("Opção inválida\n")
     print(returnedOptions[option])
