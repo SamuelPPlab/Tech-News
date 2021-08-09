@@ -39,7 +39,9 @@ def search_by_source(source):
 
 
 def search_by_category(category):
-    db_result = search_news({'categories': {'$regex': category, '$options': 'i'}})
+    db_result = search_news(
+        {'categories': {'$regex': category, '$options': 'i'}}
+    )
     response = []
 
     for result in db_result:
