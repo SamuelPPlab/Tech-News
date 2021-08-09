@@ -1,3 +1,4 @@
+import pymongo
 from tech_news.database import get_collection
 
 
@@ -28,3 +29,26 @@ def top_5_news():
 # Requisito 11
 def top_5_categories():
     """Seu código deve vir aqui"""
+    cursor = get_collection().aggregate(
+        [
+            {
+                "$unwind": "$categories"
+            },
+            {
+                "$group": {
+                    "_id": "$categories",
+                }
+            },
+            {
+                "$sort": {
+                    "_id": pymongo.ASCENDING
+                }
+            },
+            {
+                "$limit": 5
+            }
+        ])
+    result = []
+    for item in cursor:
+        result.append((item["_id"]))
+    return result
