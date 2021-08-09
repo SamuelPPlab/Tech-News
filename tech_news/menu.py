@@ -14,17 +14,20 @@ OPTIONS = (
 )
 
 
+def switcher(option):
+    switch = [
+        "Digite quantas notícias serão buscadas:",
+        "Digite o título:",
+        "Digite a data no formato aaaa-mm-dd:",
+        "Digite a fonte:",
+        "Digite a categoria:",
+    ]
+    return switch[option]
+
+
 def analyzer_menu():
     userInput = input(OPTIONS)
     if (int(userInput) > 7):
         print("Opção inválida", file=sys.stderr)
-    if (int(userInput) == 0):
-        print("Digite quantas notícias serão buscadas:")
-    if (int(userInput) == 1):
-        print("Digite o título:")
-    if (int(userInput) == 2):
-        print("Digite a data no formato aaaa-mm-dd:")
-    if (int(userInput) == 3):
-        print("Digite a fonte:")
-    if (int(userInput) == 4):
-        print("Digite a categoria:")
+    message = switcher(int(userInput))
+    print(message)
