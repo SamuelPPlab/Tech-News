@@ -4,11 +4,12 @@ import datetime
 
 
 def search_by_title(title):
-    db_result = search_news({'name': {'$regex': title}})
+    db = search_news({'title': {'$regex': title, '$options': 'i'}})
     response = []
 
-    for result in db_result:
-        response.append((result['title', result['url']]))
+    if(len(db) > 0):
+        for result in db:
+            response.append((result['title', result['url']]))
 
     return response
 

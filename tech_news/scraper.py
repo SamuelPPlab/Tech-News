@@ -77,12 +77,19 @@ def scrape_next_page_link(html_content):
 
 
 def get_tech_news(amount):
-    url = LINK_NOVIDADES
-    response = []
+    page = fetch(LINK_NOVIDADES)
+    links = []
+    news = []
+    while len(links) < amount:
+        next_page = scrape_next_page_link(page)
+        response = scrape_novidades(page)
+        links.extend(response)
+        if len(links) < amount:
+            page = fetch(next_page)
 
-    for i in range(1, amount):
-        new = scrape_noticia(fetch(url))
-        response.append(new)
-        url = scrape_next_page_link(fetch(url))
-    create_news(new)
-    return response
+    for link in links:
+        news_data = scrape_noticia(fetch(link))
+        news.append(news_data)
+
+    create_news(news[:amount])
+    return news[:amount]
