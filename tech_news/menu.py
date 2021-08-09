@@ -1,4 +1,5 @@
 # Requisito 12
+import sys
 from tech_news.scraper import get_tech_news
 from tech_news.analyzer.search_engine import (
     search_by_title,
@@ -34,16 +35,20 @@ def get_by_category():
     search_by_category(amount)
 
 
+def quit_script():
+    return "Encerrando script"
+
+
 def analyzer_menu() -> None:
     format = [
-        "0 - Popular o banco com notícias;",
-        "1 - Buscar notícias por título;",
-        "2 - Buscar notícias por data;",
-        "3 - Buscar notícias por fonte;",
-        "4 - Buscar notícias por categoria;",
-        "5 - Listar top 5 notícias;",
-        "6 - Listar top 5 categorias;",
-        "7 - Sair.",
+        " 0 - Popular o banco com notícias;",
+        " 1 - Buscar notícias por título;",
+        " 2 - Buscar notícias por data;",
+        " 3 - Buscar notícias por fonte;",
+        " 4 - Buscar notícias por categoria;",
+        " 5 - Listar top 5 notícias;",
+        " 6 - Listar top 5 categorias;",
+        " 7 - Sair.",
     ]
     print("Selecione uma das opções a seguir:")
     for item in format:
@@ -59,8 +64,11 @@ def analyzer_menu() -> None:
                 get_by_category,
                 top_5_news,
                 top_5_categories,
+                quit_script,
             ]
             response = raise_func[user_response]()
             print(response)
+        else:
+            sys.stderr.write("Opção inválida\n")
     except ValueError:
-        print("Opção inválida")
+        sys.stderr.write("Opção inválida\n")
