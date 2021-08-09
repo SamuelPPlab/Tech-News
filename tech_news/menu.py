@@ -2,6 +2,7 @@ import sys
 
 
 OPTIONS = (
+    "\n"
     "Selecione uma das opções a seguir:\n"
     + " 0 - Popular o banco com notícias;\n"
     + " 1 - Buscar notícias por título;\n"
@@ -27,7 +28,7 @@ def switcher(option):
 
 def analyzer_menu():
     userInput = input(OPTIONS)
-    if (int(userInput) > 7):
+    if not userInput.isdigit() or int(userInput) > 7:
         print("Opção inválida", file=sys.stderr)
     if (0 <= int(userInput) <= 4):
         message = switcher(int(userInput))
