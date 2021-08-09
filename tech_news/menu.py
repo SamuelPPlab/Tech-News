@@ -29,5 +29,6 @@ def analyzer_menu():
     userInput = input(OPTIONS)
     if (int(userInput) > 7):
         print("Opção inválida", file=sys.stderr)
-    message = switcher(int(userInput))
-    print(message)
+    if (0 <= int(userInput) <= 4):
+        message = switcher(int(userInput))
+        print(message)
