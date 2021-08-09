@@ -1,3 +1,6 @@
+import sys
+
+
 # Requisito 12
 def analyzer_menu():
     """Seu código deve vir aqui"""
@@ -14,13 +17,13 @@ def analyzer_menu():
         "7 - Sair.\n"
     )
     option = input()
-    if option == "0":
-        print("Digite quantas notícias serão buscadas:")
-    if option == "1":
-        print("Digite o título")
-    if option == "2":
-        print("Digite a data no formato aaaa-mm-dd:")
-    if option == "3":
-        print("Digite a fonte:")
-    if option == "4":
-        print("Digite a categoria:")
+    returnedOptions = {
+        0: "Digite quantas notícias serão buscadas:",
+        1: "Digite o título",
+        2: "Digite a data no formato aaaa-mm-dd:",
+        3: "Digite a fonte:",
+        4: "Digite a categoria:"
+    }
+    if int(option) > 7:
+        sys.stderr.write("spam\n")
+    print(returnedOptions[option])
