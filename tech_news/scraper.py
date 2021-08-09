@@ -83,6 +83,6 @@ def get_tech_news(amount):
     for i in range(1, amount):
         new = scrape_noticia(fetch(url))
         response.append(new)
-        url = scrape_next_page_link(fetch(url))       
+        url = scrape_next_page_link(fetch(url))
     create_news(new)
     return response
