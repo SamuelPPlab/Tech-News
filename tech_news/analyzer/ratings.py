@@ -31,23 +31,16 @@ def top_5_categories():
     """Seu código deve vir aqui"""
     cursor = get_collection().aggregate(
         [
-            {
-                "$unwind": "$categories"
-            },
+            {"$unwind": "$categories"},
             {
                 "$group": {
                     "_id": "$categories",
                 }
             },
-            {
-                "$sort": {
-                    "_id": pymongo.ASCENDING
-                }
-            },
-            {
-                "$limit": 5
-            }
-        ])
+            {"$sort": {"_id": pymongo.ASCENDING}},
+            {"$limit": 5},
+        ]
+    )
     result = []
     for item in cursor:
         result.append((item["_id"]))
