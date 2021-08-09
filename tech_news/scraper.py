@@ -1,7 +1,8 @@
 import time
 import requests
 import parsel
-from tech_news.database import insert_or_update
+from tech_news.database import create_news
+# peguei ideia de validação da busca no PR do Zezo
 
 LINK_NOVIDADES = "https://www.tecmundo.com.br/novidades"
 
@@ -28,16 +29,22 @@ def scrape_noticia(html_content):
     response["timestamp"] = selector.css(
         "#js-article-date::attr(datetime)"
     ).get()
-    response["writer"] = selector.css(
-        ".tec--author__info__link::text"
-    ).get().strip()
+    response["writer"] = (
+        selector.css(".tec--author__info__link::text").get().strip()
+        if selector.css(".tec--author__info__link::text").get() is not None
+        else None
+    )
     response["shares_count"] = int(
         selector.css(".tec--toolbar__item::text")
-        .get()[: -len("Compartilharam")]
-        .strip()
+        .get()
+        .strip()[: -len("Compartilharam")]
+        if selector.css(".tec--toolbar__item::text").get() is not None
+        else 0
     )
     response["comments_count"] = int(
         selector.css("#js-comments-btn::attr(data-count)").get()
+        if selector.css("#js-comments-btn::attr(data-count)").get() is not None
+        else 0
     )
     response["summary"] = "".join(
         selector.css(".tec--article__body > p:first-child *::text").getall()
@@ -76,6 +83,6 @@ def get_tech_news(amount):
     for i in range(1, amount):
         new = scrape_noticia(fetch(url))
         response.append(new)
-        insert_or_update(new)
-        url = scrape_next_page_link(fetch(url))
+        url = scrape_next_page_link(fetch(url))       
+    create_news(new)
     return response

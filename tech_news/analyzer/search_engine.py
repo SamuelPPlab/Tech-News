@@ -1,18 +1,47 @@
-# Requisito 6
+from tech_news.database import search_news
+import datetime
+# busquei a validação da data no PR do daniel Duarte
+
+
 def search_by_title(title):
-    """Seu código deve vir aqui"""
+    db_result = search_news({'name': {'$regex': title}})
+    response = []
+
+    for result in db_result:
+        response.append((result['title', result['url']]))
+
+    return response
 
 
-# Requisito 7
 def search_by_date(date):
-    """Seu código deve vir aqui"""
+    try:
+        datetime.datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise ValueError("Data inválida")
+    db_result = search_news({'timestamp': {'$regex': date}})
+    response = []
+
+    for result in db_result:
+        response.append((result['title', result['url']]))
+
+    return response
 
 
-# Requisito 8
 def search_by_source(source):
-    """Seu código deve vir aqui"""
+    db_result = search_news({'source': {'$regex': source}})
+    response = []
+
+    for result in db_result:
+        response.append((result['title', result['url']]))
+
+    return response
 
 
-# Requisito 9
 def search_by_category(category):
-    """Seu código deve vir aqui"""
+    db_result = search_news({'categories': {'$regex': category}})
+    response = []
+
+    for result in db_result:
+        response.append((result['title', result['url']]))
+
+    return response
