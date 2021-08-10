@@ -30,7 +30,7 @@ def analyzer_menu():
     userInput = input(OPTIONS)
     if not userInput.isdigit() or int(userInput) > 7:
         print("Opção inválida", file=sys.stderr)
-    if (userInput) <= 4:
+    if (int(userInput)) <= 4:
         message = switcher(int(userInput))
         print(message)
     else:
